@@ -1,38 +1,34 @@
-//
-//  SwiftDataTCAApp.swift
-//  SwiftDataTCA
-//
-//  Created by Rodrigo Souza on 03/10/23.
-//
-
 import SwiftUI
 import SwiftData
 import Dependencies
 
 @main
 struct SwiftDataTCAApp: App {
-    @Dependency(\.databaseService) var databaseService
-    
-    var body: some Scene {
-        WindowGroup {
-            TabView {
-                TCAContentView(store: .init(initialState: TCAContentView.Feature.State(), reducer: {
-                    TCAContentView.Feature()
-                        ._printChanges()
-                }))
-                .tabItem {
-                    Label("TCAContentView", systemImage: "1.circle")
-                }
-                
-                QueryView(store: .init(initialState: .init(), reducer: {
-                    QueryReducer()._printChanges()
-                }))
-                .modelContainer(databaseService.container())
-                .tabItem {
-                    Label("QueryView", systemImage: "2.circle")
-                }
-            }
-            
+  @Dependency(\.modelContextProvider) var modelContextProvider
+
+  enum Tab {
+    case contentView, queryView
+  }
+
+  @State private var selectedTab: Tab = .contentView
+
+  var body: some Scene {
+    WindowGroup {
+      TabView(selection: $selectedTab) {
+        FromStateView(store: .init(initialState: .init()) { FromStateFeature()._printChanges() })
+        .padding()
+        .tabItem {
+          Label("State", systemImage: "1.circle")
         }
+        .tag(Tab.contentView)
+        FromQueryView(store: .init(initialState: .init()) { FromQueryFeature()._printChanges() })
+          .padding()
+          .tabItem {
+            Label("Query", systemImage: "2.circle")
+          }
+          .tag(Tab.queryView)
+      }
+      .modelContext(self.modelContextProvider.context())
     }
+  }
 }
