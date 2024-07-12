@@ -21,6 +21,12 @@ Both SwiftUI views the same functionality, including:
 Per TCA guidance, all UI activity lead to reducer actions that are performed in the feature's reducer logic, updating
 internal feature state when necessary to cause a UI update.
 
+The two features are quite similar and there is some duplication of code, but this was done to make the features 
+self-contained.
+
+![](https://github.com/bradhowes/SwiftDataTCA/blob/main/FromState.gif?raw=true)
+![](https://github.com/bradhowes/SwiftDataTCA/blob/main/FromQuery.gif?raw=true)
+
 Below is the original contents of the "README" document found at the time of the fork.
 
 # Movie App with SwiftData and PointFree Composable Architecture
