@@ -22,7 +22,6 @@ struct SwiftDataTCATests {
   @Test func migrationV2V3() async throws {
     // Create V2 database
     let url = FileManager.default.temporaryDirectory.appending(component: "Model.sqlite")
-    let entry = mockData.randomElement()!
     try? FileManager.default.removeItem(at: url)
 
     let schemaV2 = Schema(versionedSchema: MovieSchemaV2.self)
@@ -68,19 +67,6 @@ struct SwiftDataTCATests {
     } operation: {
       #expect(Movie.mock.title == "Avatar")
       #expect(Movie.mock.title == "Hancock")
-    }
-  }
-
-  @Test func addButtonTapped() async {
-    let store = TestStore(initialState: FromStateFeature.State()) {
-      FromStateFeature()
-    } withDependencies: {
-      $0.uuid = .constant(UUID(0))
-      $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
-    }
-
-    await store.send(.addButtonTapped) {
-      $0.movies = [Movie(id: UUID(0), title: "Avatar", cast: [""])]
     }
   }
 }
