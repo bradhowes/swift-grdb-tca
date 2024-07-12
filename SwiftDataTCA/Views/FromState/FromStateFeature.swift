@@ -8,7 +8,7 @@ import SwiftUI
 struct FromStateFeature {
 
   @ObservableState
-  struct State {
+  struct State : Equatable {
     var movies: [Movie] = []
     var titleSort: SortOrder? = .forward
     var uuidSort: SortOrder?

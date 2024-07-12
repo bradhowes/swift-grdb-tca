@@ -58,8 +58,13 @@ extension ModelContextProvider: TestDependencyKey {
 
 extension ActiveSchema.Movie {
   static var mock: Movie {
-    let entry = mockData.randomElement()!
-    return Movie(title: entry.0, cast: entry.1)
+    @Dependency(\.withRandomNumberGenerator) var withRandomNumberGenerator
+    @Dependency(\.uuid) var uuid
+    let index = withRandomNumberGenerator { generator in
+      Int.random(in: 0..<mockData.count, using: &generator)
+    }
+    let entry = mockData[index]
+    return Movie(id: uuid(), title: entry.0, cast: entry.1)
   }
 }
 

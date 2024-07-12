@@ -14,8 +14,8 @@ enum MovieSchemaV1: VersionedSchema {
     var title: String
     var cast: [String]
 
-    init(title: String, cast: [String]) {
-      self.id = UUID()
+    init(id: UUID, title: String, cast: [String]) {
+      self.id = id
       self.title = title
       self.cast = cast
     }

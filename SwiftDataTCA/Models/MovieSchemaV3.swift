@@ -16,8 +16,8 @@ enum MovieSchemaV3: VersionedSchema {
     var favorite: Bool = false
     var sortableTitle: String = ""
 
-    init(title: String, cast: [String], favorite: Bool = false) {
-      self.id = UUID()
+    init(id: UUID, title: String, cast: [String], favorite: Bool = false) {
+      self.id = id
       self.title = title
       self.cast = cast
       self.favorite = favorite
