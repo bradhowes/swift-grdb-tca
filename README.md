@@ -27,6 +27,12 @@ self-contained.
 ![](https://github.com/bradhowes/SwiftDataTCA/blob/main/FromState.gif?raw=true)
 ![](https://github.com/bradhowes/SwiftDataTCA/blob/main/FromQuery.gif?raw=true)
 
+## Tests
+
+There are two sets of tests: old-school XCTest collection that works with TCA and the brand new 
+[Swift Testing](https://github.com/apple/swift-testing) style collection that does not yet work well with TCA testing
+functions and macros (as of TCA v1.11.12).
+
 Below is the original contents of the "README" document found at the time of the fork.
 
 # Movie App with SwiftData and PointFree Composable Architecture
