@@ -3,7 +3,7 @@ import Dependencies
 import SwiftData
 
 
-typealias ActiveSchema = MovieSchemaV3
+typealias ActiveSchema = SchemaV3
 typealias Movie = ActiveSchema.Movie
 
 extension DependencyValues {
@@ -20,7 +20,7 @@ fileprivate let liveContainer: ModelContainer = {
   do {
     let url = URL.applicationSupportDirectory.appending(path: "Modelv3.sqlite")
     let config = ModelConfiguration(schema: ActiveSchema.schema, url: url)
-    return try ModelContainer(for: Movie.self, migrationPlan: MovieMigrationPlan.self, configurations: config)
+    return try ModelContainer(for: Movie.self, migrationPlan: MigrationPlan.self, configurations: config)
   } catch {
     fatalError("Failed to create live container.")
   }
@@ -29,7 +29,7 @@ fileprivate let liveContainer: ModelContainer = {
 fileprivate let previewContainer: ModelContainer = {
   do {
     let config = ModelConfiguration(schema: ActiveSchema.schema, isStoredInMemoryOnly: true, allowsSave: true)
-    return try ModelContainer(for: Movie.self, migrationPlan: MovieMigrationPlan.self, configurations: config)
+    return try ModelContainer(for: Movie.self, migrationPlan: MigrationPlan.self, configurations: config)
   } catch {
     fatalError("Failed to create preview container.")
   }

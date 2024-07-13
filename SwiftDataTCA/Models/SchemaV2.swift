@@ -1,7 +1,7 @@
 import Foundation
 import SwiftData
 
-enum MovieSchemaV2: VersionedSchema {
+enum SchemaV2: VersionedSchema {
   static var versionIdentifier: Schema.Version { .init(2, 0, 0) }
 
   static var models: [any PersistentModel.Type] {

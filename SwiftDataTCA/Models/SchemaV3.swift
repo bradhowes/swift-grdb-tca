@@ -1,7 +1,7 @@
 import Foundation
 import SwiftData
 
-enum MovieSchemaV3: VersionedSchema {
+enum SchemaV3: VersionedSchema {
   static var versionIdentifier: Schema.Version { .init(3, 0, 0) }
 
   static var models: [any PersistentModel.Type] {
@@ -26,8 +26,8 @@ enum MovieSchemaV3: VersionedSchema {
   }
 }
 
-extension MovieSchemaV3.Movie {
-  static let articles = Set(["a", "el", "la", "las", "le", "les", "los", "the"])
+extension SchemaV3.Movie {
+  static let articles = Set(["a", "el", "la", "las", "le", "les", "los", "the", "un", "una"])
 
   static func sortableTitle(_ title: String) -> String {
     let words = title.lowercased().components(separatedBy: " ")

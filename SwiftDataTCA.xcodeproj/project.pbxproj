@@ -17,12 +17,12 @@
 		23A64EAD2AD1AB46005B6344 /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64EAC2AD1AB46005B6344 /* Migrations.swift */; };
 		80180C422AFBECC900ADAB03 /* FromQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80180C412AFBECC900ADAB03 /* FromQueryView.swift */; };
 		BD0DC1DF2C41779D00821D09 /* SwiftDataTCAXCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0DC1DE2C41779D00821D09 /* SwiftDataTCAXCTests.swift */; };
-		BD2265152C3E763F00A975E8 /* MovieSchemaV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265142C3E763F00A975E8 /* MovieSchemaV1.swift */; };
-		BD2265172C3E764F00A975E8 /* MovieSchemaV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265162C3E764F00A975E8 /* MovieSchemaV2.swift */; };
+		BD2265152C3E763F00A975E8 /* SchemaV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265142C3E763F00A975E8 /* SchemaV1.swift */; };
+		BD2265172C3E764F00A975E8 /* SchemaV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265162C3E764F00A975E8 /* SchemaV2.swift */; };
 		BD2265192C3EBF6500A975E8 /* FromStateFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265182C3EBF5E00A975E8 /* FromStateFeature.swift */; };
 		BD22651D2C3FC42E00A975E8 /* FromQueryFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD22651C2C3FC42E00A975E8 /* FromQueryFeature.swift */; };
 		BD7338032C40758A001D0E04 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7338022C407584001D0E04 /* MockData.swift */; };
-		BD7338052C408769001D0E04 /* MovieSchemaV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7338042C408769001D0E04 /* MovieSchemaV3.swift */; };
+		BD7338052C408769001D0E04 /* SchemaV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7338042C408769001D0E04 /* SchemaV3.swift */; };
 		BD73380D2C4118CA001D0E04 /* SwiftDataTCATests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD73380C2C4118CA001D0E04 /* SwiftDataTCATests.swift */; };
 		BD7338142C414D27001D0E04 /* Previewing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7338132C414D24001D0E04 /* Previewing.swift */; };
 /* End PBXBuildFile section */
@@ -58,12 +58,12 @@
 		80180C412AFBECC900ADAB03 /* FromQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromQueryView.swift; sourceTree = "<group>"; };
 		BD0DC1DC2C41779D00821D09 /* SwiftDataTCAXCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftDataTCAXCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD0DC1DE2C41779D00821D09 /* SwiftDataTCAXCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTCAXCTests.swift; sourceTree = "<group>"; };
-		BD2265142C3E763F00A975E8 /* MovieSchemaV1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieSchemaV1.swift; sourceTree = "<group>"; };
-		BD2265162C3E764F00A975E8 /* MovieSchemaV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieSchemaV2.swift; sourceTree = "<group>"; };
+		BD2265142C3E763F00A975E8 /* SchemaV1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV1.swift; sourceTree = "<group>"; };
+		BD2265162C3E764F00A975E8 /* SchemaV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV2.swift; sourceTree = "<group>"; };
 		BD2265182C3EBF5E00A975E8 /* FromStateFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromStateFeature.swift; sourceTree = "<group>"; };
 		BD22651C2C3FC42E00A975E8 /* FromQueryFeature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FromQueryFeature.swift; sourceTree = "<group>"; };
 		BD7338022C407584001D0E04 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
-		BD7338042C408769001D0E04 /* MovieSchemaV3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieSchemaV3.swift; sourceTree = "<group>"; };
+		BD7338042C408769001D0E04 /* SchemaV3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV3.swift; sourceTree = "<group>"; };
 		BD73380A2C4118CA001D0E04 /* SwiftDataTCATests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftDataTCATests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD73380C2C4118CA001D0E04 /* SwiftDataTCATests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTCATests.swift; sourceTree = "<group>"; };
 		BD7338132C414D24001D0E04 /* Previewing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Previewing.swift; sourceTree = "<group>"; };
@@ -167,9 +167,9 @@
 			isa = PBXGroup;
 			children = (
 				23A64EAC2AD1AB46005B6344 /* Migrations.swift */,
-				BD2265142C3E763F00A975E8 /* MovieSchemaV1.swift */,
-				BD2265162C3E764F00A975E8 /* MovieSchemaV2.swift */,
-				BD7338042C408769001D0E04 /* MovieSchemaV3.swift */,
+				BD2265142C3E763F00A975E8 /* SchemaV1.swift */,
+				BD2265162C3E764F00A975E8 /* SchemaV2.swift */,
+				BD7338042C408769001D0E04 /* SchemaV3.swift */,
 				BD7338022C407584001D0E04 /* MockData.swift */,
 			);
 			path = Models;
@@ -349,12 +349,12 @@
 				BD7338142C414D27001D0E04 /* Previewing.swift in Sources */,
 				80180C422AFBECC900ADAB03 /* FromQueryView.swift in Sources */,
 				23A64E9F2ACC5E16005B6344 /* FromStateView.swift in Sources */,
-				BD2265152C3E763F00A975E8 /* MovieSchemaV1.swift in Sources */,
-				BD7338052C408769001D0E04 /* MovieSchemaV3.swift in Sources */,
+				BD2265152C3E763F00A975E8 /* SchemaV1.swift in Sources */,
+				BD7338052C408769001D0E04 /* SchemaV3.swift in Sources */,
 				23A64EAD2AD1AB46005B6344 /* Migrations.swift in Sources */,
 				23A64EA92ACF5855005B6344 /* ModelContextProvider.swift in Sources */,
 				23A64E8A2ACC5312005B6344 /* SwiftDataTCAApp.swift in Sources */,
-				BD2265172C3E764F00A975E8 /* MovieSchemaV2.swift in Sources */,
+				BD2265172C3E764F00A975E8 /* SchemaV2.swift in Sources */,
 				BD2265192C3EBF6500A975E8 /* FromStateFeature.swift in Sources */,
 				BD7338032C40758A001D0E04 /* MockData.swift in Sources */,
 				BD22651D2C3FC42E00A975E8 /* FromQueryFeature.swift in Sources */,
