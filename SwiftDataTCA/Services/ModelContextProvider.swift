@@ -1,7 +1,6 @@
-import Foundation
 import Dependencies
+import Foundation
 import SwiftData
-
 
 typealias ActiveSchema = SchemaV3
 typealias Movie = ActiveSchema.Movie
@@ -13,10 +12,10 @@ extension DependencyValues {
   }
 }
 
-fileprivate let liveContext: ModelContext = { ModelContext(liveContainer) }()
-fileprivate let previewContext: ModelContext = { ModelContext(previewContainer) }()
+private let liveContext: ModelContext = { ModelContext(liveContainer) }()
+private let previewContext: ModelContext = { ModelContext(previewContainer) }()
 
-fileprivate let liveContainer: ModelContainer = {
+private let liveContainer: ModelContainer = {
   do {
     let url = URL.applicationSupportDirectory.appending(path: "Modelv3.sqlite")
     let config = ModelConfiguration(schema: ActiveSchema.schema, url: url)
@@ -26,7 +25,7 @@ fileprivate let liveContainer: ModelContainer = {
   }
 }()
 
-fileprivate let previewContainer: ModelContainer = {
+private let previewContainer: ModelContainer = {
   do {
     let config = ModelConfiguration(schema: ActiveSchema.schema, isStoredInMemoryOnly: true, allowsSave: true)
     return try ModelContainer(for: Movie.self, migrationPlan: MigrationPlan.self, configurations: config)

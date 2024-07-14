@@ -37,7 +37,7 @@ final class SwiftDataTCAXCTests: XCTestCase {
 
     store.exhaustivity = .off
     await store.send(.addButtonTapped)
-    await store.receive(\._fetchChanges)
+    await store.receive(\._fetchMovies)
 
     XCTAssertEqual(1, store.state.movies.count)
     XCTAssertEqual("Avatar", store.state.movies[0].title)

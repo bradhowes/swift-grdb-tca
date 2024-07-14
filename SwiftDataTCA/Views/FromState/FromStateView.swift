@@ -1,7 +1,7 @@
-import SwiftUI
 import ComposableArchitecture
-import SwiftData
 import Dependencies
+import SwiftData
+import SwiftUI
 
 struct FromStateView: View {
   @Bindable var store: StoreOf<FromStateFeature>
@@ -10,10 +10,12 @@ struct FromStateView: View {
     NavigationStack {
       MovieListView(store: store)
       .navigationTitle("From State")
-      .searchable(text: $store.searchString.sending(\.searchStringChanged),
-                  isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
-                  placement: .automatic,
-                  prompt: "Title")
+      .searchable(
+        text: $store.searchString.sending(\.searchStringChanged),
+        isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
+        placement: .automatic,
+        prompt: "Title"
+      )
       .toolbar {
         if !store.isSearchFieldPresented {
           ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -22,7 +24,8 @@ struct FromStateView: View {
             pickerView(title: "UUID", binding: $store.uuidSort.sending(\.uuidSortChanged).animation())
           }
         }
-      }.labelsHidden()
+      }
+      .labelsHidden()
     }
     .onAppear {
       store.send(.onAppear)

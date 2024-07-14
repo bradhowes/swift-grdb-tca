@@ -2,7 +2,6 @@ import Foundation
 import SwiftData
 
 enum MigrationPlan: SchemaMigrationPlan {
-
   static var schemas: [any VersionedSchema.Type] {
     [
       SchemaV1.self,
@@ -14,8 +13,12 @@ enum MigrationPlan: SchemaMigrationPlan {
   static var stages: [MigrationStage] {
     [
       .lightweight(fromVersion: SchemaV1.self, toVersion: SchemaV2.self),
-      .custom(fromVersion: SchemaV2.self, toVersion: SchemaV3.self,
-              willMigrate: nil, didMigrate: addSortableTitles(context:))
+      .custom(
+        fromVersion: SchemaV2.self,
+        toVersion: SchemaV3.self,
+        willMigrate: nil,
+        didMigrate: addSortableTitles(context:)
+      )
     ]
   }
 

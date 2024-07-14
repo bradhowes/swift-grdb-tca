@@ -9,7 +9,7 @@ enum SchemaV1: VersionedSchema {
   }
 
   @Model
-  final class Movie: Identifiable {
+  final class Movie {
     let id: UUID
     let title: String
     let cast: [String]
@@ -21,3 +21,5 @@ enum SchemaV1: VersionedSchema {
     }
   }
 }
+
+extension SchemaV1.Movie: Sendable {}

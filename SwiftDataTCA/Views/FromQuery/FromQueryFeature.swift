@@ -3,16 +3,15 @@ import Foundation
 import SwiftData
 import SwiftUI
 
-
 @Reducer
 struct FromQueryFeature {
-
   @ObservableState
   struct State {
     var titleSort: SortOrder? = .forward
     var uuidSort: SortOrder?
     var isSearchFieldPresented = false
     var searchString: String = ""
+    var fetchDescriptor: FetchDescriptor<Movie> { .init(predicate: self.predicate, sortBy: self.sort) }
     var predicate: Predicate<Movie> {
       #Predicate<Movie> {
         searchString.isEmpty ? true : $0.title.localizedStandardContains(searchString)
@@ -20,11 +19,12 @@ struct FromQueryFeature {
     }
     var sort: [SortDescriptor<Movie>] {
       [
+        // swiftlint:disable force_unwrapping
         self.titleSort != nil ? .init(\.sortableTitle, order: self.titleSort!) : nil,
-        self.uuidSort != nil ? .init(\.id, order: self.uuidSort!) : nil,
+        self.uuidSort != nil ? .init(\.id, order: self.uuidSort!) : nil
+        // swiftlint:enable force_unwrapping
       ].compactMap { $0 }
     }
-    var fetchDescriptor: FetchDescriptor<Movie> { .init(predicate: self.predicate, sortBy: self.sort) }
   }
 
   enum Action: Sendable {

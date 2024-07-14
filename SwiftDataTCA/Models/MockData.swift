@@ -1,4 +1,6 @@
-let mockData: [(String,Array<String>)] = [
+// swiftlint:disable line_length file_length
+
+let mockData: [(String, Array<String>)] = [
   ("Avatar", ["Sam Worthington", "Zoe Saldana", "Sigourney Weaver", "Stephen Lang", "Michelle Rodriguez"]),
   ("Pirates of the Caribbean: At World's End", ["Johnny Depp", "Orlando Bloom", "Keira Knightley", "Stellan Skarsg\u{00e5}rd", "Chow Yun-fat"]),
   ("Spectre", ["Daniel Craig", "Christoph Waltz", "L\u{00e9}a Seydoux", "Ralph Fiennes", "Monica Bellucci"]),
@@ -4800,3 +4802,4 @@ let mockData: [(String,Array<String>)] = [
 //  ("Shanghai Calling", ["Daniel Henney", "Eliza Coupe", "Bill Paxton", "Alan Ruck", "Zhu Shimao"]),
 //  ("My Date with Drew", ["Drew Barrymore", "Brian Herzlinger", "Corey Feldman", "Eric Roberts", "Griffin Dunne"]),
 ]
+// swiftlint:enable line_length file_length

@@ -1,6 +1,6 @@
-import SwiftUI
-import SwiftData
 import Dependencies
+import SwiftData
+import SwiftUI
 
 @main
 struct SwiftDataTCAApp: App {
@@ -28,7 +28,7 @@ struct SwiftDataTCAApp: App {
           }
           .tag(Tab.queryView)
       }
-      .modelContext(self.modelContextProvider.context())
+      .modelContext(modelContextProvider.context())
     }
   }
 }

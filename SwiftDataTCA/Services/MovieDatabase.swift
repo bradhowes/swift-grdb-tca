@@ -1,7 +1,6 @@
-import Foundation
 import Dependencies
+import Foundation
 import SwiftData
-
 
 struct MovieDatabase {
   var fetchAll: @Sendable () throws -> [Movie]
@@ -40,14 +39,14 @@ extension MovieDatabase: DependencyKey {
       @Dependency(\.modelContextProvider.context) var modelContextProvider
       let movieContext = modelContextProvider()
       movieContext.insert(model)
-      try! movieContext.save()
+      // try! movieContext.save()
     },
     delete: { model in
       @Dependency(\.modelContextProvider.context) var modelContextProvider
       let movieContext = modelContextProvider()
       let modelToBeDelete = model
       movieContext.delete(modelToBeDelete)
-      try! movieContext.save()
+      // try! movieContext.save()
     }
   )
 }

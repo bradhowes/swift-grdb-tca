@@ -14,7 +14,7 @@
 		23A64E9F2ACC5E16005B6344 /* FromStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64E9E2ACC5E16005B6344 /* FromStateView.swift */; };
 		23A64EA72ACF5812005B6344 /* MovieDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64EA62ACF5812005B6344 /* MovieDatabase.swift */; };
 		23A64EA92ACF5855005B6344 /* ModelContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64EA82ACF5855005B6344 /* ModelContextProvider.swift */; };
-		23A64EAD2AD1AB46005B6344 /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64EAC2AD1AB46005B6344 /* Migrations.swift */; };
+		23A64EAD2AD1AB46005B6344 /* MigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64EAC2AD1AB46005B6344 /* MigrationPlan.swift */; };
 		80180C422AFBECC900ADAB03 /* FromQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80180C412AFBECC900ADAB03 /* FromQueryView.swift */; };
 		BD0DC1DF2C41779D00821D09 /* SwiftDataTCAXCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0DC1DE2C41779D00821D09 /* SwiftDataTCAXCTests.swift */; };
 		BD2265152C3E763F00A975E8 /* SchemaV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265142C3E763F00A975E8 /* SchemaV1.swift */; };
@@ -24,7 +24,7 @@
 		BD7338032C40758A001D0E04 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7338022C407584001D0E04 /* MockData.swift */; };
 		BD7338052C408769001D0E04 /* SchemaV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7338042C408769001D0E04 /* SchemaV3.swift */; };
 		BD73380D2C4118CA001D0E04 /* SwiftDataTCATests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD73380C2C4118CA001D0E04 /* SwiftDataTCATests.swift */; };
-		BD7338142C414D27001D0E04 /* Previewing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7338132C414D24001D0E04 /* Previewing.swift */; };
+		BD7338142C414D27001D0E04 /* SwiftDataTCA.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7338132C414D24001D0E04 /* SwiftDataTCA.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,7 +54,7 @@
 		23A64E9E2ACC5E16005B6344 /* FromStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromStateView.swift; sourceTree = "<group>"; };
 		23A64EA62ACF5812005B6344 /* MovieDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDatabase.swift; sourceTree = "<group>"; };
 		23A64EA82ACF5855005B6344 /* ModelContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelContextProvider.swift; sourceTree = "<group>"; };
-		23A64EAC2AD1AB46005B6344 /* Migrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migrations.swift; sourceTree = "<group>"; };
+		23A64EAC2AD1AB46005B6344 /* MigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationPlan.swift; sourceTree = "<group>"; };
 		80180C412AFBECC900ADAB03 /* FromQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromQueryView.swift; sourceTree = "<group>"; };
 		BD0DC1DC2C41779D00821D09 /* SwiftDataTCAXCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftDataTCAXCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD0DC1DE2C41779D00821D09 /* SwiftDataTCAXCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTCAXCTests.swift; sourceTree = "<group>"; };
@@ -66,7 +66,7 @@
 		BD7338042C408769001D0E04 /* SchemaV3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV3.swift; sourceTree = "<group>"; };
 		BD73380A2C4118CA001D0E04 /* SwiftDataTCATests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftDataTCATests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD73380C2C4118CA001D0E04 /* SwiftDataTCATests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTCATests.swift; sourceTree = "<group>"; };
-		BD7338132C414D24001D0E04 /* Previewing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Previewing.swift; sourceTree = "<group>"; };
+		BD7338132C414D24001D0E04 /* SwiftDataTCA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTCA.swift; sourceTree = "<group>"; };
 		BD7338152C4158A0001D0E04 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
 		BD7338162C4158A0001D0E04 /* LICENSE.MD */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.MD; sourceTree = "<group>"; };
 		BD7338172C4158A0001D0E04 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -149,7 +149,7 @@
 			children = (
 				23A64EA62ACF5812005B6344 /* MovieDatabase.swift */,
 				23A64EA82ACF5855005B6344 /* ModelContextProvider.swift */,
-				BD7338132C414D24001D0E04 /* Previewing.swift */,
+				BD7338132C414D24001D0E04 /* SwiftDataTCA.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -166,7 +166,7 @@
 		23A64EAB2AD1AB36005B6344 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				23A64EAC2AD1AB46005B6344 /* Migrations.swift */,
+				23A64EAC2AD1AB46005B6344 /* MigrationPlan.swift */,
 				BD2265142C3E763F00A975E8 /* SchemaV1.swift */,
 				BD2265162C3E764F00A975E8 /* SchemaV2.swift */,
 				BD7338042C408769001D0E04 /* SchemaV3.swift */,
@@ -223,6 +223,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				BD0DC1E72C43A83400821D09 /* PBXTargetDependency */,
 			);
 			name = SwiftDataTCA;
 			packageProductDependencies = (
@@ -302,6 +303,7 @@
 			mainGroup = 23A64E7D2ACC5312005B6344;
 			packageReferences = (
 				23A64E9B2ACC5DFE005B6344 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				BD0DC1E52C43A77400821D09 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			productRefGroup = 23A64E872ACC5312005B6344 /* Products */;
 			projectDirPath = "";
@@ -346,12 +348,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				23A64EA72ACF5812005B6344 /* MovieDatabase.swift in Sources */,
-				BD7338142C414D27001D0E04 /* Previewing.swift in Sources */,
+				BD7338142C414D27001D0E04 /* SwiftDataTCA.swift in Sources */,
 				80180C422AFBECC900ADAB03 /* FromQueryView.swift in Sources */,
 				23A64E9F2ACC5E16005B6344 /* FromStateView.swift in Sources */,
 				BD2265152C3E763F00A975E8 /* SchemaV1.swift in Sources */,
 				BD7338052C408769001D0E04 /* SchemaV3.swift in Sources */,
-				23A64EAD2AD1AB46005B6344 /* Migrations.swift in Sources */,
+				23A64EAD2AD1AB46005B6344 /* MigrationPlan.swift in Sources */,
 				23A64EA92ACF5855005B6344 /* ModelContextProvider.swift in Sources */,
 				23A64E8A2ACC5312005B6344 /* SwiftDataTCAApp.swift in Sources */,
 				BD2265172C3E764F00A975E8 /* SchemaV2.swift in Sources */,
@@ -384,6 +386,10 @@
 			isa = PBXTargetDependency;
 			target = 23A64E852ACC5312005B6344 /* SwiftDataTCA */;
 			targetProxy = BD0DC1E02C41779D00821D09 /* PBXContainerItemProxy */;
+		};
+		BD0DC1E72C43A83400821D09 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = BD0DC1E62C43A83400821D09 /* SwiftLintBuildToolPlugin */;
 		};
 		BD73380F2C4118CA001D0E04 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -733,6 +739,14 @@
 				minimumVersion = 1.11.2;
 			};
 		};
+		BD0DC1E52C43A77400821D09 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.55.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -740,6 +754,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 23A64E9B2ACC5DFE005B6344 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
+		};
+		BD0DC1E62C43A83400821D09 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BD0DC1E52C43A77400821D09 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

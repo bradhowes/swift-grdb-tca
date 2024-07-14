@@ -1,8 +1,8 @@
-import Foundation
-import SwiftUI
 import ComposableArchitecture
-import SwiftData
 import Dependencies
+import Foundation
+import SwiftData
+import SwiftUI
 
 struct FromQueryView: View {
   @Bindable var store: StoreOf<FromQueryFeature>
@@ -11,10 +11,12 @@ struct FromQueryView: View {
     NavigationStack {
       MovieListView(store: $store)
         .navigationTitle("From Query")
-        .searchable(text: $store.searchString.sending(\.searchStringChanged),
-                    isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
-                    placement: .automatic,
-                    prompt: "Title")
+        .searchable(
+          text: $store.searchString.sending(\.searchStringChanged),
+          isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
+          placement: .automatic,
+          prompt: "Title"
+        )
         .toolbar {
           if !store.isSearchFieldPresented {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -23,7 +25,8 @@ struct FromQueryView: View {
               pickerView(title: "UUID", binding: $store.uuidSort.sending(\.uuidSortChanged).animation())
             }
           }
-        }.labelsHidden()
+        }
+        .labelsHidden()
     }
   }
 

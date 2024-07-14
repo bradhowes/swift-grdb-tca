@@ -3,10 +3,8 @@ import Foundation
 import SwiftData
 import SwiftUI
 
-
 @Reducer
 struct FromStateFeature {
-
   @ObservableState
   struct State {
     var movies: [Movie] = []
@@ -14,18 +12,18 @@ struct FromStateFeature {
     var uuidSort: SortOrder?
     var isSearchFieldPresented = false
     var searchString: String = ""
+    var fetchDescriptor: FetchDescriptor<Movie> { .init(predicate: self.predicate, sortBy: self.sort) }
     var predicate: Predicate<Movie> {
       #Predicate<Movie> {
         searchString.isEmpty ? true : $0.title.localizedStandardContains(searchString)
       }
     }
-
-    var fetchDescriptor: FetchDescriptor<Movie> { .init(predicate: self.predicate, sortBy: self.sort) }
-
     var sort: [SortDescriptor<Movie>] {
-      return [
+      [
+        // swiftlint:disable force_unwrapping
         self.titleSort != nil ? .init(\.sortableTitle, order: self.titleSort!) : nil,
-        self.uuidSort != nil ? .init(\.id, order: self.uuidSort!) : nil,
+        self.uuidSort != nil ? .init(\.id, order: self.uuidSort!) : nil
+        // swiftlint:enable force_unwrapping
       ].compactMap { $0 }
     }
   }
@@ -39,8 +37,9 @@ struct FromStateFeature {
     case searchStringChanged(String)
     case titleSortChanged(SortOrder?)
     case uuidSortChanged(SortOrder?)
-    // Reducer-only action to refresh the array of movies when another action changed the number of movies
-    case _fetchChanges
+    // Reducer-only action to refresh the array of movies when another action changed what would be returned by the
+    // `fetchDescriptor`.
+    case _fetchMovies
   }
 
   @Dependency(\.movieDatabase) var db
@@ -48,14 +47,13 @@ struct FromStateFeature {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-
       case .addButtonTapped:
         db.add(Movie.mock)
-        return runSendFetchChanges
+        return runSendFetchMovies
 
       case .deleteSwiped(let movie):
         db.delete(movie)
-        return runSendFetchChanges
+        return runSendFetchMovies
 
       case .favoriteSwiped(let movie):
         movie.favorite.toggle()
@@ -72,26 +70,26 @@ struct FromStateFeature {
       case .searchStringChanged(let newString):
         guard newString != state.searchString else { return .none }
         state.searchString = newString
-        return runSendFetchChanges
+        return runSendFetchMovies
 
       case .titleSortChanged(let newSort):
         state.titleSort = newSort
-        return runSendFetchChanges
+        return runSendFetchMovies
 
       case .uuidSortChanged(let newSort):
         state.uuidSort = newSort
-        return runSendFetchChanges
+        return runSendFetchMovies
 
-      case ._fetchChanges:
+      case ._fetchMovies:
         fetchChanges(state: &state)
         return .none
       }
     }
   }
 
-  private var runSendFetchChanges: Effect<Action> {
+  private var runSendFetchMovies: Effect<Action> {
     .run { @MainActor send in
-      send(._fetchChanges, animation: .default)
+      send(._fetchMovies, animation: .default)
     }
   }
 
@@ -100,7 +98,6 @@ struct FromStateFeature {
     state.movies = (try? db.fetch(state.fetchDescriptor)) ?? []
   }
 }
-
 
 #Preview {
   FromStateView.preview

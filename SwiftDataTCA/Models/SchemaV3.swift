@@ -9,7 +9,7 @@ enum SchemaV3: VersionedSchema {
   }
 
   @Model
-  final class Movie: Sendable {
+  final class Movie {
     let id: UUID
     let title: String
     let cast: [String]
@@ -37,3 +37,5 @@ extension SchemaV3.Movie {
     return title.lowercased()
   }
 }
+
+extension SchemaV3.Movie: Sendable {}
