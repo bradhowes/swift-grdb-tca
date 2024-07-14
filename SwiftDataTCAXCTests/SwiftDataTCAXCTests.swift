@@ -51,3 +51,13 @@ final class SwiftDataTCAXCTests: XCTestCase {
     }
   }
 }
+
+extension FromStateFeature.State: @retroactive Equatable {
+  public static func == (lhs: FromStateFeature.State, rhs: FromStateFeature.State) -> Bool {
+    lhs.movies == rhs.movies &&
+    lhs.titleSort == rhs.titleSort &&
+    lhs.uuidSort == rhs.uuidSort &&
+    lhs.isSearchFieldPresented == rhs.isSearchFieldPresented &&
+    lhs.searchString == rhs.searchString
+  }
+}

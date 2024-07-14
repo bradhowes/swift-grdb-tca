@@ -10,9 +10,9 @@ enum SchemaV1: VersionedSchema {
 
   @Model
   final class Movie: Identifiable {
-    var id: UUID
-    var title: String
-    var cast: [String]
+    let id: UUID
+    let title: String
+    let cast: [String]
 
     init(id: UUID, title: String, cast: [String]) {
       self.id = id
