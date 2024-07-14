@@ -71,5 +71,10 @@ extension VersionedSchema {
   static var schema: Schema { Schema(versionedSchema: Self.self) }
 }
 
+#if hasFeature(RetroactiveAttribute)
 extension KeyPath: @unchecked @retroactive Sendable {}
 extension ModelContext: @unchecked @retroactive Sendable {}
+#else
+extension KeyPath: @unchecked Sendable {}
+extension ModelContext: @unchecked Sendable {}
+#endif
