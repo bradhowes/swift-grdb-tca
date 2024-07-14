@@ -1,3 +1,5 @@
+#if canImport(Testing)
+
 import ComposableArchitecture
 import Foundation
 import SwiftData
@@ -75,3 +77,5 @@ private struct LCRNG: RandomNumberGenerator {
     return self.seed
   }
 }
+
+#endif
