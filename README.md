@@ -6,10 +6,10 @@ in TCA (v1.11.2). My changes were done in Xcode 16.0 Beta using Swift 6 and comp
 
 The code contains two TCA "features" (combination of a reducer and a SwiftUI view):
 
-* FromState -- the list of movies to show and work with comes from a query done in the feature
-* FromQuery -- the list of movies to show and work with comes from a `Query` in the SwiftUI view
+* FromState -- the list of movies to show and work with comes from a SwiftData query done in the feature
+* FromQuery -- the list of movies to show and work with comes from a `@Query` macro in the SwiftUI view
 
-Both SwiftUI views the same functionality, including:
+Both SwiftUI views the same interface functionality, including:
 
 * adding a new "random" movie
 * sorting movies by title
@@ -26,6 +26,13 @@ self-contained.
 
 ![](https://github.com/bradhowes/SwiftDataTCA/blob/main/FromState.gif?raw=true)
 ![](https://github.com/bradhowes/SwiftDataTCA/blob/main/FromQuery.gif?raw=true)
+
+For the most part the SwiftUI previews operate just like in the simulator or on a device. However, there are some annoyances in the previews, particularly in the
+`FromQuery` feature:
+
+* adding a movie does not cause a preview refresh -- there is a workaround in the code to overcome this
+* deleting a movie does not seem to do anything in SwiftData -- there is no workaround. Doing another action such as changing the sort order will show the deleted item
+  in the list.
 
 ## Tests
 
