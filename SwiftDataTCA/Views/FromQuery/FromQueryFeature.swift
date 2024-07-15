@@ -35,8 +35,6 @@ struct FromQueryFeature {
     case searchStringChanged(String)
     case titleSortChanged(SortOrder?)
     case uuidSortChanged(SortOrder?)
-    // Reducer-only action used to refresh the Xcode preview after adding a new movie.
-    case _refreshQuery
   }
 
   @Dependency(\.movieDatabase) var db
@@ -47,11 +45,6 @@ struct FromQueryFeature {
       case .addButtonTapped:
         db.add(Movie.mock)
         db.save()
-        if SwiftDataTCA.previewing {
-          // For some reason adding a new item does not trigger a refresh in a preview. We need to tweak the query to
-          // force SwiftUI to refetch the Query.
-          return runSendRefreshQuery
-        }
         return .none
 
       case .searchButtonTapped(let searching):
@@ -59,8 +52,6 @@ struct FromQueryFeature {
         return .none
 
       case .deleteSwiped(let movie):
-        // NOTE: preview appears to work OK, but a `Query` refresh will show it. Works
-        // fine in simulator and on device.
         db.delete(movie)
         db.save()
         return .none
@@ -81,18 +72,7 @@ struct FromQueryFeature {
       case .uuidSortChanged(let newSort):
         state.uuidSort = newSort
         return .none
-
-      case ._refreshQuery:
-        state.searchString = "blah"
-        state.searchString = ""
-        return .none
       }
-    }
-  }
-
-  private var runSendRefreshQuery: Effect<Action> {
-    .run { @MainActor send in
-      send(._refreshQuery, animation: .default)
     }
   }
 }
