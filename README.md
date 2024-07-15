@@ -27,12 +27,8 @@ self-contained.
 ![](https://github.com/bradhowes/SwiftDataTCA/blob/main/FromState.gif?raw=true)
 ![](https://github.com/bradhowes/SwiftDataTCA/blob/main/FromQuery.gif?raw=true)
 
-For the most part the SwiftUI previews operate just like in the simulator or on a device. However, there are some annoyances in the previews, particularly in the
-`FromQuery` feature:
-
-* adding a movie does not cause a preview refresh -- there is a workaround in the code to overcome this
-* deleting a movie does not seem to do anything in SwiftData -- there is no workaround. Doing another action such as changing the sort order will show the deleted item
-  in the list.
+The SwiftUI previews operate just like in the simulator or on a device as long as the `mainContext` is used when 
+adding and removing entities.
 
 ## Tests
 

@@ -13,8 +13,8 @@ extension DependencyValues {
   }
 }
 
-private let liveContext: ModelContext = { @MainActor liveContainer.mainContext }()
-private let previewContext: ModelContext = { ModelContext(previewContainer) }()
+@MainActor private let liveContext: (() -> ModelContext) = { liveContainer.mainContext }
+@MainActor private let previewContext: (() -> ModelContext) = { previewContainer.mainContext }
 
 private let liveContainer: ModelContainer = {
   do {
@@ -42,7 +42,7 @@ struct ModelContextProvider {
 
 extension ModelContextProvider: DependencyKey {
   public static let liveValue = Self(
-    context: { liveContext },
+    context: { liveContext() },
     container: { liveContainer }
   )
 }
@@ -51,7 +51,7 @@ extension ModelContextProvider: TestDependencyKey {
   public static var previewValue: ModelContextProvider { Self.inMemory }
   public static var testValue: ModelContextProvider { Self.inMemory }
   private static let inMemory = Self(
-    context: { previewContext },
+    context: { previewContext() },
     container: { previewContainer }
   )
 }
