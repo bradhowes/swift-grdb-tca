@@ -52,7 +52,7 @@ private struct MovieListView: View {
 
   var body: some View {
     List(store.movies) { movie in
-      MovieView(movie: movie)
+      MovieView(store: store, movie: movie)
         .swipeActions {
           Button(role: .destructive) {
             store.send(.deleteSwiped(movie), animation: .snappy)
@@ -71,6 +71,7 @@ private struct MovieListView: View {
 }
 
 private struct MovieView: View {
+  @Bindable var store: StoreOf<FromStateFeature>
   let movie: Movie
 
   var body: some View {
@@ -78,7 +79,15 @@ private struct MovieView: View {
       Text(movie.title)
         .font(.headline)
       Text(movie.id.uuidString)
-      Text(movie.cast.formatted(.list(type: .and)))
+      HStack {
+        ForEach(movie.actors) { actor in
+          Button {
+            store.send(.actorButtonTapped(actor), animation: .default)
+          } label: {
+            Text(actor.name)
+          }
+        }
+      }
     }
     .background(movie.favorite ? .blue : .clear)
   }

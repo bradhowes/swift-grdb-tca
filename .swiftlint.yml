@@ -5,6 +5,9 @@ identifier_name:
     - URL
   allowed_symbols: ["_"]
 
+type_name:
+  allowed_symbols: ["_"]
+
 opt_in_rules:
   - convenience_type
   - empty_count

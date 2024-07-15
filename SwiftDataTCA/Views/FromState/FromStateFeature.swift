@@ -29,6 +29,7 @@ struct FromStateFeature {
   }
 
   enum Action: Sendable {
+    case actorButtonTapped(Actor)
     case addButtonTapped
     case deleteSwiped(Movie)
     case favoriteSwiped(Movie)
@@ -47,8 +48,12 @@ struct FromStateFeature {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .actorButtonTapped(let actor):
+        print(actor.name)
+        return .none
+
       case .addButtonTapped:
-        db.add(Movie.mock)
+        db.add()
         db.save()
         return runSendFetchMovies
 
@@ -97,7 +102,7 @@ struct FromStateFeature {
 
   private func fetchChanges(state: inout State) {
     @Dependency(\.movieDatabase) var db
-    state.movies = db.fetch(state.fetchDescriptor)
+    state.movies = db.fetchMovies(state.fetchDescriptor)
   }
 }
 

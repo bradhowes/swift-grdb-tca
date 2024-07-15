@@ -5,11 +5,11 @@ enum SchemaV1: VersionedSchema {
   static var versionIdentifier: Schema.Version { .init(1, 0, 0) }
 
   static var models: [any PersistentModel.Type] {
-    [Movie.self]
+    [_Movie.self]
   }
 
   @Model
-  final class Movie {
+  final class _Movie {
     let id: UUID
     let title: String
     let cast: [String]
@@ -22,4 +22,4 @@ enum SchemaV1: VersionedSchema {
   }
 }
 
-extension SchemaV1.Movie: Sendable {}
+extension SchemaV1._Movie: Sendable {}

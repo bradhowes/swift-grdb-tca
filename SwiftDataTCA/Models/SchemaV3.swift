@@ -6,11 +6,11 @@ enum SchemaV3: VersionedSchema {
   static var versionIdentifier: Schema.Version { .init(3, 0, 0) }
 
   static var models: [any PersistentModel.Type] {
-    [Movie.self]
+    [_Movie.self]
   }
 
   @Model
-  final class Movie {
+  final class _Movie {
     let id: UUID
     let title: String
     let cast: [String]
@@ -27,7 +27,7 @@ enum SchemaV3: VersionedSchema {
   }
 }
 
-extension SchemaV3.Movie {
+extension SchemaV3._Movie {
   static let articles = Set(["a", "el", "la", "las", "le", "les", "los", "the", "un", "una"])
 
   static func sortableTitle(_ title: String) -> String {
@@ -38,15 +38,15 @@ extension SchemaV3.Movie {
     return title.lowercased()
   }
 
-  static var mock: Movie {
+  static var mock: SchemaV3._Movie {
     @Dependency(\.withRandomNumberGenerator) var withRandomNumberGenerator
     @Dependency(\.uuid) var uuid
     let index = withRandomNumberGenerator { generator in
       Int.random(in: 0..<mockData.count, using: &generator)
     }
     let entry = mockData[index]
-    return Movie(id: uuid(), title: entry.0, cast: entry.1)
+    return SchemaV3._Movie(id: uuid(), title: entry.0, cast: entry.1)
   }
 }
 
-extension SchemaV3.Movie: Sendable {}
+extension SchemaV3._Movie: Sendable {}

@@ -3,8 +3,8 @@ import Foundation
 import SwiftData
 
 typealias ActiveSchema = SchemaV4
-typealias Actor = ActiveSchema.Actor
-typealias Movie = ActiveSchema.Movie
+typealias Actor = ActiveSchema._Actor
+typealias Movie = ActiveSchema._Movie
 
 extension DependencyValues {
   var modelContextProvider: ModelContextProvider {
@@ -18,7 +18,7 @@ extension DependencyValues {
 
 private let liveContainer: ModelContainer = {
   do {
-    let url = URL.applicationSupportDirectory.appending(path: "Modelv3.sqlite")
+    let url = URL.applicationSupportDirectory.appending(path: "Modelv4.sqlite")
     let config = ModelConfiguration(schema: ActiveSchema.schema, url: url)
     return try ModelContainer(for: Movie.self, migrationPlan: MigrationPlan.self, configurations: config)
   } catch {

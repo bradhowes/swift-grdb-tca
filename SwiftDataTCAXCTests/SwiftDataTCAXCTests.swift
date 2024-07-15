@@ -22,13 +22,12 @@ final class SwiftDataTCAXCTests: XCTestCase {
     } withDependencies: {
       $0.uuid = .constant(UUID(0))
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
-      $0.movieDatabase.add = { model in
+      $0.movieDatabase.add = {
         @Dependency(\.modelContextProvider.context) var modelContextProvider
-        let movieContext = modelContextProvider()
-        movieContext.insert(model)
-        try? movieContext.save()
+        let context = modelContextProvider()
+        SchemaV4.makeMock(context: context)
       }
-      $0.movieDatabase.fetch = { descriptor in
+      $0.movieDatabase.fetchMovies = { descriptor in
         @Dependency(\.modelContextProvider.context) var modelContextProvider
         let movieContext = modelContextProvider()
         return (try? movieContext.fetch(descriptor)) ?? []

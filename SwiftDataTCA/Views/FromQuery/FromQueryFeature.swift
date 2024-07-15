@@ -28,6 +28,7 @@ struct FromQueryFeature {
   }
 
   enum Action: Sendable {
+    case actorButtonTapped(Actor)
     case addButtonTapped
     case searchButtonTapped(Bool)
     case deleteSwiped(Movie)
@@ -42,8 +43,12 @@ struct FromQueryFeature {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+      case .actorButtonTapped(let actor):
+        print(actor.name)
+        return .none
+
       case .addButtonTapped:
-        db.add(Movie.mock)
+        db.add()
         db.save()
         return .none
 
