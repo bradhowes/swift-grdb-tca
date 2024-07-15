@@ -26,12 +26,17 @@ final class SwiftDataTCAXCTests: XCTestCase {
         @Dependency(\.modelContextProvider.context) var modelContextProvider
         let movieContext = modelContextProvider()
         movieContext.insert(model)
-        try! movieContext.save()
+        try? movieContext.save()
       }
       $0.movieDatabase.fetch = { descriptor in
         @Dependency(\.modelContextProvider.context) var modelContextProvider
         let movieContext = modelContextProvider()
-        return try! movieContext.fetch(descriptor)
+        return (try? movieContext.fetch(descriptor)) ?? []
+      }
+      $0.movieDatabase.save = {
+        @Dependency(\.modelContextProvider.context) var modelContextProvider
+        let movieContext = modelContextProvider()
+        try? movieContext.save()
       }
     }
 

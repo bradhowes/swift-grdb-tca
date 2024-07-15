@@ -18,12 +18,12 @@ struct FromQueryFeature {
       }
     }
     var sort: [SortDescriptor<Movie>] {
-      [
-        // swiftlint:disable force_unwrapping
-        self.titleSort != nil ? .init(\.sortableTitle, order: self.titleSort!) : nil,
-        self.uuidSort != nil ? .init(\.id, order: self.uuidSort!) : nil
-        // swiftlint:enable force_unwrapping
-      ].compactMap { $0 }
+      [sortBy(\.sortableTitle, order: titleSort), sortBy(\.id, order: uuidSort)].compactMap { $0 }
+    }
+
+    private func sortBy<Value: Comparable>(_ key: KeyPath<Movie, Value>, order: SortOrder?) -> SortDescriptor<Movie>? {
+      guard let order else { return nil }
+      return .init(key, order: order)
     }
   }
 
@@ -46,6 +46,7 @@ struct FromQueryFeature {
       switch action {
       case .addButtonTapped:
         db.add(Movie.mock)
+        db.save()
         if SwiftDataTCA.previewing {
           // For some reason adding a new item does not trigger a refresh in a preview. We need to tweak the query to
           // force SwiftUI to refetch the Query.
@@ -61,6 +62,7 @@ struct FromQueryFeature {
         // NOTE: preview appears to work OK, but a `Query` refresh will show it. Works
         // fine in simulator and on device.
         db.delete(movie)
+        db.save()
         return .none
 
       case .favoriteSwiped(let movie):

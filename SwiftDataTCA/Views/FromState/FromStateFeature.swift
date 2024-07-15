@@ -19,12 +19,12 @@ struct FromStateFeature {
       }
     }
     var sort: [SortDescriptor<Movie>] {
-      [
-        // swiftlint:disable force_unwrapping
-        self.titleSort != nil ? .init(\.sortableTitle, order: self.titleSort!) : nil,
-        self.uuidSort != nil ? .init(\.id, order: self.uuidSort!) : nil
-        // swiftlint:enable force_unwrapping
-      ].compactMap { $0 }
+      [sortBy(\.sortableTitle, order: titleSort), sortBy(\.id, order: uuidSort)].compactMap { $0 }
+    }
+
+    private func sortBy<Value: Comparable>(_ key: KeyPath<Movie, Value>, order: SortOrder?) -> SortDescriptor<Movie>? {
+      guard let order else { return nil }
+      return .init(key, order: order)
     }
   }
 
@@ -49,10 +49,12 @@ struct FromStateFeature {
       switch action {
       case .addButtonTapped:
         db.add(Movie.mock)
+        db.save()
         return runSendFetchMovies
 
       case .deleteSwiped(let movie):
         db.delete(movie)
+        db.save()
         return runSendFetchMovies
 
       case .favoriteSwiped(let movie):
@@ -95,7 +97,7 @@ struct FromStateFeature {
 
   private func fetchChanges(state: inout State) {
     @Dependency(\.movieDatabase) var db
-    state.movies = (try? db.fetch(state.fetchDescriptor)) ?? []
+    state.movies = db.fetch(state.fetchDescriptor)
   }
 }
 
