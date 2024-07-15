@@ -2,9 +2,10 @@ import Dependencies
 import Foundation
 import SwiftData
 
-struct MovieDatabase {
-  var fetch: @Sendable (FetchDescriptor<Movie>) -> [Movie]
-  var add: @Sendable (Movie) -> Void
+struct Database {
+  var fetchMovies: @Sendable (FetchDescriptor<Movie>) -> [Movie]
+  var fetchActors: @Sendable (FetchDescriptor<Actor>) -> [Actor]
+  var add: @Sendable (Movie, [Actor]) -> Void
   var delete: @Sendable (Movie) -> Void
   var save: @Sendable () -> Void
 
@@ -14,17 +15,23 @@ struct MovieDatabase {
   }
 }
 
-extension MovieDatabase: DependencyKey {
+extension Database: DependencyKey {
   static let liveValue = Self(
-    fetch: { descriptor in
+    fetchMovies: { descriptor in
       @Dependency(\.modelContextProvider.context) var modelContextProvider
-      let movieContext = modelContextProvider()
-      return (try? movieContext.fetch(descriptor)) ?? []
+      let context = modelContextProvider()
+      return (try? context.fetch(descriptor)) ?? []
     },
-    add: { model in
+    fetchActors: { descriptor in
       @Dependency(\.modelContextProvider.context) var modelContextProvider
-      let movieContext = modelContextProvider()
-      movieContext.insert(model)
+      let context = modelContextProvider()
+      return (try? context.fetch(descriptor)) ?? []
+    },
+    add: { movie, actors in
+      @Dependency(\.modelContextProvider.context) var modelContextProvider
+      let context = modelContextProvider()
+      movieContext.insert(movie)
+
     },
     delete: { model in
       @Dependency(\.modelContextProvider.context) var modelContextProvider
@@ -39,7 +46,7 @@ extension MovieDatabase: DependencyKey {
   )
 }
 
-extension MovieDatabase: TestDependencyKey {
+extension Database: TestDependencyKey {
   public static let testValue = Self(
     fetch: unimplemented("\(Self.self).fetchDescriptor"),
     add: unimplemented("\(Self.self).add"),
@@ -49,8 +56,8 @@ extension MovieDatabase: TestDependencyKey {
 }
 
 extension DependencyValues {
-  var movieDatabase: MovieDatabase {
-    get { self[MovieDatabase.self] }
-    set { self[MovieDatabase.self] = newValue }
+  var movieDatabase: Database {
+    get { self[Database.self] }
+    set { self[Database.self] = newValue }
   }
 }

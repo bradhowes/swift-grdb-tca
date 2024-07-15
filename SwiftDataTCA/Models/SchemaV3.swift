@@ -1,3 +1,4 @@
+import Dependencies
 import Foundation
 import SwiftData
 
@@ -35,6 +36,16 @@ extension SchemaV3.Movie {
       return words.dropFirst().joined(separator: " ")
     }
     return title.lowercased()
+  }
+
+  static var mock: Movie {
+    @Dependency(\.withRandomNumberGenerator) var withRandomNumberGenerator
+    @Dependency(\.uuid) var uuid
+    let index = withRandomNumberGenerator { generator in
+      Int.random(in: 0..<mockData.count, using: &generator)
+    }
+    let entry = mockData[index]
+    return Movie(id: uuid(), title: entry.0, cast: entry.1)
   }
 }
 

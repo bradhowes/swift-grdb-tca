@@ -2,7 +2,8 @@ import Dependencies
 import Foundation
 import SwiftData
 
-typealias ActiveSchema = SchemaV3
+typealias ActiveSchema = SchemaV4
+typealias Actor = ActiveSchema.Actor
 typealias Movie = ActiveSchema.Movie
 
 extension DependencyValues {
@@ -12,7 +13,7 @@ extension DependencyValues {
   }
 }
 
-private let liveContext: ModelContext = { ModelContext(liveContainer) }()
+private let liveContext: ModelContext = { @MainActor liveContainer.mainContext }()
 private let previewContext: ModelContext = { ModelContext(previewContainer) }()
 
 private let liveContainer: ModelContainer = {
@@ -53,18 +54,6 @@ extension ModelContextProvider: TestDependencyKey {
     context: { previewContext },
     container: { previewContainer }
   )
-}
-
-extension ActiveSchema.Movie {
-  static var mock: Movie {
-    @Dependency(\.withRandomNumberGenerator) var withRandomNumberGenerator
-    @Dependency(\.uuid) var uuid
-    let index = withRandomNumberGenerator { generator in
-      Int.random(in: 0..<mockData.count, using: &generator)
-    }
-    let entry = mockData[index]
-    return Movie(id: uuid(), title: entry.0, cast: entry.1)
-  }
 }
 
 extension VersionedSchema {
