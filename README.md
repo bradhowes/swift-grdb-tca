@@ -36,6 +36,19 @@ There are two sets of tests: old-school XCTest collection that works with TCA an
 [Swift Testing](https://github.com/apple/swift-testing) style collection that does not yet work well with TCA testing
 functions and macros (as of TCA v1.11.12).
 
+## Schemas
+
+Currently, there are 4 schemas defined by the application -- two were from the fork. There are migrations from one to 
+the next. The migrations to v3 and v4 are complex migrations:
+
+* v3 contains a new `sortableTitle` attribute on the Movie entity
+* v4 contains a new `Actor` entity and establishes many-to-many relationship between it and `Movie` entity
+
+The migrations have tests that validate the migration behavior. This is one area that is not well documented in the
+current Swift Data documentation.
+
+## Original README
+
 Below is the original contents of the "README" document found at the time of the fork.
 
 # Movie App with SwiftData and PointFree Composable Architecture
