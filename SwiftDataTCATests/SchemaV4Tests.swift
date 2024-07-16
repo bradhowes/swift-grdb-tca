@@ -11,6 +11,7 @@ import Testing
 struct SchemaV4Tests {
 
   /// NOTE to self: do not use `await container.mainContext` in tests
+  /// NOTE to self: do not run Swift Data tests in parallel
 
   @Test func creatingV4Database() async throws {
     let schema = Schema(versionedSchema: SchemaV4.self)
@@ -71,15 +72,12 @@ struct SchemaV4Tests {
   }
 
   @Test func migrationV3V4() async throws {
-    // Create V3 database
     let url = FileManager.default.temporaryDirectory.appending(component: "Model4.sqlite")
     try? FileManager.default.removeItem(at: url)
 
-    print(url)
-
     let schemaV3 = Schema(versionedSchema: SchemaV3.self)
     let configV3 = ModelConfiguration(schema: schemaV3, url: url)
-    let containerV3 = try! ModelContainer(for: SchemaV3._Movie.self, migrationPlan: nil, configurations: configV3)
+    let containerV3 = try! ModelContainer(for: schemaV3, migrationPlan: nil, configurations: configV3)
 
     @Dependency(\.uuid) var uuid
     let contextV3 = ModelContext(containerV3)
@@ -99,7 +97,7 @@ struct SchemaV4Tests {
     // Migrate to V4
     let schemaV4 = Schema(versionedSchema: SchemaV4.self)
     let configV4 = ModelConfiguration(schema: schemaV4, url: url)
-    let containerV4 = try! ModelContainer(for: SchemaV4._Movie.self, migrationPlan: MockMigrationPlanV4.self,
+    let containerV4 = try! ModelContainer(for: schemaV4, migrationPlan: MockMigrationPlanV4.self,
                                           configurations: configV4)
 
     let contextV4 = ModelContext(containerV4)

@@ -11,6 +11,7 @@ import Testing
 struct SwiftDataTCATests {
 
   /// NOTE to self: do not use `await container.mainContext` in tests
+  /// NOTE to self: do not run Swift Data tests in parallel
 
   @Test func creatingV2Database() async throws {
     let schema = Schema(versionedSchema: SchemaV2.self)

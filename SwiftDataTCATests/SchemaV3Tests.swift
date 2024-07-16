@@ -11,6 +11,7 @@ import Testing
 struct SchemaV3Tests {
 
   /// NOTE to self: do not use `await container.mainContext` in tests
+  /// NOTE to self: do not run Swift Data tests in parallel
 
   @Test func sortableTitle() async throws {
     #expect("world according to garp" == SchemaV3._Movie.sortableTitle("The World According to Garp"))
