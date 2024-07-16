@@ -16,11 +16,12 @@ enum SchemaV4: VersionedSchema {
   final class _Actor {
     let id: UUID
     let name: String
-    var movies: [_Movie] = []
+    var movies: [_Movie]
 
     init(id: UUID, name: String) {
       self.id = id
       self.name = name
+      self.movies = []
     }
   }
 
@@ -28,16 +29,29 @@ enum SchemaV4: VersionedSchema {
   final class _Movie {
     let id: UUID
     let title: String
-    let cast: [String] = []
     var favorite: Bool = false
     var sortableTitle: String = ""
-    var actors: [_Actor] = []
+    @Relationship(inverse: \_Actor.movies) var actors: [_Actor]
 
     init(id: UUID, title: String, favorite: Bool = false) {
       self.id = id
       self.title = title
       self.favorite = favorite
       self.sortableTitle = SchemaV3._Movie.sortableTitle(title)
+      self.actors = []
+    }
+
+    /**
+     Add `Actor` to the collection of actors in this movie.
+
+     NOTE: make sure `Actor` and `Movie` have already been inserted into database before calling this method.
+
+     - parameter actor: the `Actor` to add
+     */
+    func addActor(_ actor: _Actor) {
+      guard !actors.contains(actor) else { return }
+      actors.append(actor)
+      actor.movies.append(self)
     }
   }
 

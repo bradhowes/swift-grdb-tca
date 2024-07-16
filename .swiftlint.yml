@@ -58,3 +58,6 @@ line_length: 130
 
 indentation_width:
   indentation_width: 2
+  include_comments: false
+  include_multiline_strings: false
+    

@@ -8,7 +8,9 @@ import Testing
 @testable import SwiftDataTCA
 
 
-struct SwiftDataTCATests {
+struct SchemaV3Tests {
+
+  /// NOTE to self: do not use `await container.mainContext` in tests
 
   @Test func sortableTitle() async throws {
     #expect("world according to garp" == SchemaV3._Movie.sortableTitle("The World According to Garp"))
@@ -22,16 +24,15 @@ struct SwiftDataTCATests {
   }
 
   @Test func migrationV2V3() async throws {
-    // Create V2 database
-    let url = FileManager.default.temporaryDirectory.appending(component: "Model.sqlite")
+    let url = FileManager.default.temporaryDirectory.appending(component: "Model3.sqlite")
     try? FileManager.default.removeItem(at: url)
 
     let schemaV2 = Schema(versionedSchema: SchemaV2.self)
-    let configV2 = ModelConfiguration(schema: schemaV2, url: url)
-    let containerV2 = try! ModelContainer(for: SchemaV2._Movie.self, migrationPlan: nil, configurations: configV2)
+    let configV2 = ModelConfiguration("V2", schema: schemaV2, url: url)
+    let containerV2 = try! ModelContainer(for: schemaV2, migrationPlan: nil, configurations: configV2)
 
     @Dependency(\.uuid) var uuid
-    let contextV2 = await containerV2.mainContext
+    let contextV2 = ModelContext(containerV2)
     contextV2.insert(SchemaV2._Movie(id: uuid(), title: "El Mariachi", cast: ["Roberto"]))
     contextV2.insert(SchemaV2._Movie(id: uuid(), title: "The Way We Were", cast: ["Babs", "Roberto"]))
     contextV2.insert(SchemaV2._Movie(id: uuid(), title: "Le Monde", cast: ["Côme"]))
@@ -45,13 +46,10 @@ struct SwiftDataTCATests {
     #expect(moviesV2[0].title == "A Time To Die")
     #expect(moviesV2[1].title == "El Mariachi")
 
-    // Migrate to V3
     let schemaV3 = Schema(versionedSchema: SchemaV3.self)
-    let configV3 = ModelConfiguration(schema: schemaV3, url: url)
-    let containerV3 = try! ModelContainer(for: SchemaV3._Movie.self, migrationPlan: MockMigrationPlan.self,
-                                          configurations: configV3)
-
-    let contextV3 = await containerV3.mainContext
+    let configV3 = ModelConfiguration("migrationV2V3", schema: schemaV3, url: url)
+    let containerV3 = try! ModelContainer(for: schemaV3, migrationPlan: MockMigrationPlanV3.self, configurations: configV3)
+    let contextV3 = ModelContext(containerV3)
     let moviesV3 = try! contextV3.fetch(FetchDescriptor<SchemaV3._Movie>(sortBy: [.init(\.sortableTitle, order: .forward)]))
 
     #expect(moviesV3[0].sortableTitle == "enfants")
@@ -59,6 +57,36 @@ struct SwiftDataTCATests {
     #expect(moviesV3[1].sortableTitle == "escuela")
     #expect(moviesV3[1].title == "Las Escuela")
     #expect(moviesV3.last!.title == "The Way We Were")
+  }
+
+  @Test func creatingV3Database() async throws {
+    let schema = Schema(versionedSchema: SchemaV3.self)
+    print(schema.entitiesByName)
+    let config = ModelConfiguration("creatingV3Database", schema: schema, isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: schema, configurations: config)
+    let context = ModelContext(container)
+
+    @Dependency(\.uuid) var uuid
+    let m1 = SchemaV3._Movie(id: uuid(), title: "The First Movie", cast: ["Actor 1", "Actor 2", "Actor 3"])
+    context.insert(m1)
+    let m2 = SchemaV3._Movie(id: uuid(), title: "A Second Movie", cast: ["Actor 1", "Actor 4"])
+    context.insert(m2)
+    let m3 = SchemaV3._Movie(id: uuid(), title: "El Third Movie", cast: ["Actor 2"])
+    context.insert(m3)
+
+    try! context.save()
+
+    let movies = try! context.fetch(FetchDescriptor<SchemaV3._Movie>(sortBy: [.init(\.sortableTitle, order: .forward)]))
+    print(movies.map { $0.sortableTitle })
+    print(movies.map { $0.title })
+
+    #expect(movies.count == 3)
+    #expect(movies[0].title == "The First Movie")
+    #expect(movies[1].title == "A Second Movie")
+    #expect(movies[2].title == "El Third Movie")
+
+    #expect(movies[0].cast.count == 3)
+    #expect(movies[0].cast[0] == "Actor 1")
   }
 
   @Test func movieMock() async {
@@ -71,18 +99,15 @@ struct SwiftDataTCATests {
   }
 }
 
-enum MockMigrationPlan: SchemaMigrationPlan {
+enum MockMigrationPlanV3: SchemaMigrationPlan {
   static var schemas: [any VersionedSchema.Type] {
     [
-      SchemaV1.self,
-      SchemaV2.self,
       SchemaV3.self,
     ]
   }
 
   static var stages: [MigrationStage] {
     [
-      .lightweight(fromVersion: SchemaV1.self, toVersion: SchemaV2.self),
       .custom(
         fromVersion: SchemaV2.self,
         toVersion: SchemaV3.self,
