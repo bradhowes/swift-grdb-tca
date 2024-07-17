@@ -28,7 +28,7 @@ struct SwiftDataTCAApp: App {
           }
           .tag(Tab.queryView)
       }
-      .modelContext(modelContextProvider.context())
+      .modelContext(modelContextProvider.context)
     }
   }
 }

@@ -39,7 +39,7 @@ extension ActorMoviesView {
   static var preview: some View {
     @Dependency(\.modelContextProvider) var modelContextProvider
     @Dependency(\.uuid) var uuid
-    let context = modelContextProvider.context()
+    let context = modelContextProvider.context
     let actor = Actor(id: uuid(), name: "Marlon Brando")
     context.insert(actor)
     let movie1 = Movie(id: uuid(), title: "The Godfather")
@@ -62,7 +62,7 @@ extension ActorMoviesView {
     try? context.save()
 
     return ActorMoviesView(store: Store(initialState: .init(actor: actor)) { ActorMoviesFeature() })
-      .modelContainer(modelContextProvider.container())
+      .modelContainer(modelContextProvider.container)
   }
 }
 

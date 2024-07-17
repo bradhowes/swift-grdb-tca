@@ -6,15 +6,17 @@ typealias ActiveSchema = SchemaV4
 typealias Actor = ActiveSchema._Actor
 typealias Movie = ActiveSchema._Movie
 
+struct ModelContextProvider {
+  let context: ModelContext
+  var container: ModelContainer { context.container }
+}
+
 extension DependencyValues {
   var modelContextProvider: ModelContextProvider {
     get { self[ModelContextProvider.self] }
     set { self[ModelContextProvider.self] = newValue }
   }
 }
-
-@MainActor private let liveContext: (() -> ModelContext) = { liveContainer.mainContext }
-@MainActor private let previewContext: (() -> ModelContext) = { previewContainer.mainContext }
 
 private let liveContainer: ModelContainer = {
   do {
@@ -27,6 +29,20 @@ private let liveContainer: ModelContainer = {
   }
 }()
 
+private let inMemoryContainer: ModelContainer = {
+  do {
+    let schema = Schema(versionedSchema: ActiveSchema.self)
+    let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, allowsSave: true)
+    return try ModelContainer(for: schema, migrationPlan: nil, configurations: config)
+  } catch {
+    fatalError("Failed to create in-memory container.")
+  }
+}()
+
+@MainActor private let liveContext: (() -> ModelContext) = { liveContainer.mainContext }
+@MainActor private let previewContext: (() -> ModelContext) = { inMemoryContainer.mainContext }
+@MainActor private let testContext: (() -> ModelContext) = { ModelContext(inMemoryContainer) }
+
 private func loadPreview(_ context: ModelContext) {
   @Dependency(\.uuid) var uuid
   let movie = Movie(id: uuid(), title: mockData[0].0)
@@ -38,38 +54,18 @@ private func loadPreview(_ context: ModelContext) {
   }
 }
 
-private let previewContainer: ModelContainer = {
-  do {
-    let schema = Schema(versionedSchema: ActiveSchema.self)
-    let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, allowsSave: true)
-    let container = try ModelContainer(for: schema, migrationPlan: nil, configurations: config)
-    let context = ModelContext(container)
-    loadPreview(context)
-    return container
-  } catch {
-    fatalError("Failed to create preview container.")
-  }
-}()
-
-struct ModelContextProvider {
-  var context: @Sendable () -> ModelContext
-  var container: @Sendable () -> ModelContainer
-}
-
 extension ModelContextProvider: DependencyKey {
-  public static let liveValue = Self(
-    context: { liveContext() },
-    container: { liveContainer }
-  )
+  public static let liveValue = Self(context: liveContext())
 }
 
 extension ModelContextProvider: TestDependencyKey {
-  public static var previewValue: ModelContextProvider { Self.inMemory }
-  public static var testValue: ModelContextProvider { Self.inMemory }
-  private static let inMemory = Self(
-    context: { previewContext() },
-    container: { previewContainer }
-  )
+  public static var previewValue: ModelContextProvider {
+    let container = inMemoryContainer
+    let context = previewContext()
+    loadPreview(context)
+    return .init(context: context)
+  }
+  public static var testValue: ModelContextProvider { .init(context: testContext()) }
 }
 
 extension VersionedSchema {

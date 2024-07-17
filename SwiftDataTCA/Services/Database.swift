@@ -13,29 +13,24 @@ struct Database {
 extension Database: DependencyKey {
   static let liveValue = Self(
     fetchMovies: { descriptor in
-      @Dependency(\.modelContextProvider.context) var modelContextProvider
-      let context = modelContextProvider()
+      @Dependency(\.modelContextProvider.context) var context
       return (try? context.fetch(descriptor)) ?? []
     },
     fetchActors: { descriptor in
-      @Dependency(\.modelContextProvider.context) var modelContextProvider
-      let context = modelContextProvider()
+      @Dependency(\.modelContextProvider.context) var context
       return (try? context.fetch(descriptor)) ?? []
     },
     add: {
-      @Dependency(\.modelContextProvider.context) var modelContextProvider
-      let context = modelContextProvider()
+      @Dependency(\.modelContextProvider.context) var context
       SchemaV4.makeMock(context: context)
     },
     delete: { model in
-      @Dependency(\.modelContextProvider.context) var modelContextProvider
-      let movieContext = modelContextProvider()
-      movieContext.delete(model)
+      @Dependency(\.modelContextProvider.context) var context
+      context.delete(model)
     },
     save: {
-      @Dependency(\.modelContextProvider.context) var modelContextProvider
-      let movieContext = modelContextProvider()
-      try? movieContext.save()
+      @Dependency(\.modelContextProvider.context) var context
+      try? context.save()
     }
   )
 }

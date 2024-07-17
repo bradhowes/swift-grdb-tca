@@ -76,9 +76,9 @@ private struct MovieListView: View {
 
 extension FromQueryView {
   static var preview: some View {
-    @Dependency(\.modelContextProvider) var modelContextProvider
+    @Dependency(\.modelContextProvider.container) var container
     return FromQueryView(store: Store(initialState: .init()) { FromQueryFeature() })
-      .modelContainer(modelContextProvider.container())
+      .modelContainer(container)
   }
 }
 

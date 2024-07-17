@@ -22,26 +22,28 @@ final class SwiftDataTCAXCTests: XCTestCase {
     } withDependencies: {
       $0.uuid = .constant(UUID(0))
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
-      $0.movieDatabase.add = {
-        @Dependency(\.modelContextProvider.context) var modelContextProvider
-        let context = modelContextProvider()
+      $0.database.add = {
+        @Dependency(\.modelContextProvider.context) var context
         SchemaV4.makeMock(context: context)
       }
-      $0.movieDatabase.fetchMovies = { descriptor in
-        @Dependency(\.modelContextProvider.context) var modelContextProvider
-        let movieContext = modelContextProvider()
-        return (try? movieContext.fetch(descriptor)) ?? []
+      $0.database.fetchMovies = { descriptor in
+        @Dependency(\.modelContextProvider.context) var context
+        return (try? context.fetch(descriptor)) ?? []
       }
-      $0.movieDatabase.save = {
-        @Dependency(\.modelContextProvider.context) var modelContextProvider
-        let movieContext = modelContextProvider()
-        try? movieContext.save()
+      $0.database.save = {
+        @Dependency(\.modelContextProvider.context) var context
+        try? context.save()
       }
     }
+
+    XCTAssertTrue(store.state.movies.isEmpty)
 
     store.exhaustivity = .off
     await store.send(.addButtonTapped)
     await store.receive(\._fetchMovies)
+
+    print(store.state.movies.map { $0.title })
+    print(store.state.movies.map { $0.id })
 
     XCTAssertEqual(1, store.state.movies.count)
     XCTAssertEqual("Avatar", store.state.movies[0].title)
@@ -61,7 +63,6 @@ extension FromStateFeature.State: @retroactive Equatable {
   public static func == (lhs: FromStateFeature.State, rhs: FromStateFeature.State) -> Bool {
     lhs.movies == rhs.movies &&
     lhs.titleSort == rhs.titleSort &&
-    lhs.uuidSort == rhs.uuidSort &&
     lhs.isSearchFieldPresented == rhs.isSearchFieldPresented &&
     lhs.searchString == rhs.searchString
   }
@@ -71,7 +72,6 @@ extension FromStateFeature.State: Equatable {
   public static func == (lhs: FromStateFeature.State, rhs: FromStateFeature.State) -> Bool {
     lhs.movies == rhs.movies &&
     lhs.titleSort == rhs.titleSort &&
-    lhs.uuidSort == rhs.uuidSort &&
     lhs.isSearchFieldPresented == rhs.isSearchFieldPresented &&
     lhs.searchString == rhs.searchString
   }

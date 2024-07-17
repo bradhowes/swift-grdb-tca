@@ -61,17 +61,16 @@ enum SchemaV4: VersionedSchema {
     let index = withRandomNumberGenerator { generator in
       Int.random(in: 0..<mockData.count, using: &generator)
     }
+
     let entry = mockData[index]
     let movie = _Movie(id: uuid(), title: entry.0)
+    context.insert(movie)
 
     for name in entry.1 {
       let actor = fetchOrMakeActor(context, name: name)
       movie.actors.append(actor)
       actor.movies.append(movie)
     }
-
-    context.insert(movie)
-    try? context.save()
   }
 
   static func fetchOrMakeActor(_ context: ModelContext, name: String) -> _Actor {
@@ -84,7 +83,6 @@ enum SchemaV4: VersionedSchema {
 
     let actor = _Actor(id: uuid(), name: name)
     context.insert(actor)
-    try? context.save()
 
     return actor
   }

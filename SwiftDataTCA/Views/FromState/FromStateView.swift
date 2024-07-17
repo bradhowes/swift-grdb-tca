@@ -72,9 +72,9 @@ private struct MovieListView: View {
 
 extension FromStateView {
   static var preview: some View {
-    @Dependency(\.modelContextProvider) var modelContextProvider
+    @Dependency(\.modelContextProvider.container) var container
     return FromStateView(store: Store(initialState: .init()) { FromStateFeature() })
-      .modelContainer(modelContextProvider.container())
+      .modelContainer(container)
   }
 }
 

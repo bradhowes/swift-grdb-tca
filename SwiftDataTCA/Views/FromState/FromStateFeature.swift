@@ -54,6 +54,7 @@ struct FromStateFeature {
     Reduce { state, action in
       switch action {
       case .addButtonTapped:
+        print("addButtonTapped")
         db.add()
         db.save()
         return runSendFetchMovies
