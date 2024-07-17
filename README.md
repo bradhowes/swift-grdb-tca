@@ -1,8 +1,10 @@
 # Note about Fork
 
 This is a fork of the [SwiftDataTCA](https://github.com/SouzaRodrigo61/SwiftDataTCA) repo by 
-[Rodrigo Santos de Souza](https://github.com/SouzaRodrigo61) that I've used to explore how best to incorporate SwiftData
-in TCA (v1.11.2). My changes were done in Xcode 16.0 Beta using Swift 6 and complete concurrency checking enabled.
+[Rodrigo Santos de Souza](https://github.com/SouzaRodrigo61) that I've used to explore how best to incorporate 
+[SwiftData](https://developer.apple.com/documentation/swiftdata) into an application written using 
+[The Composable Architecture v1.11.2 (TCA)](https://github.com/pointfreeco/swift-composable-architecture) library and tools.
+My changes were done in Xcode 16.0 Beta using Swift 6 with _Complete Concurrency Checking_ enabled.
 
 The code contains two TCA "features" (combination of a reducer and a SwiftUI view):
 

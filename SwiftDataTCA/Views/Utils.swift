@@ -11,18 +11,18 @@ enum Utils {
 
   struct MovieView: View {
     let movie: Movie
+    var actorNames: String {
+      movie.actors
+        .map { $0.name }
+        .formatted(.list(type: .and))
+    }
 
     var body: some View {
       VStack(alignment: .leading) {
         Text(movie.title)
           .font(.headline)
-        HStack {
-          ForEach(movie.actors) {
-            Text($0.name)
-              .lineLimit(1)
-              .truncationMode(.middle)
-          }
-        }
+        Text(actorNames)
+          .font(.caption2)
       }
       .background(movie.favorite ? .blue : .clear)
     }
@@ -30,18 +30,18 @@ enum Utils {
 
   struct ActorView: View {
     let actor: Actor
+    var movieTitles: String {
+      actor.movies
+        .map { $0.title }
+        .formatted(.list(type: .and))
+    }
 
     var body: some View {
       VStack(alignment: .leading) {
         Text(actor.name)
           .font(.headline)
-        HStack {
-          ForEach(actor.movies) {
-            Text($0.title)
-              .lineLimit(1)
-              .truncationMode(.tail)
-          }
-        }
+        Text(movieTitles)
+          .font(.caption2)
       }
     }
   }
