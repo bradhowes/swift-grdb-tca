@@ -11,12 +11,13 @@ The code contains two TCA "features" (combination of a reducer and a SwiftUI vie
 
 Both SwiftUI views the same interface functionality, including:
 
-* adding a new "random" movie
-* sorting movies by title
-* sorting movies by UUID
-* searching by title content
-* swiping to mark as a favorite
-* swiping to delete a movie
+* Adding a new "random" movie
+* Sorting movies by title
+* Sorting movies by UUID
+* Searching by title content
+* Swiping to mark as a favorite
+* Swiping to delete a movie
+* Selecting a movie to "drill-down" to a list of actors. This view too supports "drilling-down" to see the actor's movies.
 
 Per TCA guidance, all UI activity lead to reducer actions that are performed in the feature's reducer logic, updating
 internal feature state when necessary to cause a UI update.
@@ -35,6 +36,8 @@ adding and removing entities.
 There are two sets of tests: old-school XCTest collection that works with TCA and the brand new 
 [Swift Testing](https://github.com/apple/swift-testing) style collection that does not yet work well with TCA testing
 functions and macros (as of TCA v1.11.12).
+
+Note that the tests are woefully incomplete.
 
 ## Schemas
 
