@@ -2,12 +2,22 @@ import Dependencies
 import Foundation
 import SwiftData
 
+/**
+ Collection of SwiftData operations one can perform on a "database" regardless of operating environment.
+ */
 struct Database {
   var fetchMovies: @Sendable (FetchDescriptor<Movie>) -> [Movie]
   var fetchActors: @Sendable (FetchDescriptor<Actor>) -> [Actor]
   var add: @Sendable () -> Void
   var delete: @Sendable (Movie) -> Void
   var save: @Sendable () -> Void
+}
+
+extension DependencyValues {
+  var database: Database {
+    get { self[Database.self] }
+    set { self[Database.self] = newValue }
+  }
 }
 
 extension Database: DependencyKey {
@@ -35,6 +45,7 @@ extension Database: DependencyKey {
   )
 }
 
+/// Default all operations to 'unimplemented' -- a test must define the operations required to do its task.
 extension Database: TestDependencyKey {
   public static let testValue = Self(
     fetchMovies: unimplemented("\(Self.self).fetchDescriptor"),
@@ -43,11 +54,4 @@ extension Database: TestDependencyKey {
     delete: unimplemented("\(Self.self).delete"),
     save: unimplemented("\(Self.self).save")
   )
-}
-
-extension DependencyValues {
-  var database: Database {
-    get { self[Database.self] }
-    set { self[Database.self] = newValue }
-  }
 }

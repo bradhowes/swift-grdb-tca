@@ -6,8 +6,13 @@ typealias ActiveSchema = SchemaV4
 typealias Actor = ActiveSchema._Actor
 typealias Movie = ActiveSchema._Movie
 
+/**
+ Wrapper around a `ModelContext` value that can be used for a dependency.
+ */
 struct ModelContextProvider {
+  /// The context to use for SwiftData operations
   let context: ModelContext
+  /// The container associated with the context
   var container: ModelContainer { context.container }
 }
 
@@ -18,6 +23,20 @@ extension DependencyValues {
   }
 }
 
+extension ModelContextProvider: DependencyKey {
+  public static let liveValue = Self(context: liveContext())
+}
+
+extension ModelContextProvider: TestDependencyKey {
+  public static var previewValue: ModelContextProvider {
+    let context = previewContext()
+    loadPreview(context)
+    return .init(context: context)
+  }
+  public static var testValue: ModelContextProvider { .init(context: testContext()) }
+}
+
+/// Create a ModelContainer to be used in a live environment.
 private let liveContainer: ModelContainer = {
   do {
     let schema = Schema(versionedSchema: ActiveSchema.self)
@@ -29,6 +48,7 @@ private let liveContainer: ModelContainer = {
   }
 }()
 
+/// Create a ModelContainer to be used in test and preview environments.
 private let inMemoryContainer: ModelContainer = {
   do {
     let schema = Schema(versionedSchema: ActiveSchema.self)
@@ -52,24 +72,6 @@ private func loadPreview(_ context: ModelContext) {
     context.insert(actor)
     movie.addActor(actor)
   }
-}
-
-extension ModelContextProvider: DependencyKey {
-  public static let liveValue = Self(context: liveContext())
-}
-
-extension ModelContextProvider: TestDependencyKey {
-  public static var previewValue: ModelContextProvider {
-    let container = inMemoryContainer
-    let context = previewContext()
-    loadPreview(context)
-    return .init(context: context)
-  }
-  public static var testValue: ModelContextProvider { .init(context: testContext()) }
-}
-
-extension VersionedSchema {
-  static var schema: Schema { Schema(versionedSchema: Self.self) }
 }
 
 #if hasFeature(RetroactiveAttribute)
