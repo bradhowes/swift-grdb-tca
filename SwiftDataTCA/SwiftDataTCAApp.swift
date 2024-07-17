@@ -12,6 +12,12 @@ struct SwiftDataTCAApp: App {
 
   @State private var selectedTab: Tab = .contentView
 
+  init() {
+    // Configure navigation titles to truncate in the middle.
+    UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
+      .lineBreakMode = .byTruncatingMiddle
+  }
+
   var body: some Scene {
     WindowGroup {
       TabView(selection: $selectedTab) {
