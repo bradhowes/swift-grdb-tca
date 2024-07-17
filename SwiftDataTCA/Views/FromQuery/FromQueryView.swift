@@ -8,7 +8,7 @@ struct FromQueryView: View {
   @Bindable var store: StoreOf<FromQueryFeature>
 
   var body: some View {
-    NavigationStack {
+    NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
       MovieListView(store: $store)
         .navigationTitle("From Query")
         .searchable(
@@ -21,34 +21,27 @@ struct FromQueryView: View {
           if !store.isSearchFieldPresented {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
               Button("Add") { store.send(.addButtonTapped) }
-              pickerView(title: "Title", binding: $store.titleSort.sending(\.titleSortChanged).animation())
-              pickerView(title: "UUID", binding: $store.uuidSort.sending(\.uuidSortChanged).animation())
+              Utils.pickerView(title: "Title", binding: $store.titleSort.sending(\.titleSortChanged).animation())
             }
           }
         }
         .labelsHidden()
-    }
-  }
+    } destination: { store in
+      switch store.case {
+      case let .showMovieActors(store):
+        MovieActorsView(store: store)
 
-  private func pickerView(title: String, binding: Binding<SortOrder?>) -> some View {
-    Picker(title, selection: binding) {
-      Text(title + " ↑").tag(SortOrder?.some(.forward))
-      Text(title + " ↓").tag(SortOrder?.some(.reverse))
-      Text(title + " ⊝").tag(SortOrder?.none)
+      case let .showActorMovies(store):
+        ActorMoviesView(store: store)
+      }
     }
-    .pickerStyle(.automatic)
-  }
-
-  static var preview: some View {
-    @Dependency(\.modelContextProvider) var modelContextProvider
-    return FromQueryView(store: Store(initialState: .init()) { FromQueryFeature() })
-      .modelContainer(modelContextProvider.container())
   }
 }
 
 private struct MovieListView: View {
   @Bindable var store: StoreOf<FromQueryFeature>
   @Query var moviesQuery: [Movie]
+  @State private var selectedMovie: Movie?
 
   init(store: Bindable<Store<FromQueryFeature.State, FromQueryFeature.Action>>) {
     self._store = store
@@ -56,8 +49,8 @@ private struct MovieListView: View {
   }
 
   var body: some View {
-    List(moviesQuery) { movie in
-      MovieView(store: store, movie: movie)
+    List(moviesQuery, id: \.self, selection: $selectedMovie) { movie in
+      Utils.MovieView(movie: movie)
         .swipeActions {
           Button(role: .destructive) {
             store.send(.deleteSwiped(movie), animation: .snappy)
@@ -72,29 +65,20 @@ private struct MovieListView: View {
           }
         }
     }
+    .onChange(of: selectedMovie) { _, newValue in
+      if let newValue {
+        store.send(.movieSelected(newValue), animation: .bouncy)
+        selectedMovie = nil
+      }
+    }
   }
 }
 
-private struct MovieView: View {
-  @Bindable var store: StoreOf<FromQueryFeature>
-  let movie: Movie
-
-  var body: some View {
-    VStack(alignment: .leading) {
-      Text(movie.title)
-        .font(.headline)
-      Text(movie.id.uuidString)
-      HStack {
-        ForEach(movie.actors) { actor in
-          Button {
-            store.send(.actorButtonTapped(actor), animation: .default)
-          } label: {
-            Text(actor.name)
-          }
-        }
-      }
-    }
-    .background(movie.favorite ? .blue : .clear)
+extension FromQueryView {
+  static var preview: some View {
+    @Dependency(\.modelContextProvider) var modelContextProvider
+    return FromQueryView(store: Store(initialState: .init()) { FromQueryFeature() })
+      .modelContainer(modelContextProvider.container())
   }
 }
 

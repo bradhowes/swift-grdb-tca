@@ -18,18 +18,34 @@ extension DependencyValues {
 
 private let liveContainer: ModelContainer = {
   do {
-    let url = URL.applicationSupportDirectory.appending(path: "Modelv4.sqlite")
-    let config = ModelConfiguration(schema: ActiveSchema.schema, url: url)
-    return try ModelContainer(for: Movie.self, migrationPlan: MigrationPlan.self, configurations: config)
+    let schema = Schema(versionedSchema: ActiveSchema.self)
+    let url = URL.applicationSupportDirectory.appending(path: "Modelv5.sqlite")
+    let config = ModelConfiguration(schema: schema, url: url)
+    return try ModelContainer(for: schema, migrationPlan: MigrationPlan.self, configurations: config)
   } catch {
     fatalError("Failed to create live container.")
   }
 }()
 
+private func loadPreview(_ context: ModelContext) {
+  @Dependency(\.uuid) var uuid
+  let movie = Movie(id: uuid(), title: mockData[0].0)
+  let actors = mockData[0].1.map { Actor(id: uuid(), name: $0) }
+  context.insert(movie)
+  for actor in actors {
+    context.insert(actor)
+    movie.addActor(actor)
+  }
+}
+
 private let previewContainer: ModelContainer = {
   do {
-    let config = ModelConfiguration(schema: ActiveSchema.schema, isStoredInMemoryOnly: true, allowsSave: true)
-    return try ModelContainer(for: Movie.self, migrationPlan: MigrationPlan.self, configurations: config)
+    let schema = Schema(versionedSchema: ActiveSchema.self)
+    let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, allowsSave: true)
+    let container = try ModelContainer(for: schema, migrationPlan: nil, configurations: config)
+    let context = ModelContext(container)
+    loadPreview(context)
+    return container
   } catch {
     fatalError("Failed to create preview container.")
   }

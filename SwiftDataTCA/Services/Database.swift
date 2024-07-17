@@ -8,11 +8,6 @@ struct Database {
   var add: @Sendable () -> Void
   var delete: @Sendable (Movie) -> Void
   var save: @Sendable () -> Void
-
-  enum MovieError: Error {
-    case add
-    case delete
-  }
 }
 
 extension Database: DependencyKey {
@@ -56,7 +51,7 @@ extension Database: TestDependencyKey {
 }
 
 extension DependencyValues {
-  var movieDatabase: Database {
+  var database: Database {
     get { self[Database.self] }
     set { self[Database.self] = newValue }
   }

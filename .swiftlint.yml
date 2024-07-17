@@ -53,6 +53,8 @@ analyzer_rules:
 
 disabled_rules:
   - trailing_comma
+  - vertical_whitespace_opening_braces
+  - comment_spacing
 
 line_length: 130
 

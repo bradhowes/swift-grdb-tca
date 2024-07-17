@@ -5,11 +5,18 @@ import SwiftUI
 
 @Reducer
 struct FromStateFeature {
+
+  @Reducer
+  enum Path {
+    case showMovieActors(MovieActorsFeature)
+    case showActorMovies(ActorMoviesFeature)
+  }
+
   @ObservableState
   struct State {
+    var path = StackState<Path.State>()
     var movies: [Movie] = []
     var titleSort: SortOrder? = .forward
-    var uuidSort: SortOrder?
     var isSearchFieldPresented = false
     var searchString: String = ""
     var fetchDescriptor: FetchDescriptor<Movie> { .init(predicate: self.predicate, sortBy: self.sort) }
@@ -18,9 +25,7 @@ struct FromStateFeature {
         searchString.isEmpty ? true : $0.title.localizedStandardContains(searchString)
       }
     }
-    var sort: [SortDescriptor<Movie>] {
-      [sortBy(\.sortableTitle, order: titleSort), sortBy(\.id, order: uuidSort)].compactMap { $0 }
-    }
+    var sort: [SortDescriptor<Movie>] { [sortBy(\.sortableTitle, order: titleSort)].compactMap { $0 } }
 
     private func sortBy<Value: Comparable>(_ key: KeyPath<Movie, Value>, order: SortOrder?) -> SortDescriptor<Movie>? {
       guard let order else { return nil }
@@ -29,29 +34,25 @@ struct FromStateFeature {
   }
 
   enum Action: Sendable {
-    case actorButtonTapped(Actor)
     case addButtonTapped
     case deleteSwiped(Movie)
     case favoriteSwiped(Movie)
+    case movieSelected(Movie)
     case onAppear
+    case path(StackActionOf<Path>)
     case searchButtonTapped(Bool)
     case searchStringChanged(String)
     case titleSortChanged(SortOrder?)
-    case uuidSortChanged(SortOrder?)
     // Reducer-only action to refresh the array of movies when another action changed what would be returned by the
     // `fetchDescriptor`.
     case _fetchMovies
   }
 
-  @Dependency(\.movieDatabase) var db
+  @Dependency(\.database) var db
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .actorButtonTapped(let actor):
-        print(actor.name)
-        return .none
-
       case .addButtonTapped:
         db.add()
         db.save()
@@ -66,8 +67,27 @@ struct FromStateFeature {
         movie.favorite.toggle()
         return .none
 
+      case .movieSelected(let movie):
+        state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
+        return .none
+
       case .onAppear:
         fetchChanges(state: &state)
+        return .none
+
+      case .path(let pathAction):
+        // Watch for and handle the selections of child views. By doing so, we do not have to share
+        // the `StackState` with the child features.
+        switch pathAction {
+        case .element(id: _, action: .showMovieActors(.actorSelected(let actor))):
+          state.path.append(.showActorMovies(ActorMoviesFeature.State(actor: actor)))
+
+        case .element(id: _, action: .showActorMovies(.movieSelected(let movie))):
+          state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
+
+        default:
+          break
+        }
         return .none
 
       case .searchButtonTapped(let searching):
@@ -83,15 +103,12 @@ struct FromStateFeature {
         state.titleSort = newSort
         return runSendFetchMovies
 
-      case .uuidSortChanged(let newSort):
-        state.uuidSort = newSort
-        return runSendFetchMovies
-
       case ._fetchMovies:
         fetchChanges(state: &state)
         return .none
       }
     }
+    .forEach(\.path, action: \.path)
   }
 
   private var runSendFetchMovies: Effect<Action> {
@@ -101,7 +118,7 @@ struct FromStateFeature {
   }
 
   private func fetchChanges(state: inout State) {
-    @Dependency(\.movieDatabase) var db
+    @Dependency(\.database) var db
     state.movies = db.fetchMovies(state.fetchDescriptor)
   }
 }
