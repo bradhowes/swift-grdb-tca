@@ -6,8 +6,6 @@ on:
   pull_request:
     branches: [ main ]
 
-env:
-  
 jobs:
   build:
     runs-on: macos-latest
