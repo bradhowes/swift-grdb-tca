@@ -17,7 +17,6 @@
 		23A64EAD2AD1AB46005B6344 /* MigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64EAC2AD1AB46005B6344 /* MigrationPlan.swift */; };
 		80180C422AFBECC900ADAB03 /* FromQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80180C412AFBECC900ADAB03 /* FromQueryView.swift */; };
 		BD0DC1DF2C41779D00821D09 /* SwiftDataTCAXCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0DC1DE2C41779D00821D09 /* SwiftDataTCAXCTests.swift */; };
-		BD13FE5E2C49395400606C7D /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = BD13FE5D2C49395400606C7D /* ComposableArchitecture */; };
 		BD2265152C3E763F00A975E8 /* SchemaV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265142C3E763F00A975E8 /* SchemaV1.swift */; };
 		BD2265172C3E764F00A975E8 /* SchemaV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265162C3E764F00A975E8 /* SchemaV2.swift */; };
 		BD2265192C3EBF6500A975E8 /* FromStateFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265182C3EBF5E00A975E8 /* FromStateFeature.swift */; };
@@ -84,7 +83,7 @@
 		BD3A16972C490AA60089082D /* SchemaV5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV5Tests.swift; sourceTree = "<group>"; };
 		BD3C7FEA2C46548200C68195 /* SchemaV4Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV4Tests.swift; sourceTree = "<group>"; };
 		BD3C7FEC2C4654F800C68195 /* SchemaV2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV2Tests.swift; sourceTree = "<group>"; };
-		BD3C7FEE2C465E9000C68195 /* SwiftDataTCA.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SwiftDataTCA.xctestplan; sourceTree = "<group>"; };
+		BD3C7FEE2C465E9000C68195 /* Tests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tests.xctestplan; sourceTree = "<group>"; };
 		BD3C7FF02C4686FA00C68195 /* MovieActorsFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieActorsFeature.swift; sourceTree = "<group>"; };
 		BD3FA9B02C47A626000AACAB /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		BD7338022C407584001D0E04 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
@@ -120,7 +119,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD13FE5E2C49395400606C7D /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +128,7 @@
 		23A64E7D2ACC5312005B6344 = {
 			isa = PBXGroup;
 			children = (
-				BD3C7FEE2C465E9000C68195 /* SwiftDataTCA.xctestplan */,
+				BD3C7FEE2C465E9000C68195 /* Tests.xctestplan */,
 				23A64E882ACC5312005B6344 /* SwiftDataTCA */,
 				BD73380B2C4118CA001D0E04 /* SwiftDataTCATests */,
 				BD0DC1DD2C41779D00821D09 /* SwiftDataTCAXCTests */,
@@ -341,7 +339,6 @@
 			);
 			name = SwiftDataTCATests;
 			packageProductDependencies = (
-				BD13FE5D2C49395400606C7D /* ComposableArchitecture */,
 			);
 			productName = SwiftDataTCATests;
 			productReference = BD73380A2C4118CA001D0E04 /* SwiftDataTCATests.xctest */;
@@ -691,6 +688,7 @@
 		BD0DC1E22C41779D00821D09 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UP6SS5ES7E;
@@ -713,6 +711,7 @@
 		BD0DC1E32C41779D00821D09 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UP6SS5ES7E;
@@ -735,6 +734,7 @@
 		BD7338112C4118CA001D0E04 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UP6SS5ES7E;
@@ -757,6 +757,7 @@
 		BD7338122C4118CA001D0E04 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UP6SS5ES7E;
@@ -846,11 +847,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BD0DC1E52C43A77400821D09 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
 			productName = "plugin:SwiftLintBuildToolPlugin";
-		};
-		BD13FE5D2C49395400606C7D /* ComposableArchitecture */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 23A64E9B2ACC5DFE005B6344 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitecture;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
