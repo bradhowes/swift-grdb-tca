@@ -15,23 +15,4 @@ jobs:
       - name: Select Xcode 15.4
         run: sudo xcode-select -s /Applications/Xcode_15.4.app
       - name: Build
-        run: |
-          xcrun xctrace list devices 2>&1
-          device=`xcrun xctrace list devices 2>&1 | grep -oE '^iPhone .* ?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator.*$//"`
-          echo "Using 'platform=iOS Simulator,name=${device}"
-          xcodebuild build-for-testing \
-          -skipPackagePluginValidation \
-          -skipMacroValidation \
-          -scheme SwiftDataTCA \
-          -project *.xcodeproj \
-          -destination "platform=iOS Simulator,name=${device}"
-      - name: Test
-        run: |
-          device=`xcrun xctrace list devices 2>&1 | grep -oE '^iPhone .* ?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator.*$//"`
-          echo "Using 'platform=iOS Simulator,name=${device}"
-          xcodebuild test-without-building \
-          -skipPackagePluginValidation \
-          -skipMacroValidation \
-          -scheme SwiftDataTCA \
-          -project *.xcodeproj \
-          -destination "platform=iOS Simulator,name=${device}"
+        run: make
