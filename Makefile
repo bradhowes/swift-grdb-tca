@@ -4,7 +4,6 @@ DEST = -scheme SwiftDataTCA -destination "platform=iOS Simulator,name=iPad mini 
 default: test
 
 build: clean
-	@echo "$(DEST)"
 	xcodebuild $(PROJ) build-for-testing $(DEST)
 
 test: build
