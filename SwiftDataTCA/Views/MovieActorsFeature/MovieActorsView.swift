@@ -23,7 +23,7 @@ private struct ActorsListView: View {
   @State private var selectedActor: Actor?
 
   var body: some View {
-    List(store.actors, id: \.self, selection: $selectedActor) {
+    List(store.actors, id: \.id, selection: $selectedActor) {
       Utils.ActorView(actor: $0)
     }
     .onChange(of: selectedActor) { _, newValue in

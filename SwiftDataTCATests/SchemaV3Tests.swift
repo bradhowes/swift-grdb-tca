@@ -95,7 +95,7 @@ struct SchemaV3Tests {
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
     } operation: {
       #expect(SchemaV3._Movie.mock.title == "Avatar")
-      #expect(SchemaV3._Movie.mock.title == "Hancock")
+      #expect(SchemaV3._Movie.mock.title == "After Earth")
     }
   }
 }
