@@ -41,29 +41,20 @@ enum SchemaV4: VersionedSchema {
       self.actors = []
     }
 
-    /**
-     Add `Actor` to the collection of actors in this movie.
-
-     NOTE: make sure `Actor` and `Movie` have already been inserted into database before calling this method.
-
-     - parameter actor: the `Actor` to add
-     */
     func addActor(_ actor: _Actor) {
-      guard !actors.contains(actor) else { return }
-      actors.append(actor)
+      self.actors.append(actor)
       actor.movies.append(self)
     }
   }
 
-  static func makeMock(context: ModelContext) {
+  static func makeMock(context: ModelContext, entry: (title: String, cast: [String])) {
     @Dependency(\.uuid) var uuid
-    let entry = Support.mockMovieEntry
-    let movie = _Movie(id: uuid(), title: entry.0)
+    let movie = _Movie(id: uuid(), title: entry.title)
     context.insert(movie)
 
-    for name in entry.1 {
-      let actor = fetchOrMakeActor(context, name: name)
-      movie.actors.append(actor)
+    let actors = entry.cast.map { fetchOrMakeActor(context, name: $0) }
+    movie.actors = actors
+    for actor in actors {
       actor.movies.append(movie)
     }
   }

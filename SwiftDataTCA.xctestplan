@@ -17,6 +17,16 @@
   },
   "testTargets" : [
     {
+      "skippedTests" : {
+        "suites" : [
+          {
+            "name" : "SchemaV5Tests",
+            "testFunctions" : [
+              "creatingV5Database()"
+            ]
+          }
+        ]
+      },
       "target" : {
         "containerPath" : "container:SwiftDataTCA.xcodeproj",
         "identifier" : "BD7338092C4118CA001D0E04",

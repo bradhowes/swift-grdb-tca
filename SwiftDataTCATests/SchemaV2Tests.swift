@@ -8,7 +8,7 @@ import Testing
 @testable import SwiftDataTCA
 
 
-struct SwiftDataTCATests {
+struct SchemaV2Tests {
 
   /// NOTE to self: do not use `await container.mainContext` in tests
   /// NOTE to self: do not run Swift Data tests in parallel

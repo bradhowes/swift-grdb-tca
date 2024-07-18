@@ -32,7 +32,7 @@ extension Database: DependencyKey {
     },
     add: {
       @Dependency(\.modelContextProvider.context) var context
-      SchemaV4.makeMock(context: context)
+      SchemaV4.makeMock(context: context, entry: Support.mockMovieEntry)
     },
     delete: { model in
       @Dependency(\.modelContextProvider.context) var context

@@ -24,7 +24,7 @@ final class SwiftDataTCAXCTests: XCTestCase {
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
       $0.database.add = {
         @Dependency(\.modelContextProvider.context) var context
-        SchemaV4.makeMock(context: context)
+        SchemaV4.makeMock(context: context, entry: Support.mockMovieEntry)
       }
       $0.database.fetchMovies = { descriptor in
         @Dependency(\.modelContextProvider.context) var context

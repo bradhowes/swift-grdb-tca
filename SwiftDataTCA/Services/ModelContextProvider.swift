@@ -65,13 +65,7 @@ private let inMemoryContainer: ModelContainer = {
 
 private func loadPreview(_ context: ModelContext) {
   @Dependency(\.uuid) var uuid
-  let movie = Movie(id: uuid(), title: mockData[0].0)
-  let actors = mockData[0].1.map { Actor(id: uuid(), name: $0) }
-  context.insert(movie)
-  for actor in actors {
-    context.insert(actor)
-    movie.addActor(actor)
-  }
+  SchemaV4.makeMock(context: context, entry: Support.mockMovieEntry)
 }
 
 #if hasFeature(RetroactiveAttribute)
