@@ -22,29 +22,16 @@ enum SchemaV3: VersionedSchema {
       self.title = title
       self.cast = cast
       self.favorite = favorite
-      self.sortableTitle = Self.sortableTitle(title)
+      self.sortableTitle = Support.sortableTitle(title)
     }
   }
 }
 
 extension SchemaV3._Movie {
-  static let articles = Set(["a", "el", "la", "las", "le", "les", "los", "the", "un", "una"])
-
-  static func sortableTitle(_ title: String) -> String {
-    let words = title.lowercased().components(separatedBy: " ")
-    if articles.contains(words[0]) {
-      return words.dropFirst().joined(separator: " ")
-    }
-    return title.lowercased()
-  }
 
   static var mock: SchemaV3._Movie {
-    @Dependency(\.withRandomNumberGenerator) var withRandomNumberGenerator
     @Dependency(\.uuid) var uuid
-    let index = withRandomNumberGenerator { generator in
-      Int.random(in: 0..<mockData.count, using: &generator)
-    }
-    let entry = mockData[index]
+    let entry = Support.mockMovieEntry
     return SchemaV3._Movie(id: uuid(), title: entry.0, cast: entry.1)
   }
 }

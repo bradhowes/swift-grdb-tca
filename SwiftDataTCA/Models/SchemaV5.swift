@@ -1,4 +1,3 @@
-import Dependencies
 import Foundation
 import SwiftData
 
@@ -33,7 +32,7 @@ enum SchemaV5: VersionedSchema {
     init(title: String, favorite: Bool = false) {
       self.title = title
       self.favorite = favorite
-      self.sortableTitle = SchemaV3._Movie.sortableTitle(title)
+      self.sortableTitle = Support.sortableTitle(title)
       self.actors = []
     }
 
@@ -52,12 +51,7 @@ enum SchemaV5: VersionedSchema {
   }
 
   static func makeMock(context: ModelContext) {
-    @Dependency(\.withRandomNumberGenerator) var withRandomNumberGenerator
-    let index = withRandomNumberGenerator { generator in
-      Int.random(in: 0..<mockData.count, using: &generator)
-    }
-
-    let entry = mockData[index]
+    let entry = Support.mockMovieEntry
     let movie = _Movie(title: entry.0)
     context.insert(movie)
 

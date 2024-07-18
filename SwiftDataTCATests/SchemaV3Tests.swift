@@ -14,14 +14,14 @@ struct SchemaV3Tests {
   /// NOTE to self: do not run Swift Data tests in parallel
 
   @Test func sortableTitle() async throws {
-    #expect("world according to garp" == SchemaV3._Movie.sortableTitle("The World According to Garp"))
-    #expect("mariachi" == SchemaV3._Movie.sortableTitle("El Mariachi"))
-    #expect("way we were" == SchemaV3._Movie.sortableTitle("The Way We Were"))
-    #expect("monde" == SchemaV3._Movie.sortableTitle("LE MONDE"))
-    #expect("escuela" == SchemaV3._Movie.sortableTitle("LAs Escuela"))
-    #expect("time to die" == SchemaV3._Movie.sortableTitle("a Time To Die"))
-    #expect("hermanos" == SchemaV3._Movie.sortableTitle("lOs Hermanos"))
-    #expect("piscine" == SchemaV3._Movie.sortableTitle("LA piscine"))
+    #expect("world according to garp" == Support.sortableTitle("The World According to Garp"))
+    #expect("mariachi" == Support.sortableTitle("El Mariachi"))
+    #expect("way we were" == Support.sortableTitle("The Way We Were"))
+    #expect("monde" == Support.sortableTitle("LE MONDE"))
+    #expect("escuela" == Support.sortableTitle("LAs Escuela"))
+    #expect("time to die" == Support.sortableTitle("a Time To Die"))
+    #expect("hermanos" == Support.sortableTitle("lOs Hermanos"))
+    #expect("piscine" == Support.sortableTitle("LA piscine"))
   }
 
   @Test func migrationV2V3() async throws {
@@ -109,12 +109,7 @@ enum MockMigrationPlanV3: SchemaMigrationPlan {
 
   static var stages: [MigrationStage] {
     [
-      .custom(
-        fromVersion: SchemaV2.self,
-        toVersion: SchemaV3.self,
-        willMigrate: nil,
-        didMigrate: MigrationPlan.addSortableTitles(context:)
-      )
+      StageV3.stage
     ]
   }
 }

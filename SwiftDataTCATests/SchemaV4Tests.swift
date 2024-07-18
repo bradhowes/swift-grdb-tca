@@ -134,12 +134,7 @@ enum MockMigrationPlanV4: SchemaMigrationPlan {
 
   static var stages: [MigrationStage] {
     [
-      .custom(
-        fromVersion: SchemaV3.self,
-        toVersion: SchemaV4.self,
-        willMigrate: MigrationPlan.moviesV3ToJSON(context:),
-        didMigrate: MigrationPlan.jsonToMoviesV4(context:)
-      ),
+      StageV4.stage
     ]
   }
 }
