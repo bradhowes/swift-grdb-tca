@@ -45,7 +45,7 @@ private struct MovieListView: View {
   @State private var selectedMovie: Movie?
 
   var body: some View {
-    List(store.movies, id: \.id, selection: $selectedMovie) { movie in
+    List(store.movies, id: \.self, selection: $selectedMovie) { movie in
       Utils.MovieView(movie: movie)
         .swipeActions {
           Button(role: .destructive) {

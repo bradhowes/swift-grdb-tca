@@ -89,15 +89,6 @@ struct SchemaV3Tests {
     #expect(movies[0].cast.count == 3)
     #expect(movies[0].cast[0] == "Actor 1")
   }
-
-  @Test func movieMock() async {
-    withDependencies {
-      $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
-    } operation: {
-      #expect(SchemaV3._Movie.mock.title == "Avatar")
-      #expect(SchemaV3._Movie.mock.title == "After Earth")
-    }
-  }
 }
 
 enum MockMigrationPlanV3: SchemaMigrationPlan {
@@ -111,14 +102,6 @@ enum MockMigrationPlanV3: SchemaMigrationPlan {
     [
       StageV3.stage
     ]
-  }
-}
-
-private struct LCRNG: RandomNumberGenerator {
-  var seed: UInt64
-  mutating func next() -> UInt64 {
-    self.seed = 2_862_933_555_777_941_757 &* self.seed &+ 3_037_000_493
-    return self.seed
   }
 }
 

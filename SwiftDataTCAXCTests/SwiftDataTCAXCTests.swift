@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import Dependencies
 import Foundation
 import SwiftData
 import XCTest
@@ -47,6 +48,17 @@ final class SwiftDataTCAXCTests: XCTestCase {
 
     XCTAssertEqual(1, store.state.movies.count)
     XCTAssertEqual("Avatar", store.state.movies[0].title)
+  }
+
+  @MainActor
+  func testMovieMock() async {
+    withDependencies {
+      $0.uuid = .incrementing
+      $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
+    } operation: {
+      XCTAssertEqual(SchemaV3._Movie.mock.title, "Avatar")
+      XCTAssertEqual(SchemaV3._Movie.mock.title, "After Earth")
+    }
   }
 
   private struct LCRNG: RandomNumberGenerator {
