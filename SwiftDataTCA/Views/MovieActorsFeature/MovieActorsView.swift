@@ -12,6 +12,9 @@ struct MovieActorsView: View {
       .toolbar {
         ToolbarItemGroup(placement: .navigationBarTrailing) {
           Utils.pickerView(title: "Name", binding: $store.nameSort.sending(\.nameSortChanged).animation())
+          Button("", systemImage: store.movie.favorite ? "star.fill" : "star") {
+            store.send(.favoriteTapped)
+          }
         }
       }
       .labelsHidden()

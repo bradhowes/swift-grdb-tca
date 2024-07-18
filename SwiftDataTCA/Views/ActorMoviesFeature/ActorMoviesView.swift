@@ -23,8 +23,16 @@ private struct MoviesListView: View {
   @State private var selectedMovie: Movie?
 
   var body: some View {
-    List(store.movies, id: \.self, selection: $selectedMovie) {
-      Utils.MovieView(movie: $0)
+    List(store.movies, id: \.self, selection: $selectedMovie) { movie in
+      Utils.MovieView(movie: movie)
+        .swipeActions {
+          Button {
+            store.send(.favoriteSwiped(movie), animation: .bouncy)
+          } label: {
+            Label(movie.favorite ? "Unfavorite" : "Favorite", systemImage: "star")
+              .foregroundStyle(.blue)
+          }
+        }
     }
     .onChange(of: selectedMovie) { _, newValue in
       if let newValue {

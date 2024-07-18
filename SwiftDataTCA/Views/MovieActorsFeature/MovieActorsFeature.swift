@@ -28,6 +28,7 @@ struct MovieActorsFeature {
   enum Action: Sendable {
     case actorSelected(Actor)
     case nameSortChanged(SortOrder?)
+    case favoriteTapped
   }
 
   var body: some Reducer<State, Action> {
@@ -39,6 +40,10 @@ struct MovieActorsFeature {
 
       case .nameSortChanged(let newSort):
         state.nameSort = newSort
+        return .none
+
+      case .favoriteTapped:
+        state.movie.favorite.toggle()
         return .none
       }
     }
