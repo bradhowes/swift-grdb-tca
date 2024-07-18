@@ -21,6 +21,7 @@
 		BD2265172C3E764F00A975E8 /* SchemaV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265162C3E764F00A975E8 /* SchemaV2.swift */; };
 		BD2265192C3EBF6500A975E8 /* FromStateFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265182C3EBF5E00A975E8 /* FromStateFeature.swift */; };
 		BD22651D2C3FC42E00A975E8 /* FromQueryFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD22651C2C3FC42E00A975E8 /* FromQueryFeature.swift */; };
+		BD3A168D2C48F53E0089082D /* SchemaV5.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3A168C2C48F53E0089082D /* SchemaV5.swift */; };
 		BD3C7FEB2C46548200C68195 /* SchemaV4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3C7FEA2C46548200C68195 /* SchemaV4Tests.swift */; };
 		BD3C7FED2C4654F800C68195 /* SchemaV2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3C7FEC2C4654F800C68195 /* SchemaV2Tests.swift */; };
 		BD3FA9B12C47A62B000AACAB /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3FA9B02C47A626000AACAB /* Utils.swift */; };
@@ -69,6 +70,7 @@
 		BD2265162C3E764F00A975E8 /* SchemaV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV2.swift; sourceTree = "<group>"; };
 		BD2265182C3EBF5E00A975E8 /* FromStateFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromStateFeature.swift; sourceTree = "<group>"; };
 		BD22651C2C3FC42E00A975E8 /* FromQueryFeature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FromQueryFeature.swift; sourceTree = "<group>"; };
+		BD3A168C2C48F53E0089082D /* SchemaV5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV5.swift; sourceTree = "<group>"; };
 		BD3C7FEA2C46548200C68195 /* SchemaV4Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV4Tests.swift; sourceTree = "<group>"; };
 		BD3C7FEC2C4654F800C68195 /* SchemaV2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV2Tests.swift; sourceTree = "<group>"; };
 		BD3C7FEE2C465E9000C68195 /* SwiftDataTCA.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SwiftDataTCA.xctestplan; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				BD2265162C3E764F00A975E8 /* SchemaV2.swift */,
 				BD7338042C408769001D0E04 /* SchemaV3.swift */,
 				BDCDE1C92C4518E2007E5A91 /* SchemaV4.swift */,
+				BD3A168C2C48F53E0089082D /* SchemaV5.swift */,
 				BD7338022C407584001D0E04 /* MockData.swift */,
 			);
 			path = Models;
@@ -396,6 +399,7 @@
 				23A64EA92ACF5855005B6344 /* ModelContextProvider.swift in Sources */,
 				23A64E8A2ACC5312005B6344 /* SwiftDataTCAApp.swift in Sources */,
 				BD2265172C3E764F00A975E8 /* SchemaV2.swift in Sources */,
+				BD3A168D2C48F53E0089082D /* SchemaV5.swift in Sources */,
 				BD8F4DB52C46C7F9004ACF0B /* ActorMoviesView.swift in Sources */,
 				BDCDE1CA2C4518E2007E5A91 /* SchemaV4.swift in Sources */,
 				BD2265192C3EBF6500A975E8 /* FromStateFeature.swift in Sources */,
