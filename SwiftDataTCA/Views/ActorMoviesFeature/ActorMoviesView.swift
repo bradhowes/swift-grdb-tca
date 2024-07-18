@@ -61,8 +61,10 @@ extension ActorMoviesView {
 
     try? context.save()
 
-    return ActorMoviesView(store: Store(initialState: .init(actor: actor)) { ActorMoviesFeature() })
-      .modelContainer(modelContextProvider.container)
+    return NavigationView {
+      ActorMoviesView(store: Store(initialState: .init(actor: actor)) { ActorMoviesFeature() })
+        .modelContainer(modelContextProvider.container)
+    }
   }
 }
 
