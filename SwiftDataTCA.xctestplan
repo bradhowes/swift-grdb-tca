@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "037C6A26-123C-4806-9B55-B2D476B82194",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:SwiftDataTCA.xcodeproj",
+        "identifier" : "BD7338092C4118CA001D0E04",
+        "name" : "SwiftDataTCATests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:SwiftDataTCA.xcodeproj",
+        "identifier" : "BD0DC1DB2C41779D00821D09",
+        "name" : "SwiftDataTCAXCTests"
+      }
+    }
+  ],
+  "version" : 1
+}

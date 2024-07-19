@@ -95,6 +95,7 @@
 		BD8F4DAF2C4689A4004ACF0B /* MovieActorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieActorsView.swift; sourceTree = "<group>"; };
 		BD8F4DB22C46C7E7004ACF0B /* ActorMoviesFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActorMoviesFeature.swift; sourceTree = "<group>"; };
 		BD8F4DB42C46C7F9004ACF0B /* ActorMoviesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActorMoviesView.swift; sourceTree = "<group>"; };
+		BDA64E152C4A3E0F00B04E3A /* SwiftDataTCA.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SwiftDataTCA.xctestplan; sourceTree = "<group>"; };
 		BDCDE1C92C4518E2007E5A91 /* SchemaV4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV4.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -127,6 +128,7 @@
 		23A64E7D2ACC5312005B6344 = {
 			isa = PBXGroup;
 			children = (
+				BDA64E152C4A3E0F00B04E3A /* SwiftDataTCA.xctestplan */,
 				23A64E882ACC5312005B6344 /* SwiftDataTCA */,
 				BD73380B2C4118CA001D0E04 /* SwiftDataTCATests */,
 				BD0DC1DD2C41779D00821D09 /* SwiftDataTCAXCTests */,
