@@ -1,13 +1,14 @@
 PROJ = -project SwiftDataTCA.xcodeproj -skipPackagePluginValidation -skipMacroValidation
 DEST = -scheme SwiftDataTCA -destination "platform=iOS Simulator,name=iPad mini (6th generation)"
+QUIET = -quiet
 
 default: test
 
 build: clean
-	xcodebuild $(PROJ) build-for-testing $(DEST)
+	xcodebuild $(QUIET) $(PROJ) build-for-testing $(DEST)
 
 test: build
-	xcodebuild $(PROJ) test-without-building $(DEST)
+	xcodebuild $(QUIET) $(PROJ) test-without-building $(DEST)
 
 clean:
 	xcodebuild clean ${DEST}
