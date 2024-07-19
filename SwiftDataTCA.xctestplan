@@ -2,9 +2,14 @@
   "configurations" : [
     {
       "id" : "037C6A26-123C-4806-9B55-B2D476B82194",
-      "name" : "Configuration 1",
+      "name" : "Sanitizing",
       "options" : {
-
+        "addressSanitizer" : {
+          "detectStackUseAfterReturn" : true,
+          "enabled" : true
+        },
+        "testExecutionOrdering" : "random",
+        "undefinedBehaviorSanitizerEnabled" : true
       }
     }
   ],

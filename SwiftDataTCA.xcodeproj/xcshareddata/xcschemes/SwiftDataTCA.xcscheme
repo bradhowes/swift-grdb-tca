@@ -30,32 +30,10 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:SwiftDataTCA.xctestplan">
+            reference = "container:SwiftDataTCA.xctestplan"
+            default = "YES">
          </TestPlanReference>
       </TestPlans>
-      <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "BD7338092C4118CA001D0E04"
-               BuildableName = "SwiftDataTCATests.xctest"
-               BlueprintName = "SwiftDataTCATests"
-               ReferencedContainer = "container:SwiftDataTCA.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "BD0DC1DB2C41779D00821D09"
-               BuildableName = "SwiftDataTCAXCTests.xctest"
-               BlueprintName = "SwiftDataTCAXCTests"
-               ReferencedContainer = "container:SwiftDataTCA.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"

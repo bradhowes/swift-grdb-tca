@@ -2,3 +2,6 @@
 /.build
 /Packages
 **/xcuserdata/
+/.DerivedData-iOS/
+/coverage.txt
+/percentage.txt
