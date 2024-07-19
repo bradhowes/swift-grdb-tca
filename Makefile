@@ -4,11 +4,11 @@ QUIET = -quiet
 
 default: test
 
-build: clean
-	xcodebuild $(QUIET) $(PROJ) build-for-testing $(DEST)
-
 test: build
 	xcodebuild $(QUIET) $(PROJ) test-without-building $(DEST)
+
+build: clean
+	xcodebuild $(QUIET) $(PROJ) build-for-testing $(DEST)
 
 clean:
 	xcodebuild clean ${DEST}
