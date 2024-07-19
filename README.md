@@ -15,11 +15,10 @@ The code contains two TCA "features" (combination of a reducer and a SwiftUI vie
 * FromState -- the list of movies to show and work with comes from a SwiftData query done in the feature
 * FromQuery -- the list of movies to show and work with comes from a `@Query` macro in the SwiftUI view
 
-Both SwiftUI views the same interface functionality, including:
+Both SwiftUI views contain the same interface functionality, including:
 
 * Adding a new "random" movie
 * Sorting movies by title
-* Sorting movies by UUID
 * Searching by title content
 * Swiping to mark as a favorite
 * Swiping to delete a movie
