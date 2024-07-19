@@ -19,15 +19,26 @@ struct SwiftDataTCAApp: App {
   }
 
   var body: some Scene {
+    // swiftlint:disable indentation_width
     WindowGroup {
       TabView(selection: $selectedTab) {
-        FromStateView(store: .init(initialState: .init()) { FromStateFeature()._printChanges() })
+        FromStateView(store: .init(initialState: .init()) {
+          FromStateFeature()
+#if PRINT_CHANGES
+            ._printChanges()
+#endif
+        })
         .padding()
         .tabItem {
           Label("State", systemImage: "1.circle")
         }
         .tag(Tab.contentView)
-        FromQueryView(store: .init(initialState: .init()) { FromQueryFeature()._printChanges() })
+        FromQueryView(store: .init(initialState: .init()) {
+          FromQueryFeature()
+#if PRINT_CHANGES
+            ._printChanges()
+#endif
+        })
           .padding()
           .tabItem {
             Label("Query", systemImage: "2.circle")
@@ -36,5 +47,6 @@ struct SwiftDataTCAApp: App {
       }
       .modelContext(modelContextProvider.context)
     }
+    // swiftlint:enable indentation_width
   }
 }

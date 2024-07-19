@@ -31,11 +31,24 @@ internal feature state when necessary to cause a UI update.
 The two features are quite similar and there is some duplication of code, but this was done to make the features 
 self-contained.
 
-![](https://github.com/bradhowes/SwiftDataTCA/blob/main/FromState.gif?raw=true)
-![](https://github.com/bradhowes/SwiftDataTCA/blob/main/FromQuery.gif?raw=true)
+## Drilling Down
 
-The SwiftUI previews operate just like in the simulator or on a device as long as the `mainContext` is used when 
-adding and removing entities.
+The top-level views `FromStateView` and `FromQueryView` start with a TCA `NavigationStack` view builder. The subsequent
+`List` views define a `selection` attribute that toggles a private state in the view (not reflected in the store). When
+this view state value changes, there is an `onChange` block that runs which sends an action to the store that indicates 
+what item was tapped. 
+
+The top-level reducers monitor the `path` actions and handle the selections made by the child views, `ActorMoviesView`
+and `MovieActorsView`. Note that this is a more verbose mechanism than that documented on TCA's 
+[Pushing Features onto the Stack](https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/stackbasednavigation#Pushing-features-onto-the-stack)
+page where the list item is a button which sends the action into the reducer.
+
+Each of the drill-down views can also change the favorite state of a movie, either via toolbar button in 
+the `MovieActorsView` view, or via swiping in the `ActorMoviesView` view.
+
+## Previews
+
+The SwiftUI previews operate pretty much like in the simulator or on a physical device.
 
 ## Tests
 

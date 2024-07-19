@@ -26,11 +26,8 @@ private struct MoviesListView: View {
     List(store.movies, id: \.self, selection: $selectedMovie) { movie in
       Utils.MovieView(movie: movie)
         .swipeActions {
-          Button {
+          Utils.favoriteSwipeAction(movie) {
             store.send(.favoriteSwiped(movie), animation: .bouncy)
-          } label: {
-            Label(movie.favorite ? "Unfavorite" : "Favorite", systemImage: "star")
-              .foregroundStyle(.blue)
           }
         }
     }

@@ -1,6 +1,7 @@
 import SwiftUI
 
 enum Utils {
+
   static func pickerView(title: String, binding: Binding<SortOrder?>) -> some View {
     Picker(title, selection: binding) {
       Text(title + " ↑").tag(SortOrder?.some(.forward))
@@ -21,10 +22,10 @@ enum Utils {
       VStack(alignment: .leading) {
         Text(movie.title)
           .font(.headline)
+          .foregroundStyle(movie.favorite ? .blue : .black)
         Text(actorNames)
           .font(.caption2)
       }
-      .background(movie.favorite ? .blue : .clear)
     }
   }
 
@@ -43,6 +44,19 @@ enum Utils {
         Text(movieTitles)
           .font(.caption2)
       }
+    }
+  }
+
+  static func favoriteSwipeAction(_ movie: Movie, action: @escaping () -> Void) -> some View {
+    Button(action: action) {
+      Label("Favorite", systemImage: "star")
+    }
+    .tint(.blue)
+  }
+
+  static func deleteSwipeAction(_ movie: Movie, action: @escaping () -> Void) -> some View {
+    Button(role: .destructive, action: action) {
+      Label("Delete", systemImage: "trash")
     }
   }
 }

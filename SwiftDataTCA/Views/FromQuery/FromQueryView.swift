@@ -52,16 +52,11 @@ private struct MovieListView: View {
     List(moviesQuery, id: \.self, selection: $selectedMovie) { movie in
       Utils.MovieView(movie: movie)
         .swipeActions {
-          Button(role: .destructive) {
+          Utils.deleteSwipeAction(movie) {
             store.send(.deleteSwiped(movie), animation: .snappy)
-          } label: {
-            Label("Delete", systemImage: "trash")
           }
-          Button {
+          Utils.favoriteSwipeAction(movie) {
             store.send(.favoriteSwiped(movie), animation: .bouncy)
-          } label: {
-            Label(movie.favorite ? "Unfavorite" : "Favorite", systemImage: "star")
-              .foregroundStyle(.blue)
           }
         }
     }

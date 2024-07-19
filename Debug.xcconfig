@@ -1,0 +1,11 @@
+//
+//  Config.xcconfig
+//  SwiftDataTCA
+//
+//  Created by Brad Howes on 19/07/2024.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+PRINT_CHANGES = 1

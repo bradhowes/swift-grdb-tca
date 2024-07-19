@@ -47,17 +47,12 @@ private struct MovieListView: View {
   var body: some View {
     List(store.movies, id: \.self, selection: $selectedMovie) { movie in
       Utils.MovieView(movie: movie)
-        .swipeActions {
-          Button(role: .destructive) {
+        .swipeActions(allowsFullSwipe: false) {
+          Utils.deleteSwipeAction(movie) {
             store.send(.deleteSwiped(movie), animation: .snappy)
-          } label: {
-            Label("Delete", systemImage: "trash")
           }
-          Button {
+          Utils.favoriteSwipeAction(movie) {
             store.send(.favoriteSwiped(movie), animation: .bouncy)
-          } label: {
-            Label(movie.favorite ? "Unfavorite" : "Favorite", systemImage: "star")
-              .foregroundStyle(.blue)
           }
         }
     }
