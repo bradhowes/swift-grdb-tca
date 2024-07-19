@@ -27,6 +27,31 @@ enum SchemaV3: VersionedSchema {
   }
 }
 
+extension SchemaV3 {
+
+  static func movieFetchDescriptor(
+    titleSort: SortOrder?,
+    uuidSort: SortOrder?,
+    searchString: String
+  ) -> FetchDescriptor<_Movie> {
+    let sortBy: [SortDescriptor<_Movie>] = [
+      sortBy(\.sortableTitle, order: titleSort),
+      sortBy(\.id, order: uuidSort)
+    ].compactMap { $0 }
+
+    let predicate: Predicate<_Movie> = #Predicate<_Movie> {
+      searchString.isEmpty ? true : $0.title.localizedStandardContains(searchString)
+    }
+
+    return FetchDescriptor(predicate: predicate, sortBy: sortBy)
+  }
+
+  static func sortBy<Value: Comparable>(_ key: KeyPath<_Movie, Value>, order: SortOrder?) -> SortDescriptor<_Movie>? {
+    guard let order else { return nil }
+    return .init(key, order: order)
+  }
+}
+
 extension SchemaV3._Movie {
 
   static var mock: SchemaV3._Movie {

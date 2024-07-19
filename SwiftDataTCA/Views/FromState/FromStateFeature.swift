@@ -19,17 +19,8 @@ struct FromStateFeature {
     var titleSort: SortOrder? = .forward
     var isSearchFieldPresented = false
     var searchString: String = ""
-    var fetchDescriptor: FetchDescriptor<Movie> { .init(predicate: self.predicate, sortBy: self.sort) }
-    var predicate: Predicate<Movie> {
-      #Predicate<Movie> {
-        searchString.isEmpty ? true : $0.title.localizedStandardContains(searchString)
-      }
-    }
-    var sort: [SortDescriptor<Movie>] { [sortBy(\.sortableTitle, order: titleSort)].compactMap { $0 } }
-
-    private func sortBy<Value: Comparable>(_ key: KeyPath<Movie, Value>, order: SortOrder?) -> SortDescriptor<Movie>? {
-      guard let order else { return nil }
-      return .init(key, order: order)
+    var fetchDescriptor: FetchDescriptor<Movie> {
+      ActiveSchema.movieFetchDescriptor(titleSort: self.titleSort, searchString: searchString)
     }
   }
 

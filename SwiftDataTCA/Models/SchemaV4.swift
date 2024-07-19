@@ -72,6 +72,25 @@ enum SchemaV4: VersionedSchema {
 
     return actor
   }
+
+  static func movieFetchDescriptor(titleSort: SortOrder?, searchString: String) -> FetchDescriptor<_Movie> {
+    let sortBy: [SortDescriptor<Movie>] = [sortBy(\.sortableTitle, order: titleSort)].compactMap { $0 }
+    let predicate: Predicate<Movie> = #Predicate<Movie> {
+      searchString.isEmpty ? true : $0.title.localizedStandardContains(searchString)
+    }
+
+    var fetchDescriptor = FetchDescriptor(predicate: predicate, sortBy: sortBy)
+
+    // Fetch related actors since we show their names in movie listings
+    fetchDescriptor.relationshipKeyPathsForPrefetching = [\.actors]
+
+    return fetchDescriptor
+  }
+
+  static func sortBy<Value: Comparable>(_ key: KeyPath<_Movie, Value>, order: SortOrder?) -> SortDescriptor<_Movie>? {
+    guard let order else { return nil }
+    return .init(key, order: order)
+  }
 }
 
 extension SchemaV4._Movie: Sendable {}
