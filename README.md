@@ -1,4 +1,8 @@
-# Note about Fork
+[![CI](https://github.com/bradhowes/SwiftDataTCA/actions/workflows/CI.yml/badge.svg)](https://github.com/bradhowes/SwiftDataTCA/actions/workflows/CI.yml)
+[![COV](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/bradhowes/54c92d8df32d9a1b64d945f2e76696f1/raw/SwiftDataTCA-coverage.json)](https://github.com/bradhowes/SwiftDataTCA/actions/workflows/CI.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-A31F34.svg)](https://opensource.org/licenses/MIT)
+
+# Introduction
 
 This is a fork of the [SwiftDataTCA](https://github.com/SouzaRodrigo61/SwiftDataTCA) repo by 
 [Rodrigo Santos de Souza](https://github.com/SouzaRodrigo61) that I've used to explore how best to incorporate 
