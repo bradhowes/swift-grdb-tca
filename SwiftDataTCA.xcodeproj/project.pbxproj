@@ -131,7 +131,6 @@
 		23A64E7D2ACC5312005B6344 = {
 			isa = PBXGroup;
 			children = (
-				BDA64E112C49A76200B04E3A /* Tests.xctestplan */,
 				23A64E882ACC5312005B6344 /* SwiftDataTCA */,
 				BD73380B2C4118CA001D0E04 /* SwiftDataTCATests */,
 				BD0DC1DD2C41779D00821D09 /* SwiftDataTCAXCTests */,
@@ -164,6 +163,7 @@
 				23A64E952ACC5313005B6344 /* Info.plist */,
 				23A64E922ACC5313005B6344 /* Preview Content */,
 				23A64EAB2AD1AB36005B6344 /* Models */,
+				BDA64E112C49A76200B04E3A /* Tests.xctestplan */,
 			);
 			path = SwiftDataTCA;
 			sourceTree = "<group>";
