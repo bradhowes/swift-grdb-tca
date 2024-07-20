@@ -13,7 +13,7 @@ struct SchemaV5Tests {
   /// NOTE to self: do not use `await container.mainContext` in tests
   /// NOTE to self: do not run Swift Data tests in parallel
 
-  @Test("Creating V5 DB", .disabled("causes crash"))
+  @Test("Creating V5 DB")
   func creatingV5Database() async throws {
     let schema = Schema(versionedSchema: SchemaV5.self)
     let config = ModelConfiguration("V55555", schema: schema, isStoredInMemoryOnly: true)
@@ -71,7 +71,7 @@ struct SchemaV5Tests {
     #expect(actors[0].movies[1].actors.contains(actors[0]))
   }
 
-  @Test("Migrating from V4 to V5", .disabled("causes crash"))
+  @Test("Migrating from V4 to V5")
   func migrationV4V5() async throws {
     let url = FileManager.default.temporaryDirectory.appending(component: "Model5.sqlite")
     try? FileManager.default.removeItem(at: url)
@@ -82,18 +82,35 @@ struct SchemaV5Tests {
 
     @Dependency(\.uuid) var uuid
     let contextV4 = ModelContext(containerV4)
-    contextV4.insert(SchemaV3._Movie(id: uuid(), title: "El Mariachi", cast: ["Foo Bar"]))
-    contextV4.insert(SchemaV3._Movie(id: uuid(), title: "The Way We Were", cast: ["Babs Strei", "Bob Woodward"]))
-    contextV4.insert(SchemaV3._Movie(id: uuid(), title: "Le Monde", cast: ["Côme Hier"]))
-    contextV4.insert(SchemaV3._Movie(id: uuid(), title: "Las Escuela", cast: ["Maria", "Foo Bar"]))
-    contextV4.insert(SchemaV3._Movie(id: uuid(), title: "La Piscine", cast: ["Valerie", "Bob Woodward", "Babs Strei"]))
-    contextV4.insert(SchemaV3._Movie(id: uuid(), title: "A Time To Die", cast: ["Ralph", "Mary"]))
-    contextV4.insert(SchemaV3._Movie(id: uuid(), title: "Los Hermanos", cast: ["Harrison"]))
-    contextV4.insert(SchemaV3._Movie(id: uuid(), title: "Les Enfants", cast: ["Zoe"]))
+    let m1 = SchemaV4._Movie(id: uuid(), title: "The First Movie", favorite: true)
+    contextV4.insert(m1)
+    let m2 = SchemaV4._Movie(id: uuid(), title: "A Second Movie", favorite: false)
+    contextV4.insert(m2)
+    let m3 = SchemaV4._Movie(id: uuid(), title: "El Third Movie", favorite: true)
+    contextV4.insert(m3)
+    let a1 = SchemaV4._Actor(id: uuid(), name: "Actor 1")
+    contextV4.insert(a1)
+    let a2 = SchemaV4._Actor(id: uuid(), name: "Actor 2")
+    contextV4.insert(a2)
+    let a3 = SchemaV4._Actor(id: uuid(), name: "Actor 3")
+    contextV4.insert(a3)
+    let a4 = SchemaV4._Actor(id: uuid(), name: "Actor 4")
+    contextV4.insert(a4)
+
+    m1.addActor(a1)
+    m1.addActor(a2)
+    m1.addActor(a3)
+
+    m2.addActor(a1)
+    m2.addActor(a4)
+
+    m3.addActor(a2)
+
     try! contextV4.save()
-    let moviesV4 = try! contextV4.fetch(FetchDescriptor<SchemaV4._Movie>(sortBy: [.init(\.title, order: .forward)]))
-    #expect(moviesV4[0].title == "A Time To Die")
-    #expect(moviesV4[1].title == "El Mariachi")
+    let moviesV4 = try! contextV4.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, searchString: ""))
+    #expect(moviesV4[0].title == "The First Movie")
+    #expect(moviesV4[1].title == "A Second Movie")
+    #expect(moviesV4[2].title == "El Third Movie")
 
     // Migrate to V5
     let schemaV5 = Schema(versionedSchema: SchemaV5.self)
@@ -102,26 +119,19 @@ struct SchemaV5Tests {
                                           configurations: configV5)
 
     let contextV5 = ModelContext(containerV5)
-    let moviesV5 = try! contextV5.fetch(FetchDescriptor<SchemaV5._Movie>(sortBy: [
-      .init(\.sortableTitle, order: .forward)
-    ]))
+    let moviesV5 = try! contextV5.fetch(SchemaV5.movieFetchDescriptor(titleSort: .forward, searchString: ""))
 
     #expect(moviesV5.count == moviesV4.count)
-    #expect(moviesV5[0].title == "Les Enfants")
-    #expect(moviesV5[0].actors.count == 1)
-    #expect(moviesV5[0].actors[0].name == "Zoe")
+    #expect(moviesV5[0].title == "The First Movie")
+    #expect(moviesV5[0].actors.count == 3)
 
-    #expect(moviesV5[7].title == "The Way We Were")
-    #expect(moviesV5[7].actors.count == 2)
-    #expect(moviesV5[7].actors[0].name == "Babs Strei" || moviesV5[7].actors[0].name == "Bob Woodward")
+    #expect(moviesV5[1].title == "A Second Movie")
+    #expect(moviesV5[1].actors.count == 2)
+    #expect(moviesV5[1].actors[0].name == "Actor 1" || moviesV5[1].actors[1].name == "Actor 4")
 
-    let actorsV5 = try! contextV4.fetch(FetchDescriptor<SchemaV5._Actor>(sortBy: [
-      .init(\.name, order: .forward)
-    ]))
-
-    #expect(actorsV5.count == 10)
-    #expect(actorsV5[0].name == "Babs Strei")
-    #expect(actorsV5[0].movies.count == 2)
+    #expect(moviesV5[2].title == "El Third Movie")
+    #expect(moviesV5[2].actors.count == 1)
+    #expect(moviesV5[2].actors[0].name == "Actor 2")
   }
 }
 
@@ -136,14 +146,6 @@ enum MockMigrationPlanV5: SchemaMigrationPlan {
     [
       StageV5.stage
     ]
-  }
-}
-
-private struct LCRNG: RandomNumberGenerator {
-  var seed: UInt64
-  mutating func next() -> UInt64 {
-    self.seed = 2_862_933_555_777_941_757 &* self.seed &+ 3_037_000_493
-    return self.seed
   }
 }
 

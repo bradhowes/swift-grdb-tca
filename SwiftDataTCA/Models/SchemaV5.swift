@@ -1,13 +1,14 @@
 import Foundation
 import SwiftData
 
+/// Schema v5 removes the UUID attributes from the models.
 enum SchemaV5: VersionedSchema {
   static var versionIdentifier: Schema.Version { .init(5, 0, 0) }
 
   static var models: [any PersistentModel.Type] {
     [
-      Actor.self,
-      Movie.self
+      _Actor.self,
+      _Movie.self
     ]
   }
 
@@ -50,14 +51,13 @@ enum SchemaV5: VersionedSchema {
     }
   }
 
-  static func makeMock(context: ModelContext) {
-    let entry = Support.mockMovieEntry
+  static func makeMock(context: ModelContext, entry: (title: String, cast: [String])) {
     let movie = _Movie(title: entry.0)
     context.insert(movie)
 
-    for name in entry.1 {
-      let actor = fetchOrMakeActor(context, name: name)
-      movie.actors.append(actor)
+    let actors = entry.cast.map { fetchOrMakeActor(context, name: $0) }
+    movie.actors = actors
+    for actor in actors {
       actor.movies.append(movie)
     }
   }
@@ -73,6 +73,23 @@ enum SchemaV5: VersionedSchema {
     context.insert(actor)
 
     return actor
+  }
+
+  static func movieFetchDescriptor(titleSort: SortOrder?, searchString: String) -> FetchDescriptor<_Movie> {
+    let sortBy: [SortDescriptor<_Movie>] = [sortBy(\.sortableTitle, order: titleSort)].compactMap { $0 }
+    let predicate: Predicate<_Movie> = #Predicate<_Movie> {
+      searchString.isEmpty ? true : $0.title.localizedStandardContains(searchString)
+    }
+
+    var fetchDescriptor = FetchDescriptor(predicate: predicate, sortBy: sortBy)
+    fetchDescriptor.relationshipKeyPathsForPrefetching = [\.actors]
+
+    return fetchDescriptor
+  }
+
+  static func sortBy<Value: Comparable>(_ key: KeyPath<_Movie, Value>, order: SortOrder?) -> SortDescriptor<_Movie>? {
+    guard let order else { return nil }
+    return .init(key, order: order)
   }
 }
 

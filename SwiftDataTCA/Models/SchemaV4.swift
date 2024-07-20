@@ -2,13 +2,15 @@ import Dependencies
 import Foundation
 import SwiftData
 
+/// Schema v4 has a new `_Actor` model that holds the unique name of an actor. It also establishes a many-to-many
+/// relationship between `_Movie` entities and `_Actor` entities.
 enum SchemaV4: VersionedSchema {
   static var versionIdentifier: Schema.Version { .init(4, 0, 0) }
 
   static var models: [any PersistentModel.Type] {
     [
-      Actor.self,
-      Movie.self
+      _Actor.self,
+      _Movie.self
     ]
   }
 
@@ -73,15 +75,21 @@ enum SchemaV4: VersionedSchema {
     return actor
   }
 
+  /**
+   Obtain a `FetchDescriptor` that will return an ordered and possibly filtered set of known `_Movie` entities.
+   Ordering is done on the `_Movie.sortableTitle` attribute.
+
+   - parameter titleSort: the direction of the ordering -- alphabetical or reveresed alphabetical
+   - parameter searchString: if not empty, only return `_Movie` entities whose `title` contains the search string
+   - returns: new `FetchDescriptor`
+   */
   static func movieFetchDescriptor(titleSort: SortOrder?, searchString: String) -> FetchDescriptor<_Movie> {
-    let sortBy: [SortDescriptor<Movie>] = [sortBy(\.sortableTitle, order: titleSort)].compactMap { $0 }
-    let predicate: Predicate<Movie> = #Predicate<Movie> {
+    let sortBy: [SortDescriptor<_Movie>] = [sortBy(\.sortableTitle, order: titleSort)].compactMap { $0 }
+    let predicate: Predicate<_Movie> = #Predicate<_Movie> {
       searchString.isEmpty ? true : $0.title.localizedStandardContains(searchString)
     }
 
     var fetchDescriptor = FetchDescriptor(predicate: predicate, sortBy: sortBy)
-
-    // Fetch related actors since we show their names in movie listings
     fetchDescriptor.relationshipKeyPathsForPrefetching = [\.actors]
 
     return fetchDescriptor
