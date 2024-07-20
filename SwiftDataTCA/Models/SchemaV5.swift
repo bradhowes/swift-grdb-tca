@@ -45,7 +45,6 @@ enum SchemaV5: VersionedSchema {
      - parameter actor: the `Actor` to add
      */
     func addActor(_ actor: _Actor) {
-      guard !actors.contains(actor) else { return }
       actors.append(actor)
       actor.movies.append(self)
     }

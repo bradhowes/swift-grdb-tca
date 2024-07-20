@@ -127,7 +127,7 @@ struct SchemaV5Tests {
 
     #expect(moviesV5[1].title == "A Second Movie")
     #expect(moviesV5[1].actors.count == 2)
-    #expect(moviesV5[1].actors[0].name == "Actor 1" || moviesV5[1].actors[1].name == "Actor 4")
+    #expect(moviesV5[1].actors[0].name == "Actor 1" || moviesV5[1].actors[0].name == "Actor 4")
 
     #expect(moviesV5[2].title == "El Third Movie")
     #expect(moviesV5[2].actors.count == 1)

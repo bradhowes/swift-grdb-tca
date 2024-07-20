@@ -29,6 +29,12 @@ enum SchemaV3: VersionedSchema {
 
 extension SchemaV3 {
 
+  static func makeMock(context: ModelContext, entry: (title: String, cast: [String])) {
+    @Dependency(\.uuid) var uuid
+    let movie = _Movie(id: uuid(), title: entry.title, cast: entry.cast)
+    context.insert(movie)
+  }
+
   static func movieFetchDescriptor(
     titleSort: SortOrder?,
     uuidSort: SortOrder?,
@@ -49,15 +55,6 @@ extension SchemaV3 {
   static func sortBy<Value: Comparable>(_ key: KeyPath<_Movie, Value>, order: SortOrder?) -> SortDescriptor<_Movie>? {
     guard let order else { return nil }
     return .init(key, order: order)
-  }
-}
-
-extension SchemaV3._Movie {
-
-  static var mock: SchemaV3._Movie {
-    @Dependency(\.uuid) var uuid
-    let entry = Support.mockMovieEntry
-    return SchemaV3._Movie(id: uuid(), title: entry.0, cast: entry.1)
   }
 }
 

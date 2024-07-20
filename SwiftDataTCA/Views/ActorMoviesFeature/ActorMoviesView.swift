@@ -43,19 +43,18 @@ private struct MoviesListView: View {
 extension ActorMoviesView {
   static var preview: some View {
     @Dependency(\.modelContextProvider) var modelContextProvider
-    @Dependency(\.uuid) var uuid
     let context = modelContextProvider.context
-    let actor = Actor(id: uuid(), name: "Marlon Brando")
+    let actor = Actor(name: "Marlon Brando")
     context.insert(actor)
-    let movie1 = Movie(id: uuid(), title: "The Godfather")
+    let movie1 = Movie(title: "The Godfather")
     context.insert(movie1)
-    let movie2 = Movie(id: uuid(), title: "Last Tango in Paris")
+    let movie2 = Movie(title: "Last Tango in Paris")
     context.insert(movie2)
-    let movie3 = Movie(id: uuid(), title: "On the Waterfront")
+    let movie3 = Movie(title: "On the Waterfront")
     context.insert(movie3)
-    let movie4 = Movie(id: uuid(), title: "A Streetcar Named Desire")
+    let movie4 = Movie(title: "A Streetcar Named Desire")
     context.insert(movie4)
-    let movie5 = Movie(id: uuid(), title: "Apocalypse Now")
+    let movie5 = Movie(title: "Apocalypse Now")
     context.insert(movie5)
 
     actor.movies = [movie1, movie2, movie3, movie4, movie5]

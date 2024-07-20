@@ -10,6 +10,7 @@ enum MigrationPlan: SchemaMigrationPlan {
       SchemaV2.self,
       SchemaV3.self,
       SchemaV4.self,
+      SchemaV5.self,
     ]
   }
 
@@ -18,6 +19,7 @@ enum MigrationPlan: SchemaMigrationPlan {
       .lightweight(fromVersion: SchemaV1.self, toVersion: SchemaV2.self),
       StageV3.stage,
       StageV4.stage,
+      StageV5.stage,
     ]
   }
 }

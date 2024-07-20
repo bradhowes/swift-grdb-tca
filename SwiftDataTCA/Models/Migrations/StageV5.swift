@@ -49,9 +49,10 @@ private func importV5(context: ModelContext) throws {
   for old in movies {
     let movie = SchemaV5._Movie(title: old.title, favorite: old.favorite)
     context.insert(movie)
-    for name in old.actors {
-      let actor = SchemaV5.fetchOrMakeActor(context, name: name)
-      movie.addActor(actor)
+    let actors = old.actors.map { SchemaV5.fetchOrMakeActor(context, name: $0) }
+    movie.actors = actors
+    for actor in actors {
+      actor.movies.append(movie)
     }
   }
   try context.save()

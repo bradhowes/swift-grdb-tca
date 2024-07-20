@@ -46,13 +46,11 @@ private func importV4(context: ModelContext) throws {
     let movie = SchemaV4._Movie(id: old.id, title: old.title, favorite: old.favorite)
     print("Old: \(old.title) - \(old.cast)")
     context.insert(movie)
-    for name in old.cast {
-      let actor = SchemaV4.fetchOrMakeActor(context, name: name)
-      movie.actors.append(actor)
+    let actors = old.cast.map { SchemaV4.fetchOrMakeActor(context, name: $0) }
+    movie.actors = actors
+    for actor in actors {
       actor.movies.append(movie)
-      print("Actor: \(actor.name) - \(actor.movies.map { $0.title })")
     }
-    print("New: \(movie.title) - \(movie.actors.map { $0.name })")
   }
   try context.save()
 }

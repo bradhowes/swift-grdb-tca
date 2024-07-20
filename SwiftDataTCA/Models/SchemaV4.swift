@@ -44,10 +44,13 @@ enum SchemaV4: VersionedSchema {
     }
 
     func addActor(_ actor: _Actor) {
-      self.actors.append(actor)
+      actors.append(actor)
       actor.movies.append(self)
     }
   }
+}
+
+extension SchemaV4 {
 
   static func makeMock(context: ModelContext, entry: (title: String, cast: [String])) {
     @Dependency(\.uuid) var uuid

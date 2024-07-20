@@ -2,7 +2,7 @@ import Dependencies
 import Foundation
 import SwiftData
 
-typealias ActiveSchema = SchemaV4
+typealias ActiveSchema = SchemaV5
 typealias Actor = ActiveSchema._Actor
 typealias Movie = ActiveSchema._Movie
 
@@ -49,7 +49,7 @@ private let liveContainer: ModelContainer = {
 }()
 
 /// Create a ModelContainer to be used in test and preview environments.
-private let inMemoryContainer: ModelContainer = {
+private func inMemoryContainer() -> ModelContainer {
   do {
     let schema = Schema(versionedSchema: ActiveSchema.self)
     let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, allowsSave: true)
@@ -57,15 +57,16 @@ private let inMemoryContainer: ModelContainer = {
   } catch {
     fatalError("Failed to create in-memory container.")
   }
-}()
+}
+
+private let previewContainer: ModelContainer = inMemoryContainer()
 
 @MainActor private let liveContext: (() -> ModelContext) = { liveContainer.mainContext }
-@MainActor private let previewContext: (() -> ModelContext) = { inMemoryContainer.mainContext }
-@MainActor private let testContext: (() -> ModelContext) = { ModelContext(inMemoryContainer) }
+@MainActor private let previewContext: (() -> ModelContext) = { previewContainer.mainContext }
+@MainActor private let testContext: (() -> ModelContext) = { ModelContext(inMemoryContainer()) }
 
 private func loadPreview(_ context: ModelContext) {
-  @Dependency(\.uuid) var uuid
-  SchemaV4.makeMock(context: context, entry: Support.mockMovieEntry)
+  ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)
 }
 
 #if hasFeature(RetroactiveAttribute)

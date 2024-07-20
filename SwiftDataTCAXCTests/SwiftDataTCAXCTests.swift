@@ -9,11 +9,11 @@ import XCTest
 final class SwiftDataTCAXCTests: XCTestCase {
 
   override func setUpWithError() throws {
-    // Put setup code here. This method is called before the invocation of each test method in the class.
   }
 
   override func tearDownWithError() throws {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    @Dependency(\.modelContextProvider.container) var container
+    container.deleteAllData()
   }
 
   @MainActor
@@ -21,11 +21,10 @@ final class SwiftDataTCAXCTests: XCTestCase {
     let store = TestStore(initialState: FromStateFeature.State()) {
       FromStateFeature()
     } withDependencies: {
-      $0.uuid = .constant(UUID(0))
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
       $0.database.add = {
         @Dependency(\.modelContextProvider.context) var context
-        SchemaV4.makeMock(context: context, entry: Support.mockMovieEntry)
+        ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)
       }
       $0.database.fetchMovies = { descriptor in
         @Dependency(\.modelContextProvider.context) var context
@@ -43,21 +42,91 @@ final class SwiftDataTCAXCTests: XCTestCase {
     await store.send(.addButtonTapped)
     await store.receive(\._fetchMovies)
 
-    print(store.state.movies.map { $0.title })
-    print(store.state.movies.map { $0.id })
-
     XCTAssertEqual(1, store.state.movies.count)
     XCTAssertEqual("Avatar", store.state.movies[0].title)
   }
 
   @MainActor
-  func testMovieMock() async {
+  func testFromStateDeleteSwiped() async throws {
+    let store = TestStore(initialState: FromStateFeature.State()) {
+      FromStateFeature()
+    } withDependencies: {
+      $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
+      $0.database.add = {
+        @Dependency(\.modelContextProvider.context) var context
+        ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)
+      }
+      $0.database.delete = { movie in
+        @Dependency(\.modelContextProvider.context) var context
+        context.delete(movie)
+      }
+      $0.database.fetchMovies = { descriptor in
+        @Dependency(\.modelContextProvider.context) var context
+        return (try? context.fetch(descriptor)) ?? []
+      }
+      $0.database.save = {
+        @Dependency(\.modelContextProvider.context) var context
+        try? context.save()
+      }
+    }
+
+    XCTAssertTrue(store.state.movies.isEmpty)
+
+    store.exhaustivity = .off
+    await store.send(.addButtonTapped)
+    await store.receive(\._fetchMovies)
+
+    XCTAssertEqual(1, store.state.movies.count)
+    XCTAssertEqual("Avatar", store.state.movies[0].title)
+
+    await store.send(.deleteSwiped(store.state.movies[0]))
+    await store.receive(\._fetchMovies)
+
+    XCTAssertEqual(0, store.state.movies.count)
+  }
+
+  @MainActor
+  func testFromStateFavoriteSwiped() async throws {
+    let store = TestStore(initialState: FromStateFeature.State()) {
+      FromStateFeature()
+    } withDependencies: {
+      $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
+      $0.database.add = {
+        @Dependency(\.modelContextProvider.context) var context
+        ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)
+      }
+      $0.database.fetchMovies = { descriptor in
+        @Dependency(\.modelContextProvider.context) var context
+        return (try? context.fetch(descriptor)) ?? []
+      }
+      $0.database.save = {
+        @Dependency(\.modelContextProvider.context) var context
+        try? context.save()
+      }
+    }
+
+    XCTAssertTrue(store.state.movies.isEmpty)
+
+    store.exhaustivity = .off
+    await store.send(.addButtonTapped)
+    await store.receive(\._fetchMovies)
+
+    XCTAssertEqual(1, store.state.movies.count)
+    XCTAssertEqual("Avatar", store.state.movies[0].title)
+    XCTAssertFalse(store.state.movies[0].favorite)
+
+    await store.send(.favoriteSwiped(store.state.movies[0]))
+
+    XCTAssertTrue(store.state.movies[0].favorite)
+  }
+
+  @MainActor
+  func testMockMovieEntry() async {
     withDependencies {
-      $0.uuid = .incrementing
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
     } operation: {
-      XCTAssertEqual(SchemaV3._Movie.mock.title, "Avatar")
-      XCTAssertEqual(SchemaV3._Movie.mock.title, "After Earth")
+      XCTAssertEqual(Support.mockMovieEntry.0, "Avatar")
+      XCTAssertEqual(Support.mockMovieEntry.0, "After Earth")
     }
   }
 

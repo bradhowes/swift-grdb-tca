@@ -76,10 +76,30 @@ struct SchemaV3Tests {
     context.insert(m3)
 
     try! context.save()
+  }
 
-    let movies = try! context.fetch(FetchDescriptor<SchemaV3._Movie>(sortBy: [.init(\.sortableTitle, order: .forward)]))
-    print(movies.map { $0.sortableTitle })
-    print(movies.map { $0.title })
+  @Test func fetchingV3() async throws {
+    let schema = Schema(versionedSchema: SchemaV3.self)
+    print(schema.entitiesByName)
+    let config = ModelConfiguration("creatingV3Database", schema: schema, isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: schema, configurations: config)
+    let context = ModelContext(container)
+
+    withDependencies {
+      $0.uuid = .incrementing
+    } operation: {
+      @Dependency(\.uuid) var uuid
+
+      let m1 = SchemaV3._Movie(id: uuid(), title: "A Second Movie", cast: ["Actor 1", "Actor 4"])
+      context.insert(m1)
+      let m2 = SchemaV3._Movie(id: uuid(), title: "The First Movie", cast: ["Actor 1", "Actor 2", "Actor 3"])
+      context.insert(m2)
+      let m3 = SchemaV3._Movie(id: uuid(), title: "El Third Movie", cast: ["Actor 2"])
+      context.insert(m3)
+    }
+
+    try! context.save()
+    var movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .forward, uuidSort: .reverse, searchString: ""))
 
     #expect(movies.count == 3)
     #expect(movies[0].title == "The First Movie")
@@ -88,6 +108,24 @@ struct SchemaV3Tests {
 
     #expect(movies[0].cast.count == 3)
     #expect(movies[0].cast[0] == "Actor 1")
+
+    movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .reverse, uuidSort: .reverse, searchString: ""))
+    #expect(movies.count == 3)
+    #expect(movies[2].title == "The First Movie")
+    #expect(movies[1].title == "A Second Movie")
+    #expect(movies[0].title == "El Third Movie")
+
+    movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .none, uuidSort: .forward, searchString: ""))
+    #expect(movies.count == 3)
+    #expect(movies[0].title == "A Second Movie")
+    #expect(movies[1].title == "The First Movie")
+    #expect(movies[2].title == "El Third Movie")
+
+    movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .none, uuidSort: .reverse, searchString: ""))
+    #expect(movies.count == 3)
+    #expect(movies[2].title == "A Second Movie")
+    #expect(movies[1].title == "The First Movie")
+    #expect(movies[0].title == "El Third Movie")
   }
 }
 
