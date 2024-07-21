@@ -17,6 +17,7 @@
 		23A64EAD2AD1AB46005B6344 /* MigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64EAC2AD1AB46005B6344 /* MigrationPlan.swift */; };
 		80180C422AFBECC900ADAB03 /* FromQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80180C412AFBECC900ADAB03 /* FromQueryView.swift */; };
 		BD0DC1DF2C41779D00821D09 /* FromStateFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0DC1DE2C41779D00821D09 /* FromStateFeatureTests.swift */; };
+		BD21828A2C4D35DA00FCB16E /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = BD2182892C4D35DA00FCB16E /* SnapshotTesting */; };
 		BD2265152C3E763F00A975E8 /* SchemaV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265142C3E763F00A975E8 /* SchemaV1.swift */; };
 		BD2265172C3E764F00A975E8 /* SchemaV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265162C3E764F00A975E8 /* SchemaV2.swift */; };
 		BD2265192C3EBF6500A975E8 /* FromStateFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265182C3EBF5E00A975E8 /* FromStateFeature.swift */; };
@@ -43,9 +44,6 @@
 		BDA1820A2C4D00FD001ACC6F /* SchemaV5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA182092C4D00FD001ACC6F /* SchemaV5Tests.swift */; };
 		BDA1820C2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA1820B2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift */; };
 		BDA1820E2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA1820D2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift */; };
-		BDA182152C4D1860001ACC6F /* Prefire in Frameworks */ = {isa = PBXBuildFile; productRef = BDA182142C4D1860001ACC6F /* Prefire */; };
-		BDA182182C4D1890001ACC6F /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = BDA182172C4D1890001ACC6F /* SnapshotTesting */; };
-		BDA1821A2C4D1A60001ACC6F /* Prefire in Frameworks */ = {isa = PBXBuildFile; productRef = BDA182192C4D1A60001ACC6F /* Prefire */; };
 		BDCDE1CA2C4518E2007E5A91 /* SchemaV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDCDE1C92C4518E2007E5A91 /* SchemaV4.swift */; };
 		BDF299C52C4A69AC00D7EB85 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BDF299C42C4A69AC00D7EB85 /* Debug.xcconfig */; };
 		BDF299C62C4A69AC00D7EB85 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BDF299C42C4A69AC00D7EB85 /* Debug.xcconfig */; };
@@ -124,7 +122,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDA1821A2C4D1A60001ACC6F /* Prefire in Frameworks */,
 				23A64E9D2ACC5DFE005B6344 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,8 +130,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDA182152C4D1860001ACC6F /* Prefire in Frameworks */,
-				BDA182182C4D1890001ACC6F /* SnapshotTesting in Frameworks */,
+				BD21828A2C4D35DA00FCB16E /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,7 +328,6 @@
 			name = SwiftDataTCA;
 			packageProductDependencies = (
 				23A64E9C2ACC5DFE005B6344 /* ComposableArchitecture */,
-				BDA182192C4D1A60001ACC6F /* Prefire */,
 			);
 			productName = SwiftDataTCA;
 			productReference = 23A64E862ACC5312005B6344 /* SwiftDataTCA.app */;
@@ -349,13 +344,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				BDA182132C4D17EA001ACC6F /* PBXTargetDependency */,
 				BD0DC1E12C41779D00821D09 /* PBXTargetDependency */,
 			);
 			name = SwiftDataTCAXCTests;
 			packageProductDependencies = (
-				BDA182142C4D1860001ACC6F /* Prefire */,
-				BDA182172C4D1890001ACC6F /* SnapshotTesting */,
+				BD2182892C4D35DA00FCB16E /* SnapshotTesting */,
 			);
 			productName = SwiftDataTCAXCTests;
 			productReference = BD0DC1DC2C41779D00821D09 /* SwiftDataTCAXCTests.xctest */;
@@ -416,8 +409,7 @@
 			packageReferences = (
 				23A64E9B2ACC5DFE005B6344 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				BD0DC1E52C43A77400821D09 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
-				BDA1820F2C4D1755001ACC6F /* XCRemoteSwiftPackageReference "Prefire" */,
-				BDA182162C4D1890001ACC6F /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				BD2182882C4D357700FCB16E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 			);
 			productRefGroup = 23A64E872ACC5312005B6344 /* Products */;
 			projectDirPath = "";
@@ -531,10 +523,6 @@
 			isa = PBXTargetDependency;
 			target = 23A64E852ACC5312005B6344 /* SwiftDataTCA */;
 			targetProxy = BD73380E2C4118CA001D0E04 /* PBXContainerItemProxy */;
-		};
-		BDA182132C4D17EA001ACC6F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = BDA182122C4D17EA001ACC6F /* PrefireTestsPlugin */;
 		};
 /* End PBXTargetDependency section */
 
@@ -890,15 +878,7 @@
 				minimumVersion = 0.55.1;
 			};
 		};
-		BDA1820F2C4D1755001ACC6F /* XCRemoteSwiftPackageReference "Prefire" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/BarredEwe/Prefire";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.8.0;
-			};
-		};
-		BDA182162C4D1890001ACC6F /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+		BD2182882C4D357700FCB16E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
 			requirement = {
@@ -919,25 +899,10 @@
 			package = BD0DC1E52C43A77400821D09 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
 			productName = "plugin:SwiftLintBuildToolPlugin";
 		};
-		BDA182122C4D17EA001ACC6F /* PrefireTestsPlugin */ = {
+		BD2182892C4D35DA00FCB16E /* SnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = BDA1820F2C4D1755001ACC6F /* XCRemoteSwiftPackageReference "Prefire" */;
-			productName = "plugin:PrefireTestsPlugin";
-		};
-		BDA182142C4D1860001ACC6F /* Prefire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BDA1820F2C4D1755001ACC6F /* XCRemoteSwiftPackageReference "Prefire" */;
-			productName = Prefire;
-		};
-		BDA182172C4D1890001ACC6F /* SnapshotTesting */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BDA182162C4D1890001ACC6F /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			package = BD2182882C4D357700FCB16E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
-		};
-		BDA182192C4D1A60001ACC6F /* Prefire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BDA1820F2C4D1755001ACC6F /* XCRemoteSwiftPackageReference "Prefire" */;
-			productName = Prefire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -1,7 +1,9 @@
 import ComposableArchitecture
 import Dependencies
 import Foundation
+import SnapshotTesting
 import SwiftData
+import SwiftUI
 import XCTest
 
 @testable import SwiftDataTCA
@@ -74,6 +76,19 @@ final class ActorMoviesFeatureTests: XCTestCase {
       $0.titleSort = nil
       XCTAssertTrue($0.movies[0].title == "Another Movie" || $0.movies[0].title == "This is a Movie")
       XCTAssertTrue($0.movies[1].title == "Another Movie" || $0.movies[1].title == "This is a Movie")
+    }
+  }
+
+  @MainActor
+  func testPreviewRender() {
+    let view = ActorMoviesView.preview
+    assertSnapshot(of: view, as: .image)
+  }
+}
+
+private struct TestApp: App {
+  var body: some Scene {
+    WindowGroup {
     }
   }
 }

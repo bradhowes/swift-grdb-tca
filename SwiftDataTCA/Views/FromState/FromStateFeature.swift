@@ -1,6 +1,5 @@
 import ComposableArchitecture
 import Foundation
-import Prefire
 import SwiftData
 import SwiftUI
 
@@ -118,5 +117,4 @@ struct FromStateFeature {
 
 #Preview {
   FromStateView.preview
-    .prefireIgnored()
 }

@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import Dependencies
 import Foundation
+import SnapshotTesting
 import SwiftData
 import XCTest
 
@@ -79,6 +80,12 @@ final class MovieActorsFeatureTests: XCTestCase {
 
     await store.send(.favoriteTapped)
     XCTAssertFalse(movie.favorite)
+  }
+
+  @MainActor
+  func testPreviewRender() {
+    let view = MovieActorsView.preview
+    assertSnapshot(of: view, as: .image)
   }
 }
 
