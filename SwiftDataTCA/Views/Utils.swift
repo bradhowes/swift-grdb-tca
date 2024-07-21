@@ -13,7 +13,7 @@ enum Utils {
   struct MovieView: View {
     let movie: Movie
     var actorNames: String {
-      movie.actors
+      Support.sortedActors(for: movie, order: .forward)
         .map { $0.name }
         .formatted(.list(type: .and))
     }
@@ -32,7 +32,7 @@ enum Utils {
   struct ActorView: View {
     let actor: Actor
     var movieTitles: String {
-      actor.movies
+      Support.sortedMovies(for: actor, order: .forward)
         .map { $0.title }
         .formatted(.list(type: .and))
     }

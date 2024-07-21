@@ -44,7 +44,7 @@ final class FromStateFeatureTests: XCTestCase {
     await store.receive(\._fetchMovies)
 
     XCTAssertEqual(1, store.state.movies.count)
-    XCTAssertEqual("Avatar", store.state.movies[0].title)
+    XCTAssertEqual("The Score", store.state.movies[0].title)
   }
 
   @MainActor
@@ -78,7 +78,7 @@ final class FromStateFeatureTests: XCTestCase {
     await store.receive(\._fetchMovies)
 
     XCTAssertEqual(1, store.state.movies.count)
-    XCTAssertEqual("Avatar", store.state.movies[0].title)
+    XCTAssertEqual("The Score", store.state.movies[0].title)
 
     await store.send(.deleteSwiped(store.state.movies[0]))
     await store.receive(\._fetchMovies)
@@ -113,7 +113,7 @@ final class FromStateFeatureTests: XCTestCase {
     await store.receive(\._fetchMovies)
 
     XCTAssertEqual(1, store.state.movies.count)
-    XCTAssertEqual("Avatar", store.state.movies[0].title)
+    XCTAssertEqual("The Score", store.state.movies[0].title)
     XCTAssertFalse(store.state.movies[0].favorite)
 
     await store.send(.favoriteSwiped(store.state.movies[0]))
@@ -132,8 +132,8 @@ final class FromStateFeatureTests: XCTestCase {
     withDependencies {
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
     } operation: {
-      XCTAssertEqual(Support.mockMovieEntry.0, "Avatar")
-      XCTAssertEqual(Support.mockMovieEntry.0, "After Earth")
+      XCTAssertEqual(Support.mockMovieEntry.0, "The Score")
+      XCTAssertEqual(Support.mockMovieEntry.0, "Salt")
     }
   }
 

@@ -81,7 +81,7 @@ final class SchemaV5Tests: XCTestCase {
     // Migrate to V5
     let schemaV5 = Schema(versionedSchema: SchemaV5.self)
     let configV5 = ModelConfiguration(schema: schemaV5, url: url)
-    let containerV5 = try! ModelContainer(for: schemaV5, migrationPlan: MockMigrationPlanV5.self,
+    let containerV5 = try! ModelContainer(for: schemaV5, migrationPlan: MigrationPlan.self,
                                           configurations: configV5)
 
     let contextV5 = ModelContext(containerV5)
@@ -99,18 +99,3 @@ final class SchemaV5Tests: XCTestCase {
     XCTAssertEqual(moviesV5[2].actors[0].name, "Actor 2")
   }
 }
-
-private enum MockMigrationPlanV5: SchemaMigrationPlan {
-  static var schemas: [any VersionedSchema.Type] {
-    [
-      SchemaV5.self,
-    ]
-  }
-
-  static var stages: [MigrationStage] {
-    [
-      StageV5.stage
-    ]
-  }
-}
-

@@ -29,6 +29,14 @@ enum Support {
     return mockData[index]
   }
 
+  static func generateMocks(context: ModelContext, count: Int) {
+    for index in 0..<20 {
+      let movie = ActiveSchema.makeMock(context: context, entry: mockData[index])
+      movie.favorite = index % 5 == 0
+    }
+    try? context.save()
+  }
+
   /**
    Filter a variadic list of optional SortDescriptor instances into an array of non-optional SortDescriptors
 
@@ -36,6 +44,22 @@ enum Support {
    */
   static func sortBy<M>(_ sortBy: SortDescriptor<M>?...) -> [SortDescriptor<M>] {
     sortBy.compactMap { $0 }
+  }
+
+  static func sortedActors(for movie: Movie, order: SortOrder?) -> [Actor] {
+    switch order {
+    case .forward: return movie.actors.sorted { $0.name.localizedCompare($1.name) == .orderedAscending }
+    case .reverse: return movie.actors.sorted { $0.name.localizedCompare($1.name) == .orderedDescending }
+    case nil: return movie.actors
+    }
+  }
+
+  static func sortedMovies(for actor: Actor, order: SortOrder?) -> [Movie] {
+    switch order {
+    case .forward: return actor.movies.sorted { $0.sortableTitle.localizedCompare($1.sortableTitle) == .orderedAscending }
+    case .reverse: return actor.movies.sorted { $0.sortableTitle.localizedCompare($1.sortableTitle) == .orderedDescending }
+    case nil: return actor.movies
+    }
   }
 }
 

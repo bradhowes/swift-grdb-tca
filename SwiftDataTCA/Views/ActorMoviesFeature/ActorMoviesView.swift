@@ -43,28 +43,11 @@ private struct MoviesListView: View {
 extension ActorMoviesView {
   static var preview: some View {
     @Dependency(\.modelContextProvider) var modelContextProvider
-    let context = modelContextProvider.context
-    let actor = Actor(name: "Marlon Brando")
-    context.insert(actor)
-    let movie1 = Movie(title: "The Godfather")
-    context.insert(movie1)
-    let movie2 = Movie(title: "Last Tango in Paris")
-    context.insert(movie2)
-    let movie3 = Movie(title: "On the Waterfront")
-    context.insert(movie3)
-    let movie4 = Movie(title: "A Streetcar Named Desire")
-    context.insert(movie4)
-    let movie5 = Movie(title: "Apocalypse Now")
-    context.insert(movie5)
-
-    actor.movies = [movie1, movie2, movie3, movie4, movie5]
-    movie1.actors = [actor]
-    movie2.actors = [actor]
-    movie3.actors = [actor]
-    movie4.actors = [actor]
-
-    try? context.save()
-
+    Support.generateMocks(context: modelContextProvider.context, count: 8)
+    let actor = ActiveSchema.fetchOrMakeActor(modelContextProvider.context, name: "Marlon Brando")
+    let movies = Support.sortedMovies(for: actor, order: .forward)
+    movies[1].favorite = true
+    movies[3].favorite = true
     return NavigationView {
       ActorMoviesView(store: Store(initialState: .init(actor: actor)) { ActorMoviesFeature() })
         .modelContainer(modelContextProvider.container)

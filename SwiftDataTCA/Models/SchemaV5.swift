@@ -36,21 +36,10 @@ enum SchemaV5: VersionedSchema {
       self.sortableTitle = Support.sortableTitle(title)
       self.actors = []
     }
-
-    /**
-     Add `Actor` to the collection of actors in this movie.
-
-     NOTE: make sure `Actor` and `Movie` have already been inserted into database before calling this method.
-
-     - parameter actor: the `Actor` to add
-     */
-    func addActor(_ actor: _Actor) {
-      actors.append(actor)
-      actor.movies.append(self)
-    }
   }
 
-  static func makeMock(context: ModelContext, entry: (title: String, cast: [String])) {
+  @discardableResult
+  static func makeMock(context: ModelContext, entry: (title: String, cast: [String])) -> _Movie {
     let movie = _Movie(title: entry.0)
     context.insert(movie)
 
@@ -59,6 +48,8 @@ enum SchemaV5: VersionedSchema {
     for actor in actors {
       actor.movies.append(movie)
     }
+
+    return movie
   }
 
   static func fetchOrMakeActor(_ context: ModelContext, name: String) -> _Actor {

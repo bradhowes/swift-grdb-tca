@@ -42,11 +42,6 @@ enum SchemaV4: VersionedSchema {
       self.sortableTitle = Support.sortableTitle(title)
       self.actors = []
     }
-
-    func addActor(_ actor: _Actor) {
-      actors.append(actor)
-      actor.movies.append(self)
-    }
   }
 }
 

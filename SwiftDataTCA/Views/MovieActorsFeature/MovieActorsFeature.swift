@@ -10,19 +10,7 @@ struct MovieActorsFeature {
   struct State {
     var movie: Movie
     var nameSort: SortOrder? = .forward
-
-    var actors: [Actor] {
-      switch nameSort {
-      case .forward:
-        return movie.actors.sorted { $0.name.localizedCompare($1.name) == .orderedAscending }
-
-      case .reverse:
-        return movie.actors.sorted { $0.name.localizedCompare($1.name) == .orderedDescending }
-
-      case nil:
-        return movie.actors
-      }
-    }
+    var actors: [Actor] { Support.sortedActors(for: movie, order: nameSort) }
   }
 
   enum Action: Sendable {

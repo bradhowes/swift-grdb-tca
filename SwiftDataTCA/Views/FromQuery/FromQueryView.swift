@@ -71,9 +71,10 @@ private struct MovieListView: View {
 
 extension FromQueryView {
   static var preview: some View {
-    @Dependency(\.modelContextProvider.container) var container
+    @Dependency(\.modelContextProvider) var modelContextProvider
+    Support.generateMocks(context: modelContextProvider.context, count: 20)
     return FromQueryView(store: Store(initialState: .init()) { FromQueryFeature() })
-      .modelContainer(container)
+      .modelContainer(modelContextProvider.container)
   }
 }
 

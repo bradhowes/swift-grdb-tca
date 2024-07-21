@@ -42,25 +42,13 @@ extension MovieActorsView {
   static var preview: some View {
     @Dependency(\.modelContextProvider) var modelContextProvider
     let context = modelContextProvider.context
-    let movie = Movie(title: "The Godfather")
-    context.insert(movie)
-    let actor1 = Actor(name: "Marlon Brando")
-    context.insert(actor1)
-    let actor2 = Actor(name: "Al Pacino")
-    context.insert(actor2)
-    let actor3 = Actor(name: "James Caan")
-    context.insert(actor3)
-    let actor4 = Actor(name: "Robert Duvall")
-    context.insert(actor4)
-    movie.actors = [actor1, actor2, actor3, actor4]
-    actor1.movies = [movie]
-    actor2.movies = [movie]
-    actor3.movies = [movie]
-    actor4.movies = [movie]
-    try? context.save()
-
+    Support.generateMocks(context: context, count: 8)
+    let movies = (try? context.fetch(ActiveSchema.movieFetchDescriptor(
+      titleSort: .forward,
+      searchString: "Apoc"
+    ))) ?? []
     return NavigationView {
-      MovieActorsView(store: Store(initialState: .init(movie: movie)) { MovieActorsFeature() })
+      MovieActorsView(store: Store(initialState: .init(movie: movies[0])) { MovieActorsFeature() })
         .modelContainer(modelContextProvider.container)
     }
   }

@@ -43,7 +43,7 @@ final class FromQueryFeatureTests: XCTestCase {
     @Dependency(\.modelContextProvider.context) var context
     let movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
     XCTAssertEqual(1, movies.count)
-    XCTAssertEqual("Avatar", movies[0].title)
+    XCTAssertEqual("The Score", movies[0].title)
   }
 
   @MainActor

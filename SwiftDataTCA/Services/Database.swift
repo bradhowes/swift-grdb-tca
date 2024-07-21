@@ -7,7 +7,6 @@ import SwiftData
  */
 struct Database {
   var fetchMovies: @Sendable (FetchDescriptor<Movie>) -> [Movie]
-  var fetchActors: @Sendable (FetchDescriptor<Actor>) -> [Actor]
   var add: @Sendable () -> Void
   var delete: @Sendable (Movie) -> Void
   var save: @Sendable () -> Void
@@ -26,13 +25,9 @@ extension Database: DependencyKey {
       @Dependency(\.modelContextProvider.context) var context
       return (try? context.fetch(descriptor)) ?? []
     },
-    fetchActors: { descriptor in
-      @Dependency(\.modelContextProvider.context) var context
-      return (try? context.fetch(descriptor)) ?? []
-    },
     add: {
       @Dependency(\.modelContextProvider.context) var context
-      SchemaV4.makeMock(context: context, entry: Support.mockMovieEntry)
+      ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)
     },
     delete: { model in
       @Dependency(\.modelContextProvider.context) var context
@@ -52,7 +47,6 @@ extension Database: TestDependencyKey {
       @Dependency(\.modelContextProvider.context) var context
       return (try? context.fetch(descriptor)) ?? []
     },
-    fetchActors: unimplemented("\(Self.self).fetchActors"),
     add: unimplemented("\(Self.self).add"),
     delete: unimplemented("\(Self.self).delete"),
     save: unimplemented("\(Self.self).save")

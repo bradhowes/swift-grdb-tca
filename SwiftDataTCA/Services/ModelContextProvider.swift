@@ -28,11 +28,7 @@ extension ModelContextProvider: DependencyKey {
 }
 
 extension ModelContextProvider: TestDependencyKey {
-  public static var previewValue: ModelContextProvider {
-    let context = previewContext()
-    loadPreview(context)
-    return .init(context: context)
-  }
+  public static var previewValue: ModelContextProvider { .init(context: previewContext()) }
   public static var testValue: ModelContextProvider { .init(context: testContext()) }
 }
 
@@ -67,10 +63,6 @@ private let previewContainer: ModelContainer = makeInMemoryContainer()
 @MainActor private let liveContext: (() -> ModelContext) = { liveContainer.mainContext }
 @MainActor private let previewContext: (() -> ModelContext) = { previewContainer.mainContext }
 @MainActor private let testContext: (() -> ModelContext) = { ModelContext(makeInMemoryContainer()) }
-
-private func loadPreview(_ context: ModelContext) {
-  ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)
-}
 
 #if hasFeature(RetroactiveAttribute)
 extension KeyPath: @unchecked @retroactive Sendable {}
