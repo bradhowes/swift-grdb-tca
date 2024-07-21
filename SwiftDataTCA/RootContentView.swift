@@ -12,7 +12,8 @@ struct RootContentView: View {
   @State private var selectedTab: Tab = .contentView
 
   init() {
-    configAppearance()
+    UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
+      .lineBreakMode = .byTruncatingMiddle
   }
 
   var body: some View {
@@ -44,12 +45,6 @@ struct RootContentView: View {
     .modelContext(modelContextProvider.context)
   }
   // swiftlint:enable indentation_width
-
-  @MainActor
-  private func configAppearance() {
-    UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
-      .lineBreakMode = .byTruncatingMiddle
-  }
 }
 
 extension RootContentView {
