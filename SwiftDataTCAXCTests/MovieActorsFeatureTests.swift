@@ -90,10 +90,10 @@ extension MovieActorsFeature.State: @retroactive Equatable {
   }
 }
 #else
-extension ActorMoviesFeature.State: Equatable {
-  public static func == (lhs: ActorMoviesFeature.State, rhs: ActorMoviesFeature.State) -> Bool {
-    lhs.actor == rhs.actor &&
-    lhs.titleSort == rhs.titleSort
+extension MovieActorsFeature.State: Equatable {
+  public static func == (lhs: MovieActorsFeature.State, rhs: MovieActorsFeature.State) -> Bool {
+    lhs.movie == rhs.movie &&
+    lhs.nameSort == rhs.nameSort
   }
 }
 #endif
