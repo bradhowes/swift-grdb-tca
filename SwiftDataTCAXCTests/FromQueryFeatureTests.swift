@@ -145,7 +145,6 @@ extension FromQueryFeature.State: @retroactive Equatable {
 #else
 extension FromQueryFeature.State: Equatable {
   public static func == (lhs: FromQueryFeature.State, rhs: FromQueryFeature.State) -> Bool {
-    lhs.movies == rhs.movies &&
     lhs.titleSort == rhs.titleSort &&
     lhs.isSearchFieldPresented == rhs.isSearchFieldPresented &&
     lhs.searchString == rhs.searchString
