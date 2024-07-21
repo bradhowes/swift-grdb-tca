@@ -21,7 +21,7 @@ extension XCTest {
   ) throws {
     // isRecording = false
     print(ProcessInfo.processInfo.environment)
-    let isOnGithub = ProcessInfo.processInfo.environment["XCTestBundlePath"]?.contains("/Users/runner/work") ?? false
+    let isOnGithub = ProcessInfo.processInfo.environment["CFFIXED_USER_HOME"]?.contains("/Users/runner/work") ?? false
 
 #if os(iOS)
     if let result = SnapshotTesting.verifySnapshot(
