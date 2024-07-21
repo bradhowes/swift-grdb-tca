@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import Foundation
+import Prefire
 import SwiftData
 import SwiftUI
 
@@ -10,7 +11,6 @@ struct ActorMoviesFeature {
   struct State {
     var actor: Actor
     var titleSort: SortOrder? = .forward
-
     var movies: [Movie] {
       switch titleSort {
       case .forward:
@@ -52,4 +52,5 @@ struct ActorMoviesFeature {
 
 #Preview {
   ActorMoviesView.preview
+    .prefireIgnored()
 }

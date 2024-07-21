@@ -6,7 +6,7 @@ import XCTest
 
 @testable import SwiftDataTCA
 
-final class SwiftDataTCAXCTests: XCTestCase {
+final class FromStateFeatureTests: XCTestCase {
 
   override func setUpWithError() throws {
   }

@@ -35,26 +35,30 @@ extension SchemaV3 {
     context.insert(movie)
   }
 
+  static func searchPredicate(_ searchString: String) -> Predicate<_Movie>? {
+    searchString.isEmpty ? nil : #Predicate<_Movie> { $0.title.localizedStandardContains(searchString) }
+  }
+
+  /**
+   Obtain a `FetchDescriptor` that will return an ordered (optional) and possibly filtered set of known `_Movie`
+   entities. Ordering is done on the `_Movie.title` and `_Movie.id` attributes when `titleSort` and/or `uuidSort`
+   is not nil. Otherwise, ordering is undetermined.
+
+   - parameter titleSort: the direction of the `title` ordering -- alphabetical or reveresed alphabetical
+   - parameter uuidSort: the direction of the `id` ordering -- alphabetical or reveresed alphabetical
+   - parameter searchString: if not empty, only return `_Movie` entities whose `title` contains the search string
+   - returns: new `FetchDescriptor`
+   */
   static func movieFetchDescriptor(
     titleSort: SortOrder?,
     uuidSort: SortOrder?,
     searchString: String
   ) -> FetchDescriptor<_Movie> {
-    let sortBy: [SortDescriptor<_Movie>] = [
-      sortBy(\.sortableTitle, order: titleSort),
-      sortBy(\.id, order: uuidSort)
-    ].compactMap { $0 }
-
-    let predicate: Predicate<_Movie> = #Predicate<_Movie> {
-      searchString.isEmpty ? true : $0.title.localizedStandardContains(searchString)
-    }
-
-    return FetchDescriptor(predicate: predicate, sortBy: sortBy)
-  }
-
-  static func sortBy<Value: Comparable>(_ key: KeyPath<_Movie, Value>, order: SortOrder?) -> SortDescriptor<_Movie>? {
-    guard let order else { return nil }
-    return .init(key, order: order)
+    let sortBy: [SortDescriptor<_Movie>] = Support.sortBy(
+      .sortBy(\.sortableTitle, order: titleSort),
+      .sortBy(\.id, order: uuidSort)
+    )
+    return FetchDescriptor(predicate: searchPredicate(searchString), sortBy: sortBy)
   }
 }
 

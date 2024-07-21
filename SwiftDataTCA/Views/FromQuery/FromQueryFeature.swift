@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import Foundation
+import Prefire
 import SwiftData
 import SwiftUI
 
@@ -92,4 +93,5 @@ struct FromQueryFeature {
 
 #Preview {
   FromQueryView.preview
+    .prefireIgnored()
 }

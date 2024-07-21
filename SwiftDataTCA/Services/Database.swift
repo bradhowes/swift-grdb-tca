@@ -47,9 +47,12 @@ extension Database: DependencyKey {
 
 /// Default all operations to 'unimplemented' -- a test must define the operations required to do its task.
 extension Database: TestDependencyKey {
-  public static let testValue = Self(
-    fetchMovies: unimplemented("\(Self.self).fetchDescriptor"),
-    fetchActors: unimplemented("\(Self.self).fetchDescriptor"),
+  static let testValue = Self(
+    fetchMovies: { descriptor in
+      @Dependency(\.modelContextProvider.context) var context
+      return (try? context.fetch(descriptor)) ?? []
+    },
+    fetchActors: unimplemented("\(Self.self).fetchActors"),
     add: unimplemented("\(Self.self).add"),
     delete: unimplemented("\(Self.self).delete"),
     save: unimplemented("\(Self.self).save")

@@ -88,14 +88,10 @@ struct SchemaV3Tests {
     withDependencies {
       $0.uuid = .incrementing
     } operation: {
-      @Dependency(\.uuid) var uuid
-
-      let m1 = SchemaV3._Movie(id: uuid(), title: "A Second Movie", cast: ["Actor 1", "Actor 4"])
-      context.insert(m1)
-      let m2 = SchemaV3._Movie(id: uuid(), title: "The First Movie", cast: ["Actor 1", "Actor 2", "Actor 3"])
-      context.insert(m2)
-      let m3 = SchemaV3._Movie(id: uuid(), title: "El Third Movie", cast: ["Actor 2"])
-      context.insert(m3)
+      SchemaV3.makeMock(context: context, entry: ("A Second Movie", ["Actor 1", "Actor 4"]))
+      SchemaV3.makeMock(context: context, entry: ("The First Movie", ["Actor 1", "Actor 2", "Actor 3"]))
+      SchemaV3.makeMock(context: context, entry: ("El Third Movie", ["Actor 2"]))
+      try! context.save()
     }
 
     try! context.save()

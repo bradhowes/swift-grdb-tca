@@ -1,5 +1,5 @@
 {
-  "originHash" : "fbd34c7269a169114eb85b71b2d4bcd278d2ea146a9c6772d5255c1b1dd29d2d",
+  "originHash" : "b4fcf89d651635a7e0465090a58ec8a295f1621253f5d770ea9a6a51f218dee0",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "9dc9cbe4bc45c65164fa653a563d8d8db61b09bb",
         "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "prefire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/BarredEwe/Prefire",
+      "state" : {
+        "revision" : "237f4005c81f74d5359eddb534d2d10925ef2787",
+        "version" : "2.8.0"
       }
     },
     {
@@ -89,6 +98,15 @@
       "state" : {
         "revision" : "d3ab98dc2887d1cc3bed676f6fa354da4cb22b3c",
         "version" : "1.2.4"
+      }
+    },
+    {
+      "identity" : "swift-snapshot-testing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-snapshot-testing",
+      "state" : {
+        "revision" : "d2341adf332dc7341b4acad8761dff65e905d63c",
+        "version" : "1.16.2"
       }
     },
     {

@@ -1,18 +1,19 @@
-#if canImport(Testing)
-
 import ComposableArchitecture
 import Foundation
 import SwiftData
-import Testing
+import XCTest
 
 @testable import SwiftDataTCA
 
-struct SchemaV2Tests {
+final class SchemaV2Tests: XCTestCase {
 
-  /// NOTE to self: do not use `await container.mainContext` in tests
-  /// NOTE to self: do not run Swift Data tests in parallel
+  override func setUpWithError() throws {
+  }
 
-  @Test func creatingV2Database() async throws {
+  override func tearDownWithError() throws {
+  }
+
+  func testCreatingV2Database() async throws {
     let schema = Schema(versionedSchema: SchemaV2.self)
     let config = ModelConfiguration("V2", schema: schema, isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: schema, configurations: config)
@@ -30,46 +31,45 @@ struct SchemaV2Tests {
     var movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .forward, uuidSort: .none,
                                                                   searchString: ""))
 
-    #expect(movies.count == 3)
-    #expect(movies[0].title == "A Second Movie")
-    #expect(movies[1].title == "El Third Movie")
-    #expect(movies[2].title == "The First Movie")
+    XCTAssertEqual(movies.count, 3)
+    XCTAssertEqual(movies[0].title, "A Second Movie")
+    XCTAssertEqual(movies[1].title, "El Third Movie")
+    XCTAssertEqual(movies[2].title, "The First Movie")
 
-    #expect(movies[0].cast.count == 2)
-    #expect(movies[0].cast[0] == "Actor 1")
-    #expect(movies[0].cast[1] == "Actor 4")
- 
+    XCTAssertEqual(movies[0].cast.count, 2)
+    XCTAssertEqual(movies[0].cast[0], "Actor 1")
+    XCTAssertEqual(movies[0].cast[1], "Actor 4")
+
     movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .reverse, uuidSort: .none,
                                                               searchString: ""))
 
-    #expect(movies.count == 3)
-    #expect(movies[2].title == "A Second Movie")
-    #expect(movies[1].title == "El Third Movie")
-    #expect(movies[0].title == "The First Movie")
+    XCTAssertEqual(movies.count, 3)
+    XCTAssertEqual(movies[2].title, "A Second Movie")
+    XCTAssertEqual(movies[1].title, "El Third Movie")
+    XCTAssertEqual(movies[0].title, "The First Movie")
 
     movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .none, uuidSort: .forward,
                                                               searchString: ""))
 
-    #expect(movies.count == 3)
-    #expect(movies[0].title == "The First Movie")
-    #expect(movies[1].title == "A Second Movie")
-    #expect(movies[2].title == "El Third Movie")
+    XCTAssertEqual(movies.count, 3)
+    XCTAssertEqual(movies[0].title, "The First Movie")
+    XCTAssertEqual(movies[1].title, "A Second Movie")
+    XCTAssertEqual(movies[2].title, "El Third Movie")
 
     movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .none, uuidSort: .reverse,
                                                               searchString: ""))
 
-    #expect(movies.count == 3)
-    #expect(movies[2].title == "The First Movie")
-    #expect(movies[1].title == "A Second Movie")
-    #expect(movies[0].title == "El Third Movie")
+    XCTAssertEqual(movies.count, 3)
+    XCTAssertEqual(movies[2].title, "The First Movie")
+    XCTAssertEqual(movies[1].title, "A Second Movie")
+    XCTAssertEqual(movies[0].title, "El Third Movie")
 
     movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .forward, uuidSort: .none,
                                                               searchString: "th"))
 
-    #expect(movies.count == 2)
-    #expect(movies[0].title == "El Third Movie")
-    #expect(movies[1].title == "The First Movie")
+    XCTAssertEqual(movies.count, 2)
+    XCTAssertEqual(movies[0].title, "El Third Movie")
+    XCTAssertEqual(movies[1].title, "The First Movie")
   }
 }
 
-#endif

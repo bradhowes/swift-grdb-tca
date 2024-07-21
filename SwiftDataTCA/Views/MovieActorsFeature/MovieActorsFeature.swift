@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import Foundation
+import Prefire
 import SwiftData
 import SwiftUI
 
@@ -52,4 +53,5 @@ struct MovieActorsFeature {
 
 #Preview {
   MovieActorsView.preview
+    .prefireIgnored()
 }
