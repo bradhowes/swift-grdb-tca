@@ -7,7 +7,7 @@ import XCTest
 
 @testable import SwiftDataTCA
 
-final class FromStateFeatureTests: XCTestCase {
+final class FromQueryFeatureTests: XCTestCase {
 
   override func setUpWithError() throws {
   }
@@ -18,9 +18,9 @@ final class FromStateFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func testFromStateAddButtonTapped() async throws {
-    let store = TestStore(initialState: FromStateFeature.State()) {
-      FromStateFeature()
+  func testAddButtonTapped() async throws {
+    let store = TestStore(initialState: FromQueryFeature.State()) {
+      FromQueryFeature()
     } withDependencies: {
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
       $0.database.add = {
@@ -37,20 +37,19 @@ final class FromStateFeatureTests: XCTestCase {
       }
     }
 
-    XCTAssertTrue(store.state.movies.isEmpty)
-
     store.exhaustivity = .off
     await store.send(.addButtonTapped)
-    await store.receive(\._fetchMovies)
 
-    XCTAssertEqual(1, store.state.movies.count)
-    XCTAssertEqual("Avatar", store.state.movies[0].title)
+    @Dependency(\.modelContextProvider.context) var context
+    let movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    XCTAssertEqual(1, movies.count)
+    XCTAssertEqual("Avatar", movies[0].title)
   }
 
   @MainActor
-  func testFromStateDeleteSwiped() async throws {
-    let store = TestStore(initialState: FromStateFeature.State()) {
-      FromStateFeature()
+  func testDeleteSwiped() async throws {
+    let store = TestStore(initialState: FromQueryFeature.State()) {
+      FromQueryFeature()
     } withDependencies: {
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
       $0.database.add = {
@@ -71,25 +70,25 @@ final class FromStateFeatureTests: XCTestCase {
       }
     }
 
-    XCTAssertTrue(store.state.movies.isEmpty)
+    @Dependency(\.modelContextProvider.context) var context
+    var movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    XCTAssertTrue(movies.isEmpty)
 
-    store.exhaustivity = .off
     await store.send(.addButtonTapped)
-    await store.receive(\._fetchMovies)
 
-    XCTAssertEqual(1, store.state.movies.count)
-    XCTAssertEqual("Avatar", store.state.movies[0].title)
+    movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    XCTAssertFalse(movies.isEmpty)
 
-    await store.send(.deleteSwiped(store.state.movies[0]))
-    await store.receive(\._fetchMovies)
+    await store.send(.deleteSwiped(movies[0]))
 
-    XCTAssertEqual(0, store.state.movies.count)
+    movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    XCTAssertTrue(movies.isEmpty)
   }
 
   @MainActor
-  func testFromStateFavoriteSwiped() async throws {
-    let store = TestStore(initialState: FromStateFeature.State()) {
-      FromStateFeature()
+  func testFavoriteSwiped() async throws {
+    let store = TestStore(initialState: FromQueryFeature.State()) {
+      FromQueryFeature()
     } withDependencies: {
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
       $0.database.add = {
@@ -106,35 +105,24 @@ final class FromStateFeatureTests: XCTestCase {
       }
     }
 
-    XCTAssertTrue(store.state.movies.isEmpty)
+    @Dependency(\.modelContextProvider.context) var context
+    var movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    XCTAssertTrue(movies.isEmpty)
 
-    store.exhaustivity = .off
     await store.send(.addButtonTapped)
-    await store.receive(\._fetchMovies)
 
-    XCTAssertEqual(1, store.state.movies.count)
-    XCTAssertEqual("Avatar", store.state.movies[0].title)
-    XCTAssertFalse(store.state.movies[0].favorite)
+    movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    XCTAssertFalse(movies[0].favorite)
 
-    await store.send(.favoriteSwiped(store.state.movies[0]))
+    await store.send(.favoriteSwiped(movies[0]))
 
-    XCTAssertTrue(store.state.movies[0].favorite)
+    XCTAssertTrue(movies[0].favorite)
   }
 
   @MainActor
   func testPreviewRender() throws {
-    let view = FromStateView.preview
+    let view = FromQueryView.preview
     try assertSnapshot(matching: view)
-  }
-
-  @MainActor
-  func testMockMovieEntry() async {
-    withDependencies {
-      $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
-    } operation: {
-      XCTAssertEqual(Support.mockMovieEntry.0, "Avatar")
-      XCTAssertEqual(Support.mockMovieEntry.0, "After Earth")
-    }
   }
 
   private struct LCRNG: RandomNumberGenerator {
@@ -147,17 +135,16 @@ final class FromStateFeatureTests: XCTestCase {
 }
 
 #if hasFeature(RetroactiveAttribute)
-extension FromStateFeature.State: @retroactive Equatable {
-  public static func == (lhs: FromStateFeature.State, rhs: FromStateFeature.State) -> Bool {
-    lhs.movies == rhs.movies &&
+extension FromQueryFeature.State: @retroactive Equatable {
+  public static func == (lhs: FromQueryFeature.State, rhs: FromQueryFeature.State) -> Bool {
     lhs.titleSort == rhs.titleSort &&
     lhs.isSearchFieldPresented == rhs.isSearchFieldPresented &&
     lhs.searchString == rhs.searchString
   }
 }
 #else
-extension FromStateFeature.State: Equatable {
-  public static func == (lhs: FromStateFeature.State, rhs: FromStateFeature.State) -> Bool {
+extension FromQueryFeature.State: Equatable {
+  public static func == (lhs: FromQueryFeature.State, rhs: FromQueryFeature.State) -> Bool {
     lhs.movies == rhs.movies &&
     lhs.titleSort == rhs.titleSort &&
     lhs.isSearchFieldPresented == rhs.isSearchFieldPresented &&

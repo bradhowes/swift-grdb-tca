@@ -37,19 +37,22 @@ extension ModelContextProvider: TestDependencyKey {
 }
 
 /// Create a ModelContainer to be used in a live environment.
-private let liveContainer: ModelContainer = {
+private func makeLiveContainer(dbFile: String) -> ModelContainer {
   do {
     let schema = Schema(versionedSchema: ActiveSchema.self)
-    let url = URL.applicationSupportDirectory.appending(path: "Modelv5.sqlite")
+    let url = URL.applicationSupportDirectory.appending(path: dbFile)
     let config = ModelConfiguration(schema: schema, url: url)
     return try ModelContainer(for: schema, migrationPlan: MigrationPlan.self, configurations: config)
   } catch {
     fatalError("Failed to create live container.")
   }
-}()
+}
+
+/// Create a ModelContainer to be used in a live environment.
+private let liveContainer: ModelContainer = makeLiveContainer(dbFile: "Modelv5.sqlite")
 
 /// Create a ModelContainer to be used in test and preview environments.
-private func inMemoryContainer() -> ModelContainer {
+private func makeInMemoryContainer() -> ModelContainer {
   do {
     let schema = Schema(versionedSchema: ActiveSchema.self)
     let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, allowsSave: true)
@@ -59,11 +62,11 @@ private func inMemoryContainer() -> ModelContainer {
   }
 }
 
-private let previewContainer: ModelContainer = inMemoryContainer()
+private let previewContainer: ModelContainer = makeInMemoryContainer()
 
 @MainActor private let liveContext: (() -> ModelContext) = { liveContainer.mainContext }
 @MainActor private let previewContext: (() -> ModelContext) = { previewContainer.mainContext }
-@MainActor private let testContext: (() -> ModelContext) = { ModelContext(inMemoryContainer()) }
+@MainActor private let testContext: (() -> ModelContext) = { ModelContext(makeInMemoryContainer()) }
 
 private func loadPreview(_ context: ModelContext) {
   ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)

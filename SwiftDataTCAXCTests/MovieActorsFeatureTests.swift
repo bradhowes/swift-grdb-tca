@@ -83,9 +83,9 @@ final class MovieActorsFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func testPreviewRender() {
+  func testPreviewRender() throws {
     let view = MovieActorsView.preview
-    assertSnapshot(of: view, as: .image)
+    try assertSnapshot(matching: view)
   }
 }
 
