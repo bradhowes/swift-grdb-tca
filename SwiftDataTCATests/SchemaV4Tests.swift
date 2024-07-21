@@ -32,7 +32,6 @@ struct SchemaV4Tests {
 
   @Test func fetchingV4() async throws {
     let schema = Schema(versionedSchema: SchemaV4.self)
-    print(schema.entitiesByName)
     let config = ModelConfiguration("fetchingV4", schema: schema, isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: schema, configurations: config)
     let context = ModelContext(container)

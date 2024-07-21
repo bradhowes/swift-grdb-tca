@@ -44,7 +44,6 @@ private func importV4(context: ModelContext) throws {
 
   for old in moviesV3 {
     let movie = SchemaV4._Movie(id: old.id, title: old.title, favorite: old.favorite)
-    print("Old: \(old.title) - \(old.cast)")
     context.insert(movie)
     let actors = old.cast.map { SchemaV4.fetchOrMakeActor(context, name: $0) }
     movie.actors = actors
