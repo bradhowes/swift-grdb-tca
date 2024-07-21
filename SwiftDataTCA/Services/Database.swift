@@ -21,7 +21,13 @@ private func doFetchMovies(_ descriptor: FetchDescriptor<Movie>) -> [Movie] {
 @Sendable
 private func doAdd() {
   @Dependency(\.modelContextProvider.context) var context
-  ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)
+  ActiveSchema.makeMock(
+    context: context,
+    entry: Support.nextMockMovieEntry(
+      context: context,
+      descriptor: ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: "")
+    )
+  )
 }
 
 @Sendable

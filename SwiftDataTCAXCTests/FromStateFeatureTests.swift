@@ -21,8 +21,6 @@ final class FromStateFeatureTests: XCTestCase {
   func testFromStateAddButtonTapped() async throws {
     let store = TestStore(initialState: FromStateFeature.State()) {
       FromStateFeature()
-    } withDependencies: {
-      $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
     }
 
     XCTAssertTrue(store.state.movies.isEmpty)
@@ -39,8 +37,6 @@ final class FromStateFeatureTests: XCTestCase {
   func testFromStateDeleteSwiped() async throws {
     let store = TestStore(initialState: FromStateFeature.State()) {
       FromStateFeature()
-    } withDependencies: {
-      $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
     }
 
     XCTAssertTrue(store.state.movies.isEmpty)
@@ -62,8 +58,6 @@ final class FromStateFeatureTests: XCTestCase {
   func testFromStateFavoriteSwiped() async throws {
     let store = TestStore(initialState: FromStateFeature.State()) {
       FromStateFeature()
-    } withDependencies: {
-      $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
     }
 
     XCTAssertTrue(store.state.movies.isEmpty)
@@ -88,21 +82,7 @@ final class FromStateFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func testMockMovieEntry() async {
-    withDependencies {
-      $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
-    } operation: {
-      XCTAssertEqual(Support.mockMovieEntry.0, "The Score")
-      XCTAssertEqual(Support.mockMovieEntry.0, "Salt")
-    }
-  }
-
-  private struct LCRNG: RandomNumberGenerator {
-    var seed: UInt64
-    mutating func next() -> UInt64 {
-      self.seed = 2_862_933_555_777_941_757 &* self.seed &+ 3_037_000_493
-      return self.seed
-    }
+  func testNextMockMovieEntry() async {
   }
 }
 

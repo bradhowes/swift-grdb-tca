@@ -85,6 +85,12 @@ final class FromQueryFeatureTests: XCTestCase {
     try assertSnapshot(matching: view)
   }
 
+  @MainActor
+  func testRootContentViewRender() throws {
+    let view = RootContentView()
+    try assertSnapshot(matching: view)
+  }
+
   private struct LCRNG: RandomNumberGenerator {
     var seed: UInt64
     mutating func next() -> UInt64 {

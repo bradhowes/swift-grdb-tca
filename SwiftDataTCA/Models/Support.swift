@@ -21,12 +21,9 @@ enum Support {
   }
 
   /// Obtain a random entry from the collection of movie titles and cast members.
-  static var mockMovieEntry: (String, [String]) {
-    @Dependency(\.withRandomNumberGenerator) var withRandomNumberGenerator
-    let index = withRandomNumberGenerator { generator in
-      Int.random(in: 0..<mockData.count, using: &generator)
-    }
-    return mockData[index]
+  static func nextMockMovieEntry(context: ModelContext, descriptor: FetchDescriptor<Movie>) -> (String, [String]) {
+    let count = (try? context.fetchCount(descriptor)) ?? 0
+    return mockData[count]
   }
 
   static func generateMocks(context: ModelContext, count: Int) {

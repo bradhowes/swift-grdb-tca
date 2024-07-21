@@ -33,11 +33,10 @@ extension ModelContextProvider: TestDependencyKey {
 }
 
 /// Create a ModelContainer to be used in a live environment.
-private func makeLiveContainer(dbFile: String) -> ModelContainer {
+func makeLiveContainer(dbFile: URL) -> ModelContainer {
   do {
     let schema = Schema(versionedSchema: ActiveSchema.self)
-    let url = URL.applicationSupportDirectory.appending(path: dbFile)
-    let config = ModelConfiguration(schema: schema, url: url)
+    let config = ModelConfiguration(schema: schema, url: dbFile)
     return try ModelContainer(for: schema, migrationPlan: MigrationPlan.self, configurations: config)
   } catch {
     fatalError("Failed to create live container.")
@@ -45,7 +44,9 @@ private func makeLiveContainer(dbFile: String) -> ModelContainer {
 }
 
 /// Create a ModelContainer to be used in a live environment.
-private let liveContainer: ModelContainer = makeLiveContainer(dbFile: "Modelv5.sqlite")
+private let liveContainer: ModelContainer = makeLiveContainer(
+  dbFile: URL.applicationSupportDirectory.appending(path: "Modelv5.sqlite")
+)
 
 /// Create a ModelContainer to be used in test and preview environments.
 private func makeInMemoryContainer() -> ModelContainer {
