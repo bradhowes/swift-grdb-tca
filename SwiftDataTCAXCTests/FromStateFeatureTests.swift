@@ -23,18 +23,6 @@ final class FromStateFeatureTests: XCTestCase {
       FromStateFeature()
     } withDependencies: {
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
-      $0.database.add = {
-        @Dependency(\.modelContextProvider.context) var context
-        ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)
-      }
-      $0.database.fetchMovies = { descriptor in
-        @Dependency(\.modelContextProvider.context) var context
-        return (try? context.fetch(descriptor)) ?? []
-      }
-      $0.database.save = {
-        @Dependency(\.modelContextProvider.context) var context
-        try? context.save()
-      }
     }
 
     XCTAssertTrue(store.state.movies.isEmpty)
@@ -53,22 +41,6 @@ final class FromStateFeatureTests: XCTestCase {
       FromStateFeature()
     } withDependencies: {
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
-      $0.database.add = {
-        @Dependency(\.modelContextProvider.context) var context
-        ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)
-      }
-      $0.database.delete = { movie in
-        @Dependency(\.modelContextProvider.context) var context
-        context.delete(movie)
-      }
-      $0.database.fetchMovies = { descriptor in
-        @Dependency(\.modelContextProvider.context) var context
-        return (try? context.fetch(descriptor)) ?? []
-      }
-      $0.database.save = {
-        @Dependency(\.modelContextProvider.context) var context
-        try? context.save()
-      }
     }
 
     XCTAssertTrue(store.state.movies.isEmpty)
@@ -92,18 +64,6 @@ final class FromStateFeatureTests: XCTestCase {
       FromStateFeature()
     } withDependencies: {
       $0.withRandomNumberGenerator = .init(LCRNG(seed: 0))
-      $0.database.add = {
-        @Dependency(\.modelContextProvider.context) var context
-        ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)
-      }
-      $0.database.fetchMovies = { descriptor in
-        @Dependency(\.modelContextProvider.context) var context
-        return (try? context.fetch(descriptor)) ?? []
-      }
-      $0.database.save = {
-        @Dependency(\.modelContextProvider.context) var context
-        try? context.save()
-      }
     }
 
     XCTAssertTrue(store.state.movies.isEmpty)

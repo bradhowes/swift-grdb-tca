@@ -12,6 +12,30 @@ struct Database {
   var save: @Sendable () -> Void
 }
 
+@Sendable
+private func doFetchMovies(_ descriptor: FetchDescriptor<Movie>) -> [Movie] {
+  @Dependency(\.modelContextProvider.context) var context
+  return (try? context.fetch(descriptor)) ?? []
+}
+
+@Sendable
+private func doAdd() {
+  @Dependency(\.modelContextProvider.context) var context
+  ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)
+}
+
+@Sendable
+private func doDelete(_ model: Movie) {
+  @Dependency(\.modelContextProvider.context) var context
+  context.delete(model)
+}
+
+@Sendable
+private func doSave() {
+  @Dependency(\.modelContextProvider.context) var context
+  try? context.save()
+}
+
 extension DependencyValues {
   var database: Database {
     get { self[Database.self] }
@@ -21,34 +45,20 @@ extension DependencyValues {
 
 extension Database: DependencyKey {
   static let liveValue = Self(
-    fetchMovies: { descriptor in
-      @Dependency(\.modelContextProvider.context) var context
-      return (try? context.fetch(descriptor)) ?? []
-    },
-    add: {
-      @Dependency(\.modelContextProvider.context) var context
-      ActiveSchema.makeMock(context: context, entry: Support.mockMovieEntry)
-    },
-    delete: { model in
-      @Dependency(\.modelContextProvider.context) var context
-      context.delete(model)
-    },
-    save: {
-      @Dependency(\.modelContextProvider.context) var context
-      try? context.save()
-    }
+    fetchMovies: doFetchMovies,
+    add: doAdd,
+    delete: doDelete,
+    save: doSave
   )
 }
 
-/// Default all operations to 'unimplemented' -- a test must define the operations required to do its task.
+// The test version is the same -- the differences are found in the underlying `ModelContainer`, so there is no need
+// right now to differentiate.
 extension Database: TestDependencyKey {
   static let testValue = Self(
-    fetchMovies: { descriptor in
-      @Dependency(\.modelContextProvider.context) var context
-      return (try? context.fetch(descriptor)) ?? []
-    },
-    add: unimplemented("\(Self.self).add"),
-    delete: unimplemented("\(Self.self).delete"),
-    save: unimplemented("\(Self.self).save")
+    fetchMovies: doFetchMovies,
+    add: doAdd,
+    delete: doDelete,
+    save: doSave
   )
 }
