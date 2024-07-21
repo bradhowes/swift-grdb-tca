@@ -2,7 +2,6 @@ import Dependencies
 import SwiftData
 import SwiftUI
 
-@main
 struct SwiftDataTCAApp: App {
   @Dependency(\.modelContextProvider) var modelContextProvider
 
@@ -48,5 +47,26 @@ struct SwiftDataTCAApp: App {
       .modelContext(modelContextProvider.context)
     }
     // swiftlint:enable indentation_width
+  }
+}
+
+struct TestApp: App {
+  var body: some Scene {
+    WindowGroup {
+      Text("I'm running tests!")
+    }
+  }
+}
+
+@main
+enum AppTrampoline {
+  static func main() {
+    // `isTest` is set in the testplan's shared configuration settings
+    let isTest = UserDefaults.standard.bool(forKey: "isTest")
+    if isTest || NSClassFromString("XCTestCase") != nil {
+      TestApp.main()
+    } else {
+      SwiftDataTCAApp.main()
+    }
   }
 }

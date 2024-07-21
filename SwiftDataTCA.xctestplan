@@ -14,7 +14,11 @@
     }
   ],
   "defaultOptions" : {
-
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "-isTest YES"
+      }
+    ]
   },
   "testTargets" : [
     {

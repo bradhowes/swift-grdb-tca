@@ -1,3 +1,4 @@
+import Dependencies
 import Foundation
 import SwiftData
 
@@ -21,6 +22,37 @@ enum SchemaV2: VersionedSchema {
       self.cast = cast
       self.favorite = favorite
     }
+  }
+}
+
+extension SchemaV2 {
+
+  static func makeMock(context: ModelContext, entry: (title: String, cast: [String])) {
+    @Dependency(\.uuid) var uuid
+    let movie = _Movie(id: uuid(), title: entry.title, cast: entry.cast)
+    context.insert(movie)
+  }
+
+  static func movieFetchDescriptor(
+    titleSort: SortOrder?,
+    uuidSort: SortOrder?,
+    searchString: String
+  ) -> FetchDescriptor<_Movie> {
+    let sortBy: [SortDescriptor<_Movie>] = [
+      sortBy(\.title, order: titleSort),
+      sortBy(\.id, order: uuidSort)
+    ].compactMap { $0 }
+
+    let predicate: Predicate<_Movie> = #Predicate<_Movie> {
+      searchString.isEmpty ? true : $0.title.localizedStandardContains(searchString)
+    }
+
+    return FetchDescriptor(predicate: predicate, sortBy: sortBy)
+  }
+
+  static func sortBy<Value: Comparable>(_ key: KeyPath<_Movie, Value>, order: SortOrder?) -> SortDescriptor<_Movie>? {
+    guard let order else { return nil }
+    return .init(key, order: order)
   }
 }
 
