@@ -155,8 +155,7 @@
 		23A64E7D2ACC5312005B6344 = {
 			isa = PBXGroup;
 			children = (
-				BDF299C42C4A69AC00D7EB85 /* Debug.xcconfig */,
-				BDF299C82C4A6A2A00D7EB85 /* Release.xcconfig */,
+				BDE3C3052C53DF88007C3AB8 /* Configs */,
 				BDA64E152C4A3E0F00B04E3A /* SwiftDataTCA.xctestplan */,
 				23A64E882ACC5312005B6344 /* SwiftDataTCA */,
 				BD73380B2C4118CA001D0E04 /* SwiftDataTCATests */,
@@ -319,6 +318,15 @@
 				BD8F4DB42C46C7F9004ACF0B /* ActorMoviesView.swift */,
 			);
 			path = ActorMoviesFeature;
+			sourceTree = "<group>";
+		};
+		BDE3C3052C53DF88007C3AB8 /* Configs */ = {
+			isa = PBXGroup;
+			children = (
+				BDF299C42C4A69AC00D7EB85 /* Debug.xcconfig */,
+				BDF299C82C4A6A2A00D7EB85 /* Release.xcconfig */,
+			);
+			path = Configs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -19,12 +19,18 @@ enum Utils {
     }
 
     var body: some View {
-      VStack(alignment: .leading) {
-        Text(movie.title)
-          .font(.headline)
-          .foregroundStyle(movie.favorite ? .blue : .black)
-        Text(actorNames)
-          .font(.caption2)
+      HStack(spacing: 8) {
+        VStack(alignment: .leading) {
+          Text(movie.title)
+            .font(.headline)
+            .foregroundStyle(movie.favorite ? .blue : .black)
+          Text(actorNames)
+            .font(.caption2)
+        }
+        Spacer()
+        Image(systemName: "chevron.forward")
+          .font(.footnote.bold())
+          .foregroundColor(Color(UIColor.tertiaryLabel))
       }
     }
   }
@@ -38,11 +44,17 @@ enum Utils {
     }
 
     var body: some View {
-      VStack(alignment: .leading) {
-        Text(actor.name)
-          .font(.headline)
-        Text(movieTitles)
-          .font(.caption2)
+      HStack(spacing: 8) {
+        VStack(alignment: .leading) {
+          Text(actor.name)
+            .font(.headline)
+          Text(movieTitles)
+            .font(.caption2)
+        }
+        Spacer()
+        Image(systemName: "chevron.forward")
+          .font(.footnote.bold())
+          .foregroundColor(Color(UIColor.tertiaryLabel))
       }
     }
   }
