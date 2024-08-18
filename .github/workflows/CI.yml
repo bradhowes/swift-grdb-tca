@@ -1,10 +1,12 @@
-name: Build
-
+name: CI
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+env:
+  SNAPSHOT_ARTIFACTS: ${{ github.workspace }}/snapshots
+  TEST_RUNNER_SNAPSHOT_ARTIFACTS: ${{ github.workspace }}/snapshots
 
 jobs:
   build:
@@ -14,8 +16,13 @@ jobs:
       uses: actions/checkout@v4
     - name: Select Xcode 15.4
       run: ls -l /Applications && sudo xcode-select -s /Applications/Xcode_15.4.app
-    - name: Build, test, code coverage
+    - name: Build, test, and code coverage
       run: env && make
+    - name: Archive test artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: snapshots
+        path: ${{ env.SNAPSHOT_ARTIFACTS }}
     - name: Create Coverage Badge
       uses: schneegans/dynamic-badges-action@v1.1.0
       with:
