@@ -36,17 +36,17 @@ self-contained.
 
 ## Drilling Down
 
-The top-level views [FromStateView](SwiftDataTCA/SwiftDataTCA/Views/FromState/FromStateView.swift) and 
-[FromQueryView](SwiftDataTCA/SwiftDataTCA/Views/FromQuery/FromQueryView.swift) start with a TCA `NavigationStack` view 
+The top-level views [FromStateView](SwiftDataTCA/Views/FromState/FromStateView.swift) and 
+[FromQueryView](SwiftDataTCA/Views/FromQuery/FromQueryView.swift) start with a TCA `NavigationStack` view 
 builder. The subsequent
 `List` views define a `selection` attribute that toggles a private state in the view (not reflected in the store). When
 this view state value changes, there is an `onChange` block that runs which sends an action to the store that indicates 
 what item was tapped. 
 
 The top-level reducers monitor the `path` actions and handle the selections made by the child views, 
-[ActorMoviesView](SwiftDataTCA/SwiftDataTCA/Views/ActorMoviesFeature/ActorMoviesView.swift)
+[ActorMoviesView](SwiftDataTCA/Views/ActorMoviesFeature/ActorMoviesView.swift)
 and
-[MovieActorsView](SwiftDataTCA/SwiftDataTCA/Views/MovieActorsFeature/MovieActorsView.swift).
+[MovieActorsView](SwiftDataTCA/Views/MovieActorsFeature/MovieActorsView.swift).
 Note that this is a tad more verbose than that documented on TCA's [Pushing Features onto the 
 Stack](https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/stackbasednavigation#Pushing-features-onto-the-stack)
 page where the list item is a button which sends the action into the reducer, but IMO it better utilizes the SwiftUI
