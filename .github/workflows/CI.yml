@@ -24,7 +24,7 @@ jobs:
         name: snapshots
         path: ${{ env.SNAPSHOT_ARTIFACTS }}
     - name: Create Coverage Badge
-      uses: schneegans/dynamic-badges-action@v1.1.0
+      uses: schneegans/dynamic-badges-action@v1.7.0
       with:
         auth: ${{ secrets.GIST_UPDATE }}
         gistID: 54c92d8df32d9a1b64d945f2e76696f1
