@@ -15,7 +15,7 @@ struct FromStateFeature {
   @ObservableState
   struct State {
     var path = StackState<Path.State>()
-    var movies: [MovieModel] = []
+    var movies: [Movie] = []
     var titleSort: SortOrder? = .forward
     var isSearchFieldPresented = false
     var searchString: String = ""
@@ -26,9 +26,9 @@ struct FromStateFeature {
 
   enum Action: Sendable {
     case addButtonTapped
-    case deleteSwiped(MovieModel)
-    case favoriteSwiped(MovieModel)
-    case movieSelected(MovieModel)
+    case deleteSwiped(Movie)
+    case favoriteSwiped(Movie)
+    case movieSelected(Movie)
     case onAppear
     case path(StackActionOf<Path>)
     case searchButtonTapped(Bool)
@@ -50,12 +50,16 @@ struct FromStateFeature {
         return runSendFetchMovies
 
       case .deleteSwiped(let movie):
-        db.delete(movie)
+        db.delete(movie.backingObject())
         db.save()
         return runSendFetchMovies
 
-      case .favoriteSwiped(let movie):
-        movie.favorite.toggle()
+      case .favoriteSwiped(var changed):
+        // Could be improved on
+        changed.toggleFavorite()
+        for (index, movie) in state.movies.enumerated() where movie.modelId == changed.modelId {
+          state.movies[index] = changed
+        }
         return .none
 
       case .movieSelected(let movie):
@@ -110,7 +114,7 @@ struct FromStateFeature {
 
   private func fetchChanges(state: inout State) {
     @Dependency(\.database) var db
-    state.movies = db.fetchMovies(state.fetchDescriptor)
+    state.movies = db.fetchMovies(state.fetchDescriptor).map { $0.asStruct }
   }
 }
 

@@ -11,9 +11,9 @@ enum Utils {
   }
 
   struct MovieView: View {
-    let movie: MovieModel
+    let movie: Movie
     var actorNames: String {
-      Support.sortedActors(for: movie, order: .forward)
+      movie.actors(ordering: .forward)
         .map { $0.name }
         .formatted(.list(type: .and))
     }
@@ -21,7 +21,7 @@ enum Utils {
     var body: some View {
       HStack(spacing: 8) {
         VStack(alignment: .leading) {
-          Text(movie.title)
+          Text(movie.name)
             .font(.headline)
             .foregroundStyle(movie.favorite ? .blue : .black)
           Text(actorNames)
@@ -36,10 +36,10 @@ enum Utils {
   }
 
   struct ActorView: View {
-    let actor: ActorModel
+    let actor: Actor
     var movieTitles: String {
-      Support.sortedMovies(for: actor, order: .forward)
-        .map { $0.title }
+      actor.movies(ordering: .forward)
+        .map { $0.name }
         .formatted(.list(type: .and))
     }
 
@@ -59,14 +59,14 @@ enum Utils {
     }
   }
 
-  static func favoriteSwipeAction(_ movie: MovieModel, action: @escaping () -> Void) -> some View {
+  static func favoriteSwipeAction(_ movie: Movie, action: @escaping () -> Void) -> some View {
     Button(action: action) {
       Label("Favorite", systemImage: "star")
     }
     .tint(.blue)
   }
 
-  static func deleteSwipeAction(_ movie: MovieModel, action: @escaping () -> Void) -> some View {
+  static func deleteSwipeAction(_ movie: Movie, action: @escaping () -> Void) -> some View {
     Button(role: .destructive, action: action) {
       Label("Delete", systemImage: "trash")
     }

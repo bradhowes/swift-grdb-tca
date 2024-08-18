@@ -1,6 +1,7 @@
 #if canImport(Testing)
 
 import ComposableArchitecture
+import Dependencies
 import Foundation
 import SwiftData
 import Testing
@@ -105,63 +106,68 @@ struct SchemaV6Tests {
   @Test("Struct generation")
   func structGeneration() async throws {
     typealias ActiveSchema = SchemaV6
+
     let schema = Schema(versionedSchema: ActiveSchema.self)
-    let config = ModelConfiguration("V55555", schema: schema, isStoredInMemoryOnly: true)
+    let config = ModelConfiguration("V6", schema: schema, isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: schema, configurations: config)
     let context = ModelContext(container)
 
-    withDependencies {
-      $0.uuid = .incrementing
+    let _ = withDependencies {
+      $0.modelContextProvider = ModelContextProvider(context: context)
     } operation: {
       ActiveSchema.makeMock(context: context, entry: ("A Second Movie", ["Actor 4", "Actor 1"]))
       ActiveSchema.makeMock(context: context, entry: ("The First Movie", ["Actor 2", "Actor 1", "Actor 3"]))
       ActiveSchema.makeMock(context: context, entry: ("El Third Movie", ["Actor 2"]))
       try! context.save()
+      
+      let movies = try! context.fetch(FetchDescriptor<ActiveSchema.MovieModel>(sortBy: [.init(\.sortableTitle, order: .forward)]))
+      let actors = try! context.fetch(FetchDescriptor<ActiveSchema.ActorModel>(sortBy: [.init(\.name, order: .forward)]))
+      
+      #expect(movies.count == 3)
+      #expect(movies[0].title == "The First Movie")
+      #expect(movies[0].actors.count == 3)
+      
+      let m0 = movies[0].asStruct
+      #expect(m0.name == "The First Movie")
+      #expect(m0.modelId == movies[0].persistentModelID)
+      var ma = m0.actors(ordering: .forward)
+      #expect(ma.count == 3)
+      #expect(ma[0].name == "Actor 1")
+      #expect(ma[0].modelId == actors[0].persistentModelID)
+      #expect(ma[1].name == "Actor 2")
+      #expect(ma[1].modelId == actors[1].persistentModelID)
+      #expect(ma[2].name == "Actor 3")
+      #expect(ma[2].modelId == actors[2].persistentModelID)
+      
+      let m1 = movies[1].asStruct
+      #expect(m1.name == "A Second Movie")
+      #expect(m1.modelId == movies[1].persistentModelID)
+      ma = m1.actors(ordering: .forward)
+      #expect(ma.count == 2)
+      #expect(ma[0].name == "Actor 1")
+      #expect(ma[1].name == "Actor 4")
+      
+      let m2 = movies[2].asStruct
+      #expect(m2.name == "El Third Movie")
+      #expect(m2.modelId == movies[2].persistentModelID)
+      ma = m2.actors(ordering: .forward)
+      #expect(ma.count == 1)
+      #expect(ma[0].name == "Actor 2")
+      
+      #expect(actors.count == 4)
+      #expect(actors[0].name == "Actor 1")
+      #expect(actors[0].movies.count == 2)
+      
+      let a0 = actors[0].asStruct
+      #expect(a0.name == "Actor 1")
+      #expect(a0.modelId == actors[0].persistentModelID)
+      let am = a0.movies(ordering: .forward)
+      #expect(am.count == 2)
+      #expect(am[0].name == "The First Movie")
+      #expect(am[0].modelId == movies[0].persistentModelID)
+      #expect(am[1].name == "A Second Movie")
+      #expect(am[1].modelId == movies[1].persistentModelID)
     }
-
-    let movies = try! context.fetch(FetchDescriptor<ActiveSchema.MovieModel>(sortBy: [.init(\.sortableTitle, order: .forward)]))
-    let actors = try! context.fetch(FetchDescriptor<ActiveSchema.ActorModel>(sortBy: [.init(\.name, order: .forward)]))
-
-    #expect(movies.count == 3)
-    #expect(movies[0].title == "The First Movie")
-    #expect(movies[0].actors.count == 3)
-
-    let m0 = movies[0].asStruct
-    #expect(m0.title == "The First Movie")
-    #expect(m0.modelId == movies[0].persistentModelID)
-    #expect(m0.actors.count == 3)
-    #expect(m0.actors[0].name == "Actor 1")
-    #expect(m0.actors[0].modelId == actors[0].persistentModelID)
-    #expect(m0.actors[1].name == "Actor 2")
-    #expect(m0.actors[1].modelId == actors[1].persistentModelID)
-    #expect(m0.actors[2].name == "Actor 3")
-    #expect(m0.actors[2].modelId == actors[2].persistentModelID)
-
-    let m1 = movies[1].asStruct
-    #expect(m1.title == "A Second Movie")
-    #expect(m1.modelId == movies[1].persistentModelID)
-    #expect(m1.actors.count == 2)
-    #expect(m1.actors[0].name == "Actor 1")
-    #expect(m1.actors[1].name == "Actor 4")
-
-    let m2 = movies[2].asStruct
-    #expect(m2.title == "El Third Movie")
-    #expect(m2.modelId == movies[2].persistentModelID)
-    #expect(m2.actors.count == 1)
-    #expect(m2.actors[0].name == "Actor 2")
-
-    #expect(actors.count == 4)
-    #expect(actors[0].name == "Actor 1")
-    #expect(actors[0].movies.count == 2)
-
-    let a0 = actors[0].asStruct
-    #expect(a0.name == "Actor 1")
-    #expect(a0.modelId == actors[0].persistentModelID)
-    #expect(a0.movies.count == 2)
-    #expect(a0.movies[0].name == "The First Movie")
-    #expect(a0.movies[0].modelId == movies[0].persistentModelID)
-    #expect(a0.movies[1].name == "A Second Movie")
-    #expect(a0.movies[1].modelId == movies[1].persistentModelID)
   }
 }
 

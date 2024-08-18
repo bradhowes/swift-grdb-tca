@@ -30,7 +30,7 @@ final class FromStateFeatureTests: XCTestCase {
     await store.receive(\._fetchMovies)
 
     XCTAssertEqual(1, store.state.movies.count)
-    XCTAssertEqual("The Score", store.state.movies[0].title)
+    XCTAssertEqual("The Score", store.state.movies[0].name)
   }
 
   @MainActor
@@ -46,7 +46,7 @@ final class FromStateFeatureTests: XCTestCase {
     await store.receive(\._fetchMovies)
 
     XCTAssertEqual(1, store.state.movies.count)
-    XCTAssertEqual("The Score", store.state.movies[0].title)
+    XCTAssertEqual("The Score", store.state.movies[0].name)
 
     await store.send(.deleteSwiped(store.state.movies[0]))
     await store.receive(\._fetchMovies)
@@ -67,12 +67,15 @@ final class FromStateFeatureTests: XCTestCase {
     await store.receive(\._fetchMovies)
 
     XCTAssertEqual(1, store.state.movies.count)
-    XCTAssertEqual("The Score", store.state.movies[0].title)
+    XCTAssertEqual("The Score", store.state.movies[0].name)
     XCTAssertFalse(store.state.movies[0].favorite)
 
-    await store.send(.favoriteSwiped(store.state.movies[0]))
+    store.exhaustivity = .on
+    await store.send(.favoriteSwiped(store.state.movies[0])) {
+      $0.movies[0].favorite = true
+    }
 
-    XCTAssertTrue(store.state.movies[0].favorite)
+    // XCTAssertTrue(store.state.movies[0].favorite)
   }
 
   @MainActor

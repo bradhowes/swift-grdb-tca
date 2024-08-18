@@ -50,8 +50,8 @@ final class FromQueryFeatureTests: XCTestCase {
 
     movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
     XCTAssertFalse(movies.isEmpty)
-
-    await store.send(.deleteSwiped(movies[0]))
+    let movie = movies[0].asStruct
+    await store.send(.deleteSwiped(movie))
 
     movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
     XCTAssertTrue(movies.isEmpty)
@@ -73,8 +73,8 @@ final class FromQueryFeatureTests: XCTestCase {
 
     movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
     XCTAssertFalse(movies[0].favorite)
-
-    await store.send(.favoriteSwiped(movies[0]))
+    let movie = movies[0].asStruct
+    await store.send(.favoriteSwiped(movie))
 
     XCTAssertTrue(movies[0].favorite)
   }

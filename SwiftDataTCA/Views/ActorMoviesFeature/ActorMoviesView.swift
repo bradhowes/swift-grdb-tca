@@ -20,7 +20,7 @@ struct ActorMoviesView: View {
 
 private struct MoviesListView: View {
   @Bindable var store: StoreOf<ActorMoviesFeature>
-  @State private var selectedMovie: MovieModel?
+  @State private var selectedMovie: Movie?
 
   var body: some View {
     List(store.movies, id: \.self, selection: $selectedMovie) { movie in
@@ -44,12 +44,12 @@ extension ActorMoviesView {
   static var preview: some View {
     @Dependency(\.modelContextProvider) var modelContextProvider
     Support.generateMocks(context: modelContextProvider.context, count: 8)
-    let actor = ActiveSchema.fetchOrMakeActor(modelContextProvider.context, name: "Marlon Brando")
-    let movies = Support.sortedMovies(for: actor, order: .forward)
+    let actorModel = ActiveSchema.fetchOrMakeActor(modelContextProvider.context, name: "Marlon Brando")
+    let movies = Support.sortedMovies(for: actorModel, order: .forward)
     movies[1].favorite = true
     movies[3].favorite = true
     return NavigationView {
-      ActorMoviesView(store: Store(initialState: .init(actor: actor)) { ActorMoviesFeature() })
+      ActorMoviesView(store: Store(initialState: .init(actor: actorModel.asStruct)) { ActorMoviesFeature() })
         .modelContainer(modelContextProvider.container)
     }
   }

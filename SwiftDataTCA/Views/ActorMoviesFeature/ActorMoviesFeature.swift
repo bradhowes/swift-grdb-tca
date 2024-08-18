@@ -8,22 +8,22 @@ struct ActorMoviesFeature {
 
   @ObservableState
   struct State {
-    let actor: ActorModel
+    let actor: Actor
     var titleSort: SortOrder? = .forward
-    var movies: [MovieModel] { Support.sortedMovies(for: actor, order: titleSort) }
+    var movies: [Movie] { actor.movies(ordering: titleSort) }
   }
 
   enum Action: Sendable {
-    case favoriteSwiped(MovieModel)
-    case movieSelected(MovieModel)
+    case favoriteSwiped(Movie)
+    case movieSelected(Movie)
     case titleSortChanged(SortOrder?)
   }
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .favoriteSwiped(let movie):
-        movie.favorite.toggle()
+      case .favoriteSwiped(var movie):
+        movie.toggleFavorite()
         return .none
 
       case .movieSelected:

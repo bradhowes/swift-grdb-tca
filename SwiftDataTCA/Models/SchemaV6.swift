@@ -22,6 +22,8 @@ enum SchemaV6: VersionedSchema {
       self.name = name
       self.movies = []
     }
+
+    var asStruct: Actor { .init(modelId: persistentModelID, name: name) }
   }
 
   @Model
@@ -37,6 +39,8 @@ enum SchemaV6: VersionedSchema {
       self.sortableTitle = Support.sortableTitle(title)
       self.actors = []
     }
+
+    var asStruct: Movie { .init(modelId: persistentModelID, name: title, favorite: favorite) }
   }
 
   struct Actor: Equatable, Hashable {
@@ -45,8 +49,7 @@ enum SchemaV6: VersionedSchema {
 
     func movies(ordering: SortOrder?) -> [Movie] {
       @Dependency(\.modelContextProvider.context) var context
-      return Support.sortedMovies(for: backingObject(), order: ordering)
-        .map { .init(modelId: $0.persistentModelID, name: $0.title, favorite: $0.favorite) }
+      return Support.sortedMovies(for: backingObject(), order: ordering).map { $0.asStruct }
     }
 
     @discardableResult
@@ -66,20 +69,19 @@ enum SchemaV6: VersionedSchema {
   struct Movie: Equatable, Hashable {
     let modelId: PersistentIdentifier
     let name: String
-    let favorite: Bool
+    var favorite: Bool
 
-    func toggleFavorite() {
+    mutating func toggleFavorite() {
       backingObject { $0.favorite.toggle() }
+      favorite.toggle()
     }
 
-    func actors(in context: ModelContext, ordering: SortOrder?) -> [Actor] {
-      Support.sortedActors(for: backingObject(), order: ordering).map {
-        .init(modelId: $0.persistentModelID, name: $0.name)
-      }
+    func actors(ordering: SortOrder?) -> [Actor] {
+      Support.sortedActors(for: backingObject(), order: ordering).map { $0.asStruct }
     }
 
     @discardableResult
-    private func backingObject(performing: ((MovieModel) -> Void)? = nil) -> MovieModel {
+    func backingObject(performing: ((MovieModel) -> Void)? = nil) -> MovieModel {
       @Dependency(\.modelContextProvider.context) var context
       guard let movie = context.model(for: self.modelId) as? MovieModel else {
         fatalError("Faied to resolve \(self.name) usiing \(self.modelId)")

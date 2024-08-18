@@ -8,7 +8,7 @@ struct MovieActorsView: View {
 
   var body: some View {
     ActorsListView(store: store)
-      .navigationTitle(store.movie.title)
+      .navigationTitle(store.movie.name)
       .toolbar {
         ToolbarItemGroup(placement: .navigationBarTrailing) {
           Utils.pickerView(title: "Name", binding: $store.nameSort.sending(\.nameSortChanged).animation())
@@ -23,7 +23,7 @@ struct MovieActorsView: View {
 
 private struct ActorsListView: View {
   @Bindable var store: StoreOf<MovieActorsFeature>
-  @State private var selectedActor: ActorModel?
+  @State private var selectedActor: Actor?
 
   var body: some View {
     List(store.actors, id: \.self, selection: $selectedActor) {
@@ -47,8 +47,9 @@ extension MovieActorsView {
       titleSort: .forward,
       searchString: "Apoc"
     ))) ?? []
+    let movie = movies[0].asStruct
     return NavigationView {
-      MovieActorsView(store: Store(initialState: .init(movie: movies[0])) { MovieActorsFeature() })
+      MovieActorsView(store: Store(initialState: .init(movie: movie)) { MovieActorsFeature() })
         .modelContainer(modelContextProvider.container)
     }
   }

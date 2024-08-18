@@ -26,9 +26,9 @@ struct FromQueryFeature {
   enum Action: Sendable {
     case addButtonTapped
     case searchButtonTapped(Bool)
-    case deleteSwiped(MovieModel)
-    case favoriteSwiped(MovieModel)
-    case movieSelected(MovieModel)
+    case deleteSwiped(Movie)
+    case favoriteSwiped(Movie)
+    case movieSelected(Movie)
     case path(StackActionOf<Path>)
     case searchStringChanged(String)
     case titleSortChanged(SortOrder?)
@@ -45,12 +45,12 @@ struct FromQueryFeature {
         return .none
 
       case .deleteSwiped(let movie):
-        db.delete(movie)
+        db.delete(movie.backingObject())
         db.save()
         return .none
 
-      case .favoriteSwiped(let movie):
-        movie.favorite.toggle()
+      case .favoriteSwiped(var movie):
+        movie.toggleFavorite()
         return .none
 
       case .movieSelected(let movie):

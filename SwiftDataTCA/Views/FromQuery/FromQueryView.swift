@@ -41,7 +41,7 @@ struct FromQueryView: View {
 private struct MovieListView: View {
   @Bindable var store: StoreOf<FromQueryFeature>
   @Query var moviesQuery: [MovieModel]
-  @State private var selectedMovie: MovieModel?
+  @State private var selectedMovie: Movie?
 
   init(store: Bindable<Store<FromQueryFeature.State, FromQueryFeature.Action>>) {
     self._store = store
@@ -49,7 +49,8 @@ private struct MovieListView: View {
   }
 
   var body: some View {
-    List(moviesQuery, id: \.self, selection: $selectedMovie) { movie in
+    List(moviesQuery, id: \.self, selection: $selectedMovie) { model in
+      let movie = model.asStruct
       Utils.MovieView(movie: movie)
         .swipeActions {
           Utils.deleteSwipeAction(movie) {
