@@ -7,6 +7,8 @@ import SwiftData
  */
 struct Database {
   var fetchMovies: @Sendable (FetchDescriptor<MovieModel>) -> [MovieModel]
+  var resolveMovie: @Sendable (PersistentIdentifier) -> MovieModel
+  var resolveActor: @Sendable (PersistentIdentifier) -> ActorModel
   var add: @Sendable () -> Void
   var delete: @Sendable (MovieModel) -> Void
   var save: @Sendable () -> Void
@@ -42,6 +44,22 @@ private func doSave() {
   try? context.save()
 }
 
+@Sendable
+private func doResolveMovie(_ modelId: PersistentIdentifier) -> MovieModel {
+  @Dependency(\.modelContextProvider.context) var context
+  // swiftlint:disable force_cast
+  return context.model(for: modelId) as! MovieModel
+  // swiftlint:enable force_cast
+}
+
+@Sendable
+private func doResolveActor(_ modelId: PersistentIdentifier) -> ActorModel {
+  @Dependency(\.modelContextProvider.context) var context
+  // swiftlint:disable force_cast
+  return context.model(for: modelId) as! ActorModel
+  // swiftlint:enable force_cast
+}
+
 extension DependencyValues {
   var database: Database {
     get { self[Database.self] }
@@ -52,6 +70,8 @@ extension DependencyValues {
 extension Database: DependencyKey {
   static let liveValue = Self(
     fetchMovies: doFetchMovies,
+    resolveMovie: doResolveMovie,
+    resolveActor: doResolveActor,
     add: doAdd,
     delete: doDelete,
     save: doSave
@@ -63,6 +83,8 @@ extension Database: DependencyKey {
 extension Database: TestDependencyKey {
   static let testValue = Self(
     fetchMovies: doFetchMovies,
+    resolveMovie: doResolveMovie,
+    resolveActor: doResolveActor,
     add: doAdd,
     delete: doDelete,
     save: doSave

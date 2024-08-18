@@ -1,3 +1,4 @@
+import Dependencies
 import Foundation
 import SwiftData
 
@@ -21,16 +22,6 @@ enum SchemaV6: VersionedSchema {
       self.name = name
       self.movies = []
     }
-
-    var asStruct: Actor {
-      .init(
-        modelId: self.persistentModelID,
-        name: self.name,
-        movies: self.movies
-          .sorted { $0.sortableTitle.localizedCompare($1.sortableTitle) == .orderedAscending }
-          .map { .init(name: $0.title, modelId: $0.persistentModelID ) }
-      )
-    }
   }
 
   @Model
@@ -46,44 +37,59 @@ enum SchemaV6: VersionedSchema {
       self.sortableTitle = Support.sortableTitle(title)
       self.actors = []
     }
-
-    var asStruct: Movie {
-      .init(
-        modelId: self.persistentModelID,
-        title: self.title,
-        favorite: self.favorite,
-        sortableTitle: self.sortableTitle,
-        actors: self.actors
-          .sorted { $0.name.localizedCompare($1.name) == .orderedAscending }
-          .map { .init(name: $0.name, modelId: $0.persistentModelID) }
-      )
-    }
   }
 
-  struct NamedPersistentIdentifier {
-    let name: String
+  struct Actor: Equatable, Hashable {
     let modelId: PersistentIdentifier
+    let name: String
 
-    func resolve<T: PersistentModel>(in context: ModelContext) -> T {
-      if let value = context.model(for: modelId) as? T {
-        return value
+    func movies(ordering: SortOrder?) -> [Movie] {
+      @Dependency(\.modelContextProvider.context) var context
+      return Support.sortedMovies(for: backingObject(), order: ordering)
+        .map { .init(modelId: $0.persistentModelID, name: $0.title, favorite: $0.favorite) }
+    }
+
+    @discardableResult
+    private func backingObject(performing: ((ActorModel) -> Void)? = nil) -> ActorModel {
+      @Dependency(\.modelContextProvider.context) var context
+      guard let actor = context.model(for: self.modelId) as? ActorModel else {
+        fatalError("Faied to resolve \(self.name) usiing \(self.modelId)")
       }
-      fatalError("Failed to resolve model \(name) : \(modelId)")
+      if let performing {
+        performing(actor)
+        try? context.save()
+      }
+      return actor
     }
   }
 
-  struct Actor {
+  struct Movie: Equatable, Hashable {
     let modelId: PersistentIdentifier
     let name: String
-    let movies: [NamedPersistentIdentifier]
-  }
-
-  struct Movie {
-    let modelId: PersistentIdentifier
-    let title: String
     let favorite: Bool
-    let sortableTitle: String
-    let actors: [NamedPersistentIdentifier]
+
+    func toggleFavorite() {
+      backingObject { $0.favorite.toggle() }
+    }
+
+    func actors(in context: ModelContext, ordering: SortOrder?) -> [Actor] {
+      Support.sortedActors(for: backingObject(), order: ordering).map {
+        .init(modelId: $0.persistentModelID, name: $0.name)
+      }
+    }
+
+    @discardableResult
+    private func backingObject(performing: ((MovieModel) -> Void)? = nil) -> MovieModel {
+      @Dependency(\.modelContextProvider.context) var context
+      guard let movie = context.model(for: self.modelId) as? MovieModel else {
+        fatalError("Faied to resolve \(self.name) usiing \(self.modelId)")
+      }
+      if let performing {
+        performing(movie)
+        try? context.save()
+      }
+      return movie
+    }
   }
 
   @discardableResult

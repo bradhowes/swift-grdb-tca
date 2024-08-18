@@ -6,6 +6,9 @@ typealias ActiveSchema = SchemaV6
 typealias ActorModel = ActiveSchema.ActorModel
 typealias MovieModel = ActiveSchema.MovieModel
 
+typealias Actor = ActiveSchema.Actor
+typealias Movie = ActiveSchema.Movie
+
 /**
  Wrapper around a `ModelContext` value that can be used for a dependency.
  */

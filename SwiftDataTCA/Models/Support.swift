@@ -43,6 +43,14 @@ enum Support {
     sortBy.compactMap { $0 }
   }
 
+  /**
+   Obtain the collection of actors associated with a given movie, with the collection ordered by actor names
+   according to the given ordering. If ordering is nil, return in the order obtained from the backing store.
+
+   - parameter movie: the model to work with
+   - parameter order: the optional ordering to apply to the actor names
+   - returns collection of associated ActorModel objects
+   */
   static func sortedActors(for movie: MovieModel, order: SortOrder?) -> [ActorModel] {
     switch order {
     case .forward: return movie.actors.sorted { $0.name.localizedCompare($1.name) == .orderedAscending }
@@ -51,6 +59,14 @@ enum Support {
     }
   }
 
+  /**
+   Obtain the collection of movies associated with a given actor, with the collection ordered by movie sortable titles
+   according to the given ordering. If ordering is nil, return in the order obtained from the backing store.
+
+   - parameter actor: the model to work with
+   - parameter order: the optional ordering to apply to the movie titles
+   - returns collection of associated MovieModel objects
+   */
   static func sortedMovies(for actor: ActorModel, order: SortOrder?) -> [MovieModel] {
     switch order {
     case .forward: return actor.movies.sorted { $0.sortableTitle.localizedCompare($1.sortableTitle) == .orderedAscending }
