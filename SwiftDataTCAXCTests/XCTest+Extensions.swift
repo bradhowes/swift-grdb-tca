@@ -19,7 +19,7 @@ extension XCTest {
     testName: String = #function,
     line: UInt = #line
   ) throws {
-    // isRecording = false
+    // isRecording = true
     print(ProcessInfo.processInfo.environment)
     let isOnGithub = ProcessInfo.processInfo.environment["CFFIXED_USER_HOME"]?.contains("/Users/runner/Library") ?? false
 

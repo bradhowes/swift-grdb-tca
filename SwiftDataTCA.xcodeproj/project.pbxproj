@@ -110,6 +110,11 @@
 		BD7338152C4158A0001D0E04 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
 		BD7338162C4158A0001D0E04 /* LICENSE.MD */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.MD; sourceTree = "<group>"; };
 		BD7338172C4158A0001D0E04 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		BD81CD052C71D41E0095164F /* testPreviewRender.testPreviewRender-iOS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "testPreviewRender.testPreviewRender-iOS.png"; sourceTree = "<group>"; };
+		BD81CD072C71D41E0095164F /* testPreviewRender.testPreviewRender-iOS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "testPreviewRender.testPreviewRender-iOS.png"; sourceTree = "<group>"; };
+		BD81CD082C71D41E0095164F /* testRootContentViewRender.testRootContentViewRender-iOS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "testRootContentViewRender.testRootContentViewRender-iOS.png"; sourceTree = "<group>"; };
+		BD81CD0A2C71D41E0095164F /* testPreviewRender.testPreviewRender-iOS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "testPreviewRender.testPreviewRender-iOS.png"; sourceTree = "<group>"; };
+		BD81CD0C2C71D41E0095164F /* testPreviewRender.testPreviewRender-iOS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "testPreviewRender.testPreviewRender-iOS.png"; sourceTree = "<group>"; };
 		BD8F4DAF2C4689A4004ACF0B /* MovieActorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieActorsView.swift; sourceTree = "<group>"; };
 		BD8F4DB22C46C7E7004ACF0B /* ActorMoviesFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActorMoviesFeature.swift; sourceTree = "<group>"; };
 		BD8F4DB42C46C7F9004ACF0B /* ActorMoviesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActorMoviesView.swift; sourceTree = "<group>"; };
@@ -241,6 +246,7 @@
 		BD0DC1DD2C41779D00821D09 /* SwiftDataTCAXCTests */ = {
 			isa = PBXGroup;
 			children = (
+				BD81CD0E2C71D41E0095164F /* __Snapshots__ */,
 				BDA1820B2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift */,
 				BDA1820D2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift */,
 				BD0DC1DE2C41779D00821D09 /* FromStateFeatureTests.swift */,
@@ -309,6 +315,50 @@
 				BD3A16972C490AA60089082D /* SchemaV5Tests.swift */,
 			);
 			path = SwiftDataTCATests;
+			sourceTree = "<group>";
+		};
+		BD81CD062C71D41E0095164F /* ActorMoviesFeatureTests */ = {
+			isa = PBXGroup;
+			children = (
+				BD81CD052C71D41E0095164F /* testPreviewRender.testPreviewRender-iOS.png */,
+			);
+			path = ActorMoviesFeatureTests;
+			sourceTree = "<group>";
+		};
+		BD81CD092C71D41E0095164F /* FromQueryFeatureTests */ = {
+			isa = PBXGroup;
+			children = (
+				BD81CD072C71D41E0095164F /* testPreviewRender.testPreviewRender-iOS.png */,
+				BD81CD082C71D41E0095164F /* testRootContentViewRender.testRootContentViewRender-iOS.png */,
+			);
+			path = FromQueryFeatureTests;
+			sourceTree = "<group>";
+		};
+		BD81CD0B2C71D41E0095164F /* FromStateFeatureTests */ = {
+			isa = PBXGroup;
+			children = (
+				BD81CD0A2C71D41E0095164F /* testPreviewRender.testPreviewRender-iOS.png */,
+			);
+			path = FromStateFeatureTests;
+			sourceTree = "<group>";
+		};
+		BD81CD0D2C71D41E0095164F /* MovieActorsFeatureTests */ = {
+			isa = PBXGroup;
+			children = (
+				BD81CD0C2C71D41E0095164F /* testPreviewRender.testPreviewRender-iOS.png */,
+			);
+			path = MovieActorsFeatureTests;
+			sourceTree = "<group>";
+		};
+		BD81CD0E2C71D41E0095164F /* __Snapshots__ */ = {
+			isa = PBXGroup;
+			children = (
+				BD81CD062C71D41E0095164F /* ActorMoviesFeatureTests */,
+				BD81CD092C71D41E0095164F /* FromQueryFeatureTests */,
+				BD81CD0B2C71D41E0095164F /* FromStateFeatureTests */,
+				BD81CD0D2C71D41E0095164F /* MovieActorsFeatureTests */,
+			);
+			path = __Snapshots__;
 			sourceTree = "<group>";
 		};
 		BD8F4DB12C46C7D4004ACF0B /* ActorMoviesFeature */ = {
