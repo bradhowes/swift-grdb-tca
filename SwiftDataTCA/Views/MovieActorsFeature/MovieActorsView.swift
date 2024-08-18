@@ -47,7 +47,7 @@ extension MovieActorsView {
       titleSort: .forward,
       searchString: "Apoc"
     ))) ?? []
-    let movie = movies[0].asStruct
+    let movie = movies[0].valueType
     return NavigationView {
       MovieActorsView(store: Store(initialState: .init(movie: movie)) { MovieActorsFeature() })
         .modelContainer(modelContextProvider.container)

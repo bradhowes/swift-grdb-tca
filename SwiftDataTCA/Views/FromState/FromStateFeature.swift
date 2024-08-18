@@ -114,7 +114,7 @@ struct FromStateFeature {
 
   private func fetchChanges(state: inout State) {
     @Dependency(\.database) var db
-    state.movies = db.fetchMovies(state.fetchDescriptor).map { $0.asStruct }
+    state.movies = db.fetchMovies(state.fetchDescriptor).map { $0.valueType }
   }
 }
 

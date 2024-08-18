@@ -10,7 +10,7 @@ import XCTest
 final class MovieActorsFeatureTests: XCTestCase {
   var context: ModelContext!
   var movieModel: MovieModel!
-  var movie: Movie { movieModel.asStruct }
+  var movie: Movie { movieModel.valueType }
 
   override func setUpWithError() throws {
     let schema = Schema(versionedSchema: ActiveSchema.self)

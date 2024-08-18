@@ -49,7 +49,7 @@ extension ActorMoviesView {
     movies[1].favorite = true
     movies[3].favorite = true
     return NavigationView {
-      ActorMoviesView(store: Store(initialState: .init(actor: actorModel.asStruct)) { ActorMoviesFeature() })
+      ActorMoviesView(store: Store(initialState: .init(actor: actorModel.valueType)) { ActorMoviesFeature() })
         .modelContainer(modelContextProvider.container)
     }
   }

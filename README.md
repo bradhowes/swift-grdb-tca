@@ -10,12 +10,16 @@ This is a fork of the [SwiftDataTCA](https://github.com/SouzaRodrigo61/SwiftData
 [The Composable Architecture v1.11.2 (TCA)](https://github.com/pointfreeco/swift-composable-architecture) library and tools.
 My changes were done in Xcode 16.0 Beta using Swift 6 with _Complete Concurrency Checking_ enabled.
 
-The code contains two TCA "features" (combination of a reducer and a SwiftUI view):
+# Overview
 
-* FromState -- the list of movies to show and work with comes from a SwiftData query done in the feature
-* FromQuery -- the list of movies to show and work with comes from a `@Query` macro in the SwiftUI view
+The code contains two top-level TCA "features" (combination of a reducer and a SwiftUI view):
 
-Both SwiftUI views contain the same interface functionality, including:
+* [FromStateFeature](SwiftDataTCA/Views/FromState/FromStateFeature.swift) -- the list of movies to show and work with 
+comes from a SwiftData query done in the feature
+* [FromQueryFeature](SwiftDataTCA/Views/FromQuery/FromQueryFeature.swift) -- the list of movies to show and work with 
+comes from a `@Query` macro in the SwiftUI view
+
+Both features contain the same interface functionality, including:
 
 * Adding a new "random" movie
 * Sorting movies by title
@@ -32,15 +36,21 @@ self-contained.
 
 ## Drilling Down
 
-The top-level views `FromStateView` and `FromQueryView` start with a TCA `NavigationStack` view builder. The subsequent
+The top-level views [FromStateView](SwiftDataTCA/SwiftDataTCA/Views/FromState/FromStateView.swift) and 
+[FromQueryView](SwiftDataTCA/SwiftDataTCA/Views/FromQuery/FromQueryView.swift) start with a TCA `NavigationStack` view 
+builder. The subsequent
 `List` views define a `selection` attribute that toggles a private state in the view (not reflected in the store). When
 this view state value changes, there is an `onChange` block that runs which sends an action to the store that indicates 
 what item was tapped. 
 
-The top-level reducers monitor the `path` actions and handle the selections made by the child views, `ActorMoviesView`
-and `MovieActorsView`. Note that this is a more verbose mechanism than that documented on TCA's 
-[Pushing Features onto the Stack](https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/stackbasednavigation#Pushing-features-onto-the-stack)
-page where the list item is a button which sends the action into the reducer.
+The top-level reducers monitor the `path` actions and handle the selections made by the child views, 
+[ActorMoviesView](SwiftDataTCA/SwiftDataTCA/Views/ActorMoviesFeature/ActorMoviesView.swift)
+and
+[MovieActorsView](SwiftDataTCA/SwiftDataTCA/Views/MovieActorsFeature/MovieActorsView.swift).
+Note that this is a tad more verbose than that documented on TCA's [Pushing Features onto the 
+Stack](https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/stackbasednavigation#Pushing-features-onto-the-stack)
+page where the list item is a button which sends the action into the reducer, but IMO it better utilizes the SwiftUI
+view hierarchy.
 
 Each of the drill-down views can also change the favorite state of a movie, either via toolbar button in 
 the `MovieActorsView` view, or via swiping in the `ActorMoviesView` view.
@@ -48,6 +58,29 @@ the `MovieActorsView` view, or via swiping in the `ActorMoviesView` view.
 ## Previews
 
 The SwiftUI previews operate pretty much like in the simulator or on a physical device.
+
+## SwiftData Use
+
+For the most part, SwiftData functionality is not found in the features. Instead, they use value types derived from 
+the model reference types via their `valueType` attrribute. The value types have the `persistentModelID` attribute of 
+the model that they are based on. The value types do not contain relationships like their
+model counterparts. Instead they provide functions that return the relations as a collection of value types that are
+ordered in a desired way.
+
+## Schemas
+
+Currently, there are 6 schemas defined by the application -- two were from the fork. There are migrations from one to 
+the next. The migrations to v3 and v4 are complex migrations:
+
+* v3 contains a new `sortableTitle` attribute on the Movie entity
+* v4 contains a new `Actor` entity and establishes many-to-many relationship between it and `Movie` entity
+* v5 contains the same models, but removes the `id` attribute that was populated with a UUID value
+* v6 contains the same models but renames them to have a "Model" suffix. This was done to allow the names without 
+"Model" to refer to the value type based on the model.
+
+There are defined migrations from one schema to the next. The migrations have tests that validate the migration
+behavior. This is one area that is not well documented in the current Swift Data documentation, and the migrations may
+not be optimal, but they do appear to do the right thing.
 
 ## Tests
 
@@ -60,26 +93,17 @@ tests](https://github.com/pointfreeco/swift-snapshot-testing) that run against t
 GIthub but the comparison check is disabled -- the images generated with Xcode 16.0 Beta likely will not match those
 generated by the older Xcode used in the integration pipeline.
 
-## Schemas
-
-Currently, there are 5 schemas defined by the application -- two were from the fork. There are migrations from one to 
-the next. The migrations to v3 and v4 are complex migrations:
-
-* v3 contains a new `sortableTitle` attribute on the Movie entity
-* v4 contains a new `Actor` entity and establishes many-to-many relationship between it and `Movie` entity
-* v5 contains the same models, but removes the `id` attribute that was populated with a UUID value
-
-There are defined migrations from one schema to the next. The migrations have tests that validate the migration
-behavior. This is one area that is not well documented in the current Swift Data documentation, and the migrations may
-not be optimal, but they do appear to do the right thing.
-
 ## Original README
 
 Below is the original contents of the "README" document found at the time of the fork.
 
+
+
+
 # Movie App with SwiftData and PointFree Composable Architecture
 
-This is a sample application that demonstrates the power of the PointFree Composable Architecture (TCA) in combination with Apple's SwiftData for data persistence.
+This is a sample application that demonstrates the power of the PointFree Composable Architecture (TCA) in combination 
+with Apple's SwiftData for data persistence.
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -91,15 +115,20 @@ This is a sample application that demonstrates the power of the PointFree Compos
 
 ## Introduction
 
-This project is a demonstration of how to implement SwiftData and the PointFree Composable Architecture (TCA) in an iOS application. It provides a clear and concise example of how to integrate these two powerful tools to build efficient and maintainable iOS apps.
+This project is a demonstration of how to implement SwiftData and the PointFree Composable Architecture (TCA) in an iOS 
+application. It provides a clear and concise example of how to integrate these two powerful tools to build efficient 
+and maintainable iOS apps.
 
 ## Features
 
-- **Sample Implementation**: The project is a simple implementation that highlights the integration of SwiftData for data persistence and TCA for a functional and predictable architecture.
+- **Sample Implementation**: The project is a simple implementation that highlights the integration of SwiftData for 
+data persistence and TCA for a functional and predictable architecture.
 
-- **SwiftData Integration**: SwiftData is used to illustrate the ease of data persistence in iOS applications, making it a valuable addition to your toolbox.
+- **SwiftData Integration**: SwiftData is used to illustrate the ease of data persistence in iOS applications, making 
+it a valuable addition to your toolbox.
 
-- **TCA Showcase**: The project demonstrates how TCA can be used to structure your app's architecture, making it easier to understand and manage the application's behavior and state.
+- **TCA Showcase**: The project demonstrates how TCA can be used to structure your app's architecture, making it easier 
+to understand and manage the application's behavior and state.
 
 
 ## Getting Started
@@ -113,8 +142,8 @@ Build and run the project in Xcode to see the Movie app in action.
 
 ## Usage
 
-You are encouraged to use this project as a reference to understand how to implement SwiftData and TCA in your own iOS applications. The sample code provided here can help you kickstart your projects and build efficient, maintainable apps.
-
+You are encouraged to use this project as a reference to understand how to implement SwiftData and TCA in your own iOS 
+applications. The sample code provided here can help you kickstart your projects and build efficient, maintainable apps.
 
 ## Contributing
 

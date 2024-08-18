@@ -50,7 +50,7 @@ private struct MovieListView: View {
 
   var body: some View {
     List(moviesQuery, id: \.self, selection: $selectedMovie) { model in
-      let movie = model.asStruct
+      let movie = model.valueType
       Utils.MovieView(movie: movie)
         .swipeActions {
           Utils.deleteSwipeAction(movie) {

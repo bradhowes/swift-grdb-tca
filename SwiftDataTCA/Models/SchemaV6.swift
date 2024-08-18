@@ -23,7 +23,7 @@ enum SchemaV6: VersionedSchema {
       self.movies = []
     }
 
-    var asStruct: Actor { .init(modelId: persistentModelID, name: name) }
+    var valueType: Actor { .init(modelId: persistentModelID, name: name) }
   }
 
   @Model
@@ -40,7 +40,7 @@ enum SchemaV6: VersionedSchema {
       self.actors = []
     }
 
-    var asStruct: Movie { .init(modelId: persistentModelID, name: title, favorite: favorite) }
+    var valueType: Movie { .init(modelId: persistentModelID, name: title, favorite: favorite) }
   }
 
   struct Actor: Equatable, Hashable {
@@ -49,7 +49,7 @@ enum SchemaV6: VersionedSchema {
 
     func movies(ordering: SortOrder?) -> [Movie] {
       @Dependency(\.modelContextProvider.context) var context
-      return Support.sortedMovies(for: backingObject(), order: ordering).map { $0.asStruct }
+      return Support.sortedMovies(for: backingObject(), order: ordering).map { $0.valueType }
     }
 
     @discardableResult
@@ -77,7 +77,7 @@ enum SchemaV6: VersionedSchema {
     }
 
     func actors(ordering: SortOrder?) -> [Actor] {
-      Support.sortedActors(for: backingObject(), order: ordering).map { $0.asStruct }
+      Support.sortedActors(for: backingObject(), order: ordering).map { $0.valueType }
     }
 
     @discardableResult

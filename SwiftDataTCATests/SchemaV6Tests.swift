@@ -127,7 +127,7 @@ struct SchemaV6Tests {
       #expect(movies[0].title == "The First Movie")
       #expect(movies[0].actors.count == 3)
       
-      let m0 = movies[0].asStruct
+      let m0 = movies[0].valueType
       #expect(m0.name == "The First Movie")
       #expect(m0.modelId == movies[0].persistentModelID)
       var ma = m0.actors(ordering: .forward)
@@ -139,7 +139,7 @@ struct SchemaV6Tests {
       #expect(ma[2].name == "Actor 3")
       #expect(ma[2].modelId == actors[2].persistentModelID)
       
-      let m1 = movies[1].asStruct
+      let m1 = movies[1].valueType
       #expect(m1.name == "A Second Movie")
       #expect(m1.modelId == movies[1].persistentModelID)
       ma = m1.actors(ordering: .forward)
@@ -147,7 +147,7 @@ struct SchemaV6Tests {
       #expect(ma[0].name == "Actor 1")
       #expect(ma[1].name == "Actor 4")
       
-      let m2 = movies[2].asStruct
+      let m2 = movies[2].valueType
       #expect(m2.name == "El Third Movie")
       #expect(m2.modelId == movies[2].persistentModelID)
       ma = m2.actors(ordering: .forward)
@@ -158,7 +158,7 @@ struct SchemaV6Tests {
       #expect(actors[0].name == "Actor 1")
       #expect(actors[0].movies.count == 2)
       
-      let a0 = actors[0].asStruct
+      let a0 = actors[0].valueType
       #expect(a0.name == "Actor 1")
       #expect(a0.modelId == actors[0].persistentModelID)
       let am = a0.movies(ordering: .forward)
