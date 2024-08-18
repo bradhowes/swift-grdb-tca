@@ -17,6 +17,7 @@ struct MovieActorsFeature {
     case actorSelected(Actor)
     case favoriteTapped
     case nameSortChanged(SortOrder?)
+    case onAppear
   }
 
   var body: some Reducer<State, Action> {
@@ -32,6 +33,10 @@ struct MovieActorsFeature {
 
       case .nameSortChanged(let newSort):
         state.nameSort = newSort
+        return .none
+
+      case .onAppear:
+        state.movie.favorite = state.movie.backingObject().favorite
         return .none
       }
     }

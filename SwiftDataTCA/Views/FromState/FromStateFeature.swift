@@ -81,7 +81,9 @@ struct FromStateFeature {
           state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
 
         default:
-          break
+          if state.path.count == 1 {
+            fetchChanges(state: &state)
+          }
         }
         return .none
 

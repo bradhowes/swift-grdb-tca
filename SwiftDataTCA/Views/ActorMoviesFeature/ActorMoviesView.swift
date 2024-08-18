@@ -37,6 +37,9 @@ private struct MoviesListView: View {
         selectedMovie = nil
       }
     }
+    .onAppear {
+      store.send(.onAppear)
+    }
   }
 }
 

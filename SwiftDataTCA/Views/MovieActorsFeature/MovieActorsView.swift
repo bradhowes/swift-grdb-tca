@@ -35,6 +35,9 @@ private struct ActorsListView: View {
         selectedActor = nil
       }
     }
+    .onAppear {
+      store.send(.onAppear)
+    }
   }
 }
 
