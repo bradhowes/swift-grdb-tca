@@ -8,7 +8,7 @@ struct ActorMoviesFeature {
 
   @ObservableState
   struct State {
-    var actor: ActorModel
+    let actor: ActorModel
     var titleSort: SortOrder? = .forward
     var movies: [MovieModel] { Support.sortedMovies(for: actor, order: titleSort) }
   }

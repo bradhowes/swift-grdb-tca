@@ -21,6 +21,16 @@ enum SchemaV6: VersionedSchema {
       self.name = name
       self.movies = []
     }
+
+    var asStruct: Actor {
+      .init(
+        modelId: self.persistentModelID,
+        name: self.name,
+        movies: self.movies
+          .sorted { $0.sortableTitle.localizedCompare($1.sortableTitle) == .orderedAscending }
+          .map { .init(name: $0.title, modelId: $0.persistentModelID ) }
+      )
+    }
   }
 
   @Model
@@ -36,6 +46,44 @@ enum SchemaV6: VersionedSchema {
       self.sortableTitle = Support.sortableTitle(title)
       self.actors = []
     }
+
+    var asStruct: Movie {
+      .init(
+        modelId: self.persistentModelID,
+        title: self.title,
+        favorite: self.favorite,
+        sortableTitle: self.sortableTitle,
+        actors: self.actors
+          .sorted { $0.name.localizedCompare($1.name) == .orderedAscending }
+          .map { .init(name: $0.name, modelId: $0.persistentModelID) }
+      )
+    }
+  }
+
+  struct NamedPersistentIdentifier {
+    let name: String
+    let modelId: PersistentIdentifier
+
+    func resolve<T: PersistentModel>(in context: ModelContext) -> T {
+      if let value = context.model(for: modelId) as? T {
+        return value
+      }
+      fatalError("Failed to resolve model \(name) : \(modelId)")
+    }
+  }
+
+  struct Actor {
+    let modelId: PersistentIdentifier
+    let name: String
+    let movies: [NamedPersistentIdentifier]
+  }
+
+  struct Movie {
+    let modelId: PersistentIdentifier
+    let title: String
+    let favorite: Bool
+    let sortableTitle: String
+    let actors: [NamedPersistentIdentifier]
   }
 
   @discardableResult
