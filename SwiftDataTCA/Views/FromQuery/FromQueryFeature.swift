@@ -18,7 +18,7 @@ struct FromQueryFeature {
     var titleSort: SortOrder? = .forward
     var isSearchFieldPresented = false
     var searchString: String = ""
-    var fetchDescriptor: FetchDescriptor<Movie> {
+    var fetchDescriptor: FetchDescriptor<MovieModel> {
       ActiveSchema.movieFetchDescriptor(titleSort: titleSort, searchString: searchString)
     }
   }
@@ -26,9 +26,9 @@ struct FromQueryFeature {
   enum Action: Sendable {
     case addButtonTapped
     case searchButtonTapped(Bool)
-    case deleteSwiped(Movie)
-    case favoriteSwiped(Movie)
-    case movieSelected(Movie)
+    case deleteSwiped(MovieModel)
+    case favoriteSwiped(MovieModel)
+    case movieSelected(MovieModel)
     case path(StackActionOf<Path>)
     case searchStringChanged(String)
     case titleSortChanged(SortOrder?)

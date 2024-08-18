@@ -40,8 +40,8 @@ struct FromQueryView: View {
 
 private struct MovieListView: View {
   @Bindable var store: StoreOf<FromQueryFeature>
-  @Query var moviesQuery: [Movie]
-  @State private var selectedMovie: Movie?
+  @Query var moviesQuery: [MovieModel]
+  @State private var selectedMovie: MovieModel?
 
   init(store: Bindable<Store<FromQueryFeature.State, FromQueryFeature.Action>>) {
     self._store = store

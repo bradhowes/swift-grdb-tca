@@ -11,7 +11,7 @@ enum Utils {
   }
 
   struct MovieView: View {
-    let movie: Movie
+    let movie: MovieModel
     var actorNames: String {
       Support.sortedActors(for: movie, order: .forward)
         .map { $0.name }
@@ -36,7 +36,7 @@ enum Utils {
   }
 
   struct ActorView: View {
-    let actor: Actor
+    let actor: ActorModel
     var movieTitles: String {
       Support.sortedMovies(for: actor, order: .forward)
         .map { $0.title }
@@ -59,14 +59,14 @@ enum Utils {
     }
   }
 
-  static func favoriteSwipeAction(_ movie: Movie, action: @escaping () -> Void) -> some View {
+  static func favoriteSwipeAction(_ movie: MovieModel, action: @escaping () -> Void) -> some View {
     Button(action: action) {
       Label("Favorite", systemImage: "star")
     }
     .tint(.blue)
   }
 
-  static func deleteSwipeAction(_ movie: Movie, action: @escaping () -> Void) -> some View {
+  static func deleteSwipeAction(_ movie: MovieModel, action: @escaping () -> Void) -> some View {
     Button(role: .destructive, action: action) {
       Label("Delete", systemImage: "trash")
     }

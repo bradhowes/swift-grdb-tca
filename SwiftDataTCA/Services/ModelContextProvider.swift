@@ -3,8 +3,8 @@ import Foundation
 import SwiftData
 
 typealias ActiveSchema = SchemaV6
-typealias Actor = ActiveSchema.ActorModel
-typealias Movie = ActiveSchema.MovieModel
+typealias ActorModel = ActiveSchema.ActorModel
+typealias MovieModel = ActiveSchema.MovieModel
 
 /**
  Wrapper around a `ModelContext` value that can be used for a dependency.

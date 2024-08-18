@@ -20,7 +20,7 @@ struct ActorMoviesView: View {
 
 private struct MoviesListView: View {
   @Bindable var store: StoreOf<ActorMoviesFeature>
-  @State private var selectedMovie: Movie?
+  @State private var selectedMovie: MovieModel?
 
   var body: some View {
     List(store.movies, id: \.self, selection: $selectedMovie) { movie in

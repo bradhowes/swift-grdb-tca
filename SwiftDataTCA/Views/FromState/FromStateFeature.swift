@@ -15,20 +15,20 @@ struct FromStateFeature {
   @ObservableState
   struct State {
     var path = StackState<Path.State>()
-    var movies: [Movie] = []
+    var movies: [MovieModel] = []
     var titleSort: SortOrder? = .forward
     var isSearchFieldPresented = false
     var searchString: String = ""
-    var fetchDescriptor: FetchDescriptor<Movie> {
+    var fetchDescriptor: FetchDescriptor<MovieModel> {
       ActiveSchema.movieFetchDescriptor(titleSort: self.titleSort, searchString: searchString)
     }
   }
 
   enum Action: Sendable {
     case addButtonTapped
-    case deleteSwiped(Movie)
-    case favoriteSwiped(Movie)
-    case movieSelected(Movie)
+    case deleteSwiped(MovieModel)
+    case favoriteSwiped(MovieModel)
+    case movieSelected(MovieModel)
     case onAppear
     case path(StackActionOf<Path>)
     case searchButtonTapped(Bool)

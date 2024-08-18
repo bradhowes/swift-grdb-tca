@@ -21,7 +21,7 @@ enum Support {
   }
 
   /// Obtain a random entry from the collection of movie titles and cast members.
-  static func nextMockMovieEntry(context: ModelContext, descriptor: FetchDescriptor<Movie>) -> (String, [String]) {
+  static func nextMockMovieEntry(context: ModelContext, descriptor: FetchDescriptor<MovieModel>) -> (String, [String]) {
     let count = (try? context.fetchCount(descriptor)) ?? 0
     return mockData[count]
   }
@@ -43,7 +43,7 @@ enum Support {
     sortBy.compactMap { $0 }
   }
 
-  static func sortedActors(for movie: Movie, order: SortOrder?) -> [Actor] {
+  static func sortedActors(for movie: MovieModel, order: SortOrder?) -> [ActorModel] {
     switch order {
     case .forward: return movie.actors.sorted { $0.name.localizedCompare($1.name) == .orderedAscending }
     case .reverse: return movie.actors.sorted { $0.name.localizedCompare($1.name) == .orderedDescending }
@@ -51,7 +51,7 @@ enum Support {
     }
   }
 
-  static func sortedMovies(for actor: Actor, order: SortOrder?) -> [Movie] {
+  static func sortedMovies(for actor: ActorModel, order: SortOrder?) -> [MovieModel] {
     switch order {
     case .forward: return actor.movies.sorted { $0.sortableTitle.localizedCompare($1.sortableTitle) == .orderedAscending }
     case .reverse: return actor.movies.sorted { $0.sortableTitle.localizedCompare($1.sortableTitle) == .orderedDescending }

@@ -6,14 +6,14 @@ import SwiftData
  Collection of SwiftData operations one can perform on a "database" regardless of operating environment.
  */
 struct Database {
-  var fetchMovies: @Sendable (FetchDescriptor<Movie>) -> [Movie]
+  var fetchMovies: @Sendable (FetchDescriptor<MovieModel>) -> [MovieModel]
   var add: @Sendable () -> Void
-  var delete: @Sendable (Movie) -> Void
+  var delete: @Sendable (MovieModel) -> Void
   var save: @Sendable () -> Void
 }
 
 @Sendable
-private func doFetchMovies(_ descriptor: FetchDescriptor<Movie>) -> [Movie] {
+private func doFetchMovies(_ descriptor: FetchDescriptor<MovieModel>) -> [MovieModel] {
   @Dependency(\.modelContextProvider.context) var context
   return (try? context.fetch(descriptor)) ?? []
 }
@@ -31,7 +31,7 @@ private func doAdd() {
 }
 
 @Sendable
-private func doDelete(_ model: Movie) {
+private func doDelete(_ model: MovieModel) {
   @Dependency(\.modelContextProvider.context) var context
   context.delete(model)
 }

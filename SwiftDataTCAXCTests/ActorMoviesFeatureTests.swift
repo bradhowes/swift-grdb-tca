@@ -10,7 +10,7 @@ import XCTest
 
 final class ActorMoviesFeatureTests: XCTestCase {
   var context: ModelContext!
-  var actor: Actor!
+  var actor: ActorModel!
 
   override func setUpWithError() throws {
     let schema = Schema(versionedSchema: ActiveSchema.self)
@@ -20,7 +20,7 @@ final class ActorMoviesFeatureTests: XCTestCase {
     ActiveSchema.makeMock(context: context, entry: ("This is a Movie", ["Actor 1", "Actor 2"]))
     ActiveSchema.makeMock(context: context, entry: ("Another Movie", ["Actor 1", "Actor 2", "Actor 3"]))
     try! context.save()
-    let actors = try! context.fetch(FetchDescriptor<Actor>(sortBy: [.init(\.name, order: .forward)]))
+    let actors = try! context.fetch(FetchDescriptor<ActorModel>(sortBy: [.init(\.name, order: .forward)]))
     actor = actors[0]
   }
 

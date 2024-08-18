@@ -8,13 +8,13 @@ struct MovieActorsFeature {
 
   @ObservableState
   struct State {
-    var movie: Movie
+    var movie: MovieModel
     var nameSort: SortOrder? = .forward
-    var actors: [Actor] { Support.sortedActors(for: movie, order: nameSort) }
+    var actors: [ActorModel] { Support.sortedActors(for: movie, order: nameSort) }
   }
 
   enum Action: Sendable {
-    case actorSelected(Actor)
+    case actorSelected(ActorModel)
     case favoriteTapped
     case nameSortChanged(SortOrder?)
   }
