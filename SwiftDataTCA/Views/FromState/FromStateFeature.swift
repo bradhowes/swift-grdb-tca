@@ -80,10 +80,13 @@ struct FromStateFeature {
         case .element(id: _, action: .showActorMovies(.movieSelected(let movie))):
           state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
 
-        default:
+        case .popFrom:
           if state.path.count == 1 {
             fetchChanges(state: &state)
           }
+
+        default:
+          break
         }
         return .none
 
