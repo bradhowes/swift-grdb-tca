@@ -49,7 +49,7 @@ struct SchemaV3Tests {
 
     let schemaV3 = Schema(versionedSchema: SchemaV3.self)
     let configV3 = ModelConfiguration("migrationV2V3", schema: schemaV3, url: url)
-    let containerV3 = try! ModelContainer(for: schemaV3, migrationPlan: MockMigrationPlanV3.self, configurations: configV3)
+    let containerV3 = try! ModelContainer(for: schemaV3, migrationPlan: MockMigrationPlan.self, configurations: configV3)
     let contextV3 = ModelContext(containerV3)
     let moviesV3 = try! contextV3.fetch(FetchDescriptor<SchemaV3._Movie>(sortBy: [.init(\.sortableTitle, order: .forward)]))
 
@@ -123,18 +123,9 @@ struct SchemaV3Tests {
   }
 }
 
-enum MockMigrationPlanV3: SchemaMigrationPlan {
-  static var schemas: [any VersionedSchema.Type] {
-    [
-      SchemaV3.self,
-    ]
-  }
-
-  static var stages: [MigrationStage] {
-    [
-      StageV3.stage
-    ]
-  }
+private enum MockMigrationPlan: SchemaMigrationPlan {
+  static var schemas: [any VersionedSchema.Type] { [ SchemaV3.self, ] }
+  static var stages: [MigrationStage] { [ StageV3.stage ] }
 }
 
 #endif

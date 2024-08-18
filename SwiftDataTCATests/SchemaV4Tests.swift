@@ -106,7 +106,7 @@ struct SchemaV4Tests {
     // Migrate to V4
     let schemaV4 = Schema(versionedSchema: SchemaV4.self)
     let configV4 = ModelConfiguration(schema: schemaV4, url: url)
-    let containerV4 = try! ModelContainer(for: schemaV4, migrationPlan: MockMigrationPlanV4.self,
+    let containerV4 = try! ModelContainer(for: schemaV4, migrationPlan: MockMigrationPlan.self,
                                           configurations: configV4)
 
     let contextV4 = ModelContext(containerV4)
@@ -141,18 +141,9 @@ struct SchemaV4Tests {
   }
 }
 
-enum MockMigrationPlanV4: SchemaMigrationPlan {
-  static var schemas: [any VersionedSchema.Type] {
-    [
-      SchemaV4.self,
-    ]
-  }
-
-  static var stages: [MigrationStage] {
-    [
-      StageV4.stage
-    ]
-  }
+private enum MockMigrationPlan: SchemaMigrationPlan {
+  static var schemas: [any VersionedSchema.Type] { [ SchemaV4.self, ] }
+  static var stages: [MigrationStage] { [ StageV4.stage ] }
 }
 
 #endif

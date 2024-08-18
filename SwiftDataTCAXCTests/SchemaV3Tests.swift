@@ -104,7 +104,7 @@ final class SchemaV3Tests: XCTestCase {
       $0.uuid = .incrementing
     } operation: {
       // Migrate to V3
-      return try! ModelContainer(for: schemaV3, migrationPlan: MockMigrationPlanV3.self,
+      return try! ModelContainer(for: schemaV3, migrationPlan: MockMigrationPlan.self,
                                  configurations: configV3)
     }
 
@@ -129,16 +129,7 @@ final class SchemaV3Tests: XCTestCase {
   }
 }
 
-private enum MockMigrationPlanV3: SchemaMigrationPlan {
-  static var schemas: [any VersionedSchema.Type] {
-    [
-      SchemaV3.self,
-    ]
-  }
-
-  static var stages: [MigrationStage] {
-    [
-      StageV3.stage
-    ]
-  }
+private enum MockMigrationPlan: SchemaMigrationPlan {
+  static var schemas: [any VersionedSchema.Type] { [ SchemaV3.self, ] }
+  static var stages: [MigrationStage] { [ StageV3.stage ] }
 }

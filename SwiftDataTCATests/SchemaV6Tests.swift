@@ -8,14 +8,14 @@ import Testing
 @testable import SwiftDataTCA
 
 
-struct SchemaV5Tests {
+struct SchemaV6Tests {
 
   /// NOTE to self: do not use `await container.mainContext` in tests
   /// NOTE to self: do not run Swift Data tests in parallel
 
   @Test("Creating DB")
   func creatingDatabase() async throws {
-    typealias ActiveSchema = SchemaV5
+    typealias ActiveSchema = SchemaV6
     let schema = Schema(versionedSchema: ActiveSchema.self)
     let config = ModelConfiguration("V55555", schema: schema, isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: schema, configurations: config)
@@ -30,7 +30,7 @@ struct SchemaV5Tests {
       try! context.save()
     }
 
-    let movies = try! context.fetch(FetchDescriptor<ActiveSchema._Movie>(sortBy: [.init(\.sortableTitle, order: .forward)]))
+    let movies = try! context.fetch(FetchDescriptor<ActiveSchema.MovieModel>(sortBy: [.init(\.sortableTitle, order: .forward)]))
 
     #expect(movies.count == 3)
     #expect(movies[0].title == "The First Movie")
@@ -41,7 +41,7 @@ struct SchemaV5Tests {
     #expect(movies[1].actors.count == 2)
     #expect(movies[2].actors.count == 1)
 
-    let actors = try! context.fetch(FetchDescriptor<ActiveSchema._Actor>(sortBy: [.init(\.name, order: .forward)]))
+    let actors = try! context.fetch(FetchDescriptor<ActiveSchema.ActorModel>(sortBy: [.init(\.name, order: .forward)]))
 
     #expect(actors.count == 4)
     #expect(actors[0].name == "Actor 1")
@@ -53,12 +53,12 @@ struct SchemaV5Tests {
     #expect(actors[0].movies[1].actors.contains(actors[0]))
   }
 
-  @Test("Migrating from V4 to V5")
-  func migrationV4V5() async throws {
-    typealias OldSchema = SchemaV4
-    typealias NewSchema = SchemaV5
+  @Test("Migrating from V5 to V6")
+  func migrationV5V6() async throws {
+    typealias OldSchema = SchemaV5
+    typealias NewSchema = SchemaV6
 
-    let url = FileManager.default.temporaryDirectory.appending(component: "Model5.sqlite")
+    let url = FileManager.default.temporaryDirectory.appending(component: "Model6.sqlite")
     try? FileManager.default.removeItem(at: url)
 
     let oldSchema = Schema(versionedSchema: OldSchema.self)
@@ -80,11 +80,11 @@ struct SchemaV5Tests {
     #expect(oldMovies[1].title == "A Second Movie")
     #expect(oldMovies[2].title == "El Third Movie")
 
-    // Migrate to V5
+    // Migrate to V6
     let newSchema = Schema(versionedSchema: NewSchema.self)
     let newConfig = ModelConfiguration(schema: newSchema, url: url)
     let newContainer = try! ModelContainer(for: newSchema, migrationPlan: MockMigrationPlan.self,
-                                           configurations: newConfig)
+                                          configurations: newConfig)
 
     let newContext = ModelContext(newContainer)
     let newMovies = try! newContext.fetch(NewSchema.movieFetchDescriptor(titleSort: .forward, searchString: ""))
@@ -104,8 +104,8 @@ struct SchemaV5Tests {
 }
 
 private enum MockMigrationPlan: SchemaMigrationPlan {
-  static var schemas: [any VersionedSchema.Type] { [ SchemaV5.self, ] }
-  static var stages: [MigrationStage] { [ StageV5.stage ] }
+  static var schemas: [any VersionedSchema.Type] { [ SchemaV6.self, ] }
+  static var stages: [MigrationStage] { [ StageV6.stage ] }
 }
 
 #endif

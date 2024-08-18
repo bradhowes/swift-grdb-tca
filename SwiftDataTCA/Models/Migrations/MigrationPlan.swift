@@ -11,6 +11,7 @@ enum MigrationPlan: SchemaMigrationPlan {
       SchemaV3.self,
       SchemaV4.self,
       SchemaV5.self,
+      SchemaV6.self,
     ]
   }
 
@@ -20,6 +21,7 @@ enum MigrationPlan: SchemaMigrationPlan {
       StageV3.stage,
       StageV4.stage,
       StageV5.stage,
+      StageV6.stage,
     ]
   }
 }
