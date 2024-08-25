@@ -35,7 +35,7 @@ struct FromQueryFeature {
     Reduce { state, action in
       switch action {
       case .addButtonTapped: return addRandomMovie(state: &state)
-      case .deleteSwiped(let movie): return deleteMovie(movie, state: &state)
+      case .deleteSwiped(let movie): return deleteMovie(movie)
       case .favoriteSwiped(let movie): return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
       case .path: return .none
       case .searchButtonTapped(let enabled): return setSearchMode(enabled, state: &state)
@@ -55,7 +55,7 @@ extension FromQueryFeature {
     return .none
   }
 
-  private func deleteMovie(_ movie: Movie, state: inout State) -> Effect<Action> {
+  private func deleteMovie(_ movie: Movie) -> Effect<Action> {
     db.delete(movie.backingObject())
     return .none
   }
