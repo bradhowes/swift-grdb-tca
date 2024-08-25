@@ -39,21 +39,20 @@ self-contained.
 The top-level views [FromStateView](SwiftDataTCA/Views/FromState/FromStateView.swift) and 
 [FromQueryView](SwiftDataTCA/Views/FromQuery/FromQueryView.swift) start with a TCA `NavigationStack` view 
 builder. The subsequent
-`List` views define a `selection` attribute that toggles a private state in the view (not reflected in the store). When
-this view state value changes, there is an `onChange` block that runs which sends an action to the store that indicates 
-what item was tapped. 
+`List` views define `NavigationLink` elements for each movie or actor in the view. These drive the transitions into
+the next view, and record the path for the `Back` button to follow when moving back up.
 
 The top-level reducers monitor the `path` actions and handle the selections made by the child views, 
 [ActorMoviesView](SwiftDataTCA/Views/ActorMoviesFeature/ActorMoviesView.swift)
 and
 [MovieActorsView](SwiftDataTCA/Views/MovieActorsFeature/MovieActorsView.swift).
-Note that this is a tad more verbose than that documented on TCA's [Pushing Features onto the 
+This is pretty much as what is documented on TCA's [Pushing Features onto the 
 Stack](https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/stackbasednavigation#Pushing-features-onto-the-stack)
-page where the list item is a button which sends the action into the reducer, but IMO it better utilizes the SwiftUI
-view hierarchy.
+page.
 
 Each of the drill-down views can also change the favorite state of a movie, either via toolbar button in 
-the `MovieActorsView` view, or via swiping in the `ActorMoviesView` view.
+the `MovieActorsView` view, or via swiping in the `ActorMoviesView` view. When a parent view comes back into view, it 
+updates to account for any possible changes made by a popped view.
 
 ## Previews
 

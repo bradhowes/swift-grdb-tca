@@ -14,7 +14,7 @@ enum SchemaV5: VersionedSchema {
 
   @Model
   final class _Actor {
-    let name: String
+    var name: String
     var movies: [_Movie]
 
     init(name: String) {
@@ -25,7 +25,7 @@ enum SchemaV5: VersionedSchema {
 
   @Model
   final class _Movie {
-    let title: String
+    var title: String
     var favorite: Bool = false
     var sortableTitle: String = ""
     @Relationship(inverse: \_Actor.movies) var actors: [_Actor]
