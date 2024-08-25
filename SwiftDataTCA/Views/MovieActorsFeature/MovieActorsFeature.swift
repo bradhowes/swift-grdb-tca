@@ -23,6 +23,7 @@ struct MovieActorsFeature {
   enum Action: Sendable {
     case favoriteTapped
     case nameSortChanged(SortOrder?)
+    case refresh
   }
 
   var body: some Reducer<State, Action> {
@@ -30,6 +31,7 @@ struct MovieActorsFeature {
       switch action {
       case .favoriteTapped: return toggleFavoriteState(state: &state)
       case .nameSortChanged(let newSort): return setTitleSort(newSort, state: &state)
+      case .refresh: return refresh(state: &state)
       }
     }
   }
@@ -37,7 +39,7 @@ struct MovieActorsFeature {
 
 extension MovieActorsFeature {
 
-  private func refreshState(state: inout State) -> Effect<Action> {
+  private func refresh(state: inout State) -> Effect<Action> {
     print("MovieActorFeature.refreshState - \(state.movie.name)")
     state.movie = state.movie.backingObject().valueType
     return .none

@@ -26,6 +26,7 @@ struct MovieActorsView: View {
         }
       }
       .labelsHidden()
+      .onAppear { store.send(.refresh) }
   }
 }
 

@@ -64,25 +64,18 @@ struct FromStateFeature {
         fetchChanges(state: &state)
         return .none
 
-      case .path: return .none
-//        // Watch for and handle the selections of child views. By doing so, we do not have to share
-//        // the `StackState` with the child features.
-//        switch pathAction {
-//        case .element(id: _, action: .showMovieActors(.actorSelected(let actor))):
-//          state.path.append(.showActorMovies(ActorMoviesFeature.State(actor: actor)))
-//
-//        case .element(id: _, action: .showActorMovies(.movieSelected(let movie))):
-//          state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
-//
-//        case .popFrom:
-//          if state.path.count == 1 {
-//            fetchChanges(state: &state)
-//          }
-//
-//        default:
-//          break
-//        }
-//        return .none
+      case .path(let pathAction):
+        print("FromStateFeature.path - \(String(describing: pathAction))")
+        switch pathAction {
+        case .popFrom:
+          if state.path.count == 1 {
+            fetchChanges(state: &state)
+          }
+
+        default:
+          break
+        }
+        return .none
 
       case .searchButtonTapped(let searching):
         state.isSearchFieldPresented = searching

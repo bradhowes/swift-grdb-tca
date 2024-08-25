@@ -51,15 +51,17 @@ private struct MovieListView: View {
 
   var body: some View {
     List(movies, id: \.self, selection: $selectedMovie) { movie in
-      Utils.MovieView(movie: movie)
-        .swipeActions {
-          Utils.deleteSwipeAction(movie) {
-            store.send(.deleteSwiped(movie), animation: .snappy)
-          }
-          Utils.favoriteSwipeAction(movie) {
-            store.send(.favoriteSwiped(movie), animation: .bouncy)
-          }
+      NavigationLink(state: RootFeature.showMovieActors(movie)) {
+        Utils.MovieView(movie: movie)
+      }
+      .swipeActions {
+        Utils.deleteSwipeAction(movie) {
+          store.send(.deleteSwiped(movie), animation: .snappy)
         }
+        Utils.favoriteSwipeAction(movie) {
+          store.send(.favoriteSwiped(movie), animation: .bouncy)
+        }
+      }
     }
     .onChange(of: selectedMovie) { _, newValue in
       if let newValue {

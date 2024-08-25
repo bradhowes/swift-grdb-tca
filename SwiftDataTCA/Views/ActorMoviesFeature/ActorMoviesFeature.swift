@@ -23,6 +23,7 @@ struct ActorMoviesFeature {
 
   enum Action: Sendable {
     case favoriteSwiped(Movie)
+    case refresh
     case titleSortChanged(SortOrder?)
     case toggleFavoriteState(Movie)
   }
@@ -33,6 +34,7 @@ struct ActorMoviesFeature {
     Reduce { state, action in
       switch action {
       case .favoriteSwiped(let movie): return beginFavoriteChange(movie)
+      case .refresh: return refresh(state: &state)
       case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
       case .toggleFavoriteState(let movie): return toggleFavoriteState(movie, state: &state)
       }
@@ -48,6 +50,11 @@ extension ActorMoviesFeature {
       try await clock.sleep(for: .milliseconds(800))
       await send(.toggleFavoriteState(movie), animation: .default)
     }
+  }
+
+  private func refresh(state: inout State) -> Effect<Action> {
+    state.movies = state.actor.movies(ordering: state.titleSort)
+    return .none
   }
 
   private func setTitleSort(_ newSort: SortOrder?, state: inout State) -> Effect<Action> {

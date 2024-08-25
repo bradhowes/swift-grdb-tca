@@ -27,6 +27,8 @@ private struct MoviesListView: View {
         Utils.MovieView(movie: movie)
           .swipeActions { favoriteSwipAction(for: movie) }
       }
+    }.onAppear {
+      store.send(.refresh)
     }
   }
 
