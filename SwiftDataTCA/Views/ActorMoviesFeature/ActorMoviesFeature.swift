@@ -33,10 +33,10 @@ struct ActorMoviesFeature {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .favoriteSwiped(let movie): return beginFavoriteChange(movie)
+      case .favoriteSwiped(let movie): return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
       case .refresh: return refresh(state: &state)
       case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
-      case .toggleFavoriteState(let movie): return toggleFavoriteState(movie, state: &state)
+      case .toggleFavoriteState(let movie): return Utils.toggleFavoriteState(movie, movies: &state.movies)
       }
     }
   }
@@ -44,32 +44,14 @@ struct ActorMoviesFeature {
 
 extension ActorMoviesFeature {
 
-  private func beginFavoriteChange(_ movie: Movie) -> Effect<Action> {
-    print("ActorMoviesFeature.beginFavoriteChange - \(movie.name)")
-    return .run { send in
-      try await clock.sleep(for: .milliseconds(800))
-      await send(.toggleFavoriteState(movie), animation: .default)
-    }
-  }
-
   private func refresh(state: inout State) -> Effect<Action> {
     state.movies = state.actor.movies(ordering: state.titleSort)
     return .none
   }
 
   private func setTitleSort(_ newSort: SortOrder?, state: inout State) -> Effect<Action> {
-    print("ActorMoviesFeature.setTitleSort - \(String(describing: newSort))")
     state.titleSort = newSort
     state.movies = state.actor.movies(ordering: newSort)
-    return .none
-  }
-
-  private func toggleFavoriteState(_ movie: Movie, state: inout State) -> Effect<Action> {
-    print("ActorMoviesFeature.toggleFavoriteState - \(movie)")
-    let changed = movie.toggleFavorite()
-    for (index, movie) in state.movies.enumerated() where movie.modelId == changed.modelId {
-      state.movies[index] = changed
-    }
     return .none
   }
 }

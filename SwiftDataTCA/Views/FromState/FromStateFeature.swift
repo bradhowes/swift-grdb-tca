@@ -23,12 +23,12 @@ struct FromStateFeature {
     case addButtonTapped
     case deleteSwiped(Movie)
     case favoriteSwiped(Movie)
-    case movieSelected(Movie)
     case onAppear
     case path(StackActionOf<Path>)
     case searchButtonTapped(Bool)
     case searchStringChanged(String)
     case titleSortChanged(SortOrder?)
+    case toggleFavoriteState(Movie)
     // Reducer-only action to refresh the array of movies when another action changed what would be returned by the
     // `fetchDescriptor`.
     case _fetchMovies
@@ -48,17 +48,9 @@ struct FromStateFeature {
         db.save()
         return runSendFetchMovies
 
-      case .favoriteSwiped(var changed):
-        // Could be improved on
-        let update = changed.toggleFavorite()
-        for (index, movie) in state.movies.enumerated() where movie.modelId == changed.modelId {
-          state.movies[index] = update
-        }
-        return .none
-
-      case .movieSelected(let movie):
-        state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
-        return .none
+      case .favoriteSwiped(let movie):
+        print("ActorMoviesFeature.toggleFavoriteState - \(movie)")
+        return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
 
       case .onAppear:
         fetchChanges(state: &state)
@@ -89,6 +81,9 @@ struct FromStateFeature {
       case .titleSortChanged(let newSort):
         state.titleSort = newSort
         return runSendFetchMovies
+
+      case .toggleFavoriteState(let movie):
+        return Utils.toggleFavoriteState(movie, movies: &state.movies)
 
       case ._fetchMovies:
         fetchChanges(state: &state)

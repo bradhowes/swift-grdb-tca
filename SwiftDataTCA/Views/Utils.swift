@@ -123,4 +123,21 @@ enum Utils {
       Label("Delete", systemImage: "trash")
     }
   }
+
+  static func toggleFavoriteState<Action>(_ movie: Movie, movies: inout [Movie]) -> Effect<Action> {
+    print("ActorMoviesFeature.toggleFavoriteState - \(movie)")
+    let changed = movie.toggleFavorite()
+    for (index, movie) in movies.enumerated() where movie.modelId == changed.modelId {
+      movies[index] = changed
+    }
+    return .none
+  }
+
+  static func beginFavoriteChange<Action: Sendable>(action: Action) -> Effect<Action> {
+    @Dependency(\.continuousClock) var clock
+    return .run { send in
+      try await clock.sleep(for: .milliseconds(800))
+      await send(action, animation: .default)
+    }
+  }
 }

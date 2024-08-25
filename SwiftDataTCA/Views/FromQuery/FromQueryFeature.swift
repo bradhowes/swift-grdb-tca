@@ -23,10 +23,10 @@ struct FromQueryFeature {
     case searchButtonTapped(Bool)
     case deleteSwiped(Movie)
     case favoriteSwiped(Movie)
-    case movieSelected(Movie)
     case path(StackActionOf<Path>)
     case searchStringChanged(String)
     case titleSortChanged(SortOrder?)
+    case toggleFavoriteState(Movie)
   }
 
   @Dependency(\.database) var db
@@ -34,55 +34,54 @@ struct FromQueryFeature {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .addButtonTapped:
-        _ = db.add()
-        return .none
-
-      case .deleteSwiped(let movie):
-        db.delete(movie.backingObject())
-        return .none
-
-      case .favoriteSwiped(var movie):
-        _ = movie.toggleFavorite()
-        return .none
-
-      case .movieSelected(let movie):
-        state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
-        return .none
-
+      case .addButtonTapped: return addRandomMovie(state: &state)
+      case .deleteSwiped(let movie): return deleteMovie(movie, state: &state)
+      case .favoriteSwiped(let movie): return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
       case .path: return .none
-//        // Watch for and handle the selections of child views. By doing so, we do not have to share
-//        // the `StackState` with the child features.
-//        switch pathAction {
-//        case .element(id: _, action: .showMovieActors(.actorSelected(let actor))):
-//          state.path.append(.showActorMovies(ActorMoviesFeature.State(actor: actor)))
-//
-//        case .element(id: _, action: .showActorMovies(.movieSelected(let movie))):
-//          state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
-//
-//        default:
-//          break
-//        }
-//        return .none
-
-      case .searchButtonTapped(let searching):
-        state.isSearchFieldPresented = searching
-        return .none
-
-      case .searchStringChanged(let newString):
-        guard newString != state.searchString else { return .none }
-        state.searchString = newString
-        return .none
-
-      case .titleSortChanged(let newSort):
-        state.titleSort = newSort
-        return .none
+      case .searchButtonTapped(let enabled): return setSearchMode(enabled, state: &state)
+      case .searchStringChanged(let query): return search(query, state: &state)
+      case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
+      case .toggleFavoriteState(let movie): return toggleFavoriteState(movie)
       }
     }
     .forEach(\.path, action: \.path)
   }
 }
 
+extension FromQueryFeature {
+
+  private func addRandomMovie(state: inout State) -> Effect<Action> {
+    _ = db.add()
+    return .none
+  }
+
+  private func deleteMovie(_ movie: Movie, state: inout State) -> Effect<Action> {
+    db.delete(movie.backingObject())
+    return .none
+  }
+
+  private func setSearchMode(_ enabled: Bool, state: inout State) -> Effect<Action> {
+    state.isSearchFieldPresented = enabled
+    return .none
+  }
+
+  private func search(_ query: String, state: inout State) -> Effect<Action> {
+    if query != state.searchString {
+      state.searchString = query
+    }
+    return .none
+  }
+
+  private func setTitleSort(_ sort: SortOrder?, state: inout State) -> Effect<Action> {
+    state.titleSort = sort
+    return .none
+  }
+
+  private func toggleFavoriteState(_ movie: Movie) -> Effect<Action> {
+    _ = movie.toggleFavorite()
+    return .none
+  }
+}
 #Preview {
   FromQueryView.preview
 }

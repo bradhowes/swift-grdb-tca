@@ -42,7 +42,6 @@ private struct MovieListView: View {
   @Bindable var store: StoreOf<FromQueryFeature>
   @Query var moviesQuery: [MovieModel]
   var movies: [Movie] { moviesQuery.map { $0.valueType } }
-  @State private var selectedMovie: Movie?
 
   init(store: Bindable<Store<FromQueryFeature.State, FromQueryFeature.Action>>) {
     self._store = store
@@ -50,7 +49,7 @@ private struct MovieListView: View {
   }
 
   var body: some View {
-    List(movies, id: \.self, selection: $selectedMovie) { movie in
+    List(movies, id: \.self) { movie in
       NavigationLink(state: RootFeature.showMovieActors(movie)) {
         Utils.MovieView(movie: movie)
       }
@@ -61,12 +60,6 @@ private struct MovieListView: View {
         Utils.favoriteSwipeAction(movie) {
           store.send(.favoriteSwiped(movie), animation: .bouncy)
         }
-      }
-    }
-    .onChange(of: selectedMovie) { _, newValue in
-      if let newValue {
-        store.send(.movieSelected(newValue), animation: .bouncy)
-        selectedMovie = nil
       }
     }
   }
