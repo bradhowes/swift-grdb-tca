@@ -9,6 +9,7 @@ struct MovieActorsView: View {
   var body: some View {
     ActorsListView(actors: store.actors)
       .navigationTitle(store.movie.name)
+      .toolbar(.hidden, for: .tabBar)
       .toolbar {
         ToolbarItemGroup(placement: .automatic) {
           Utils.pickerView(title: "Name", binding: $store.nameSort.sending(\.nameSortChanged).animation())

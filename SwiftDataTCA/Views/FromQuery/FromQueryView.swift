@@ -28,11 +28,8 @@ struct FromQueryView: View {
         .labelsHidden()
     } destination: { store in
       switch store.case {
-      case let .showMovieActors(store):
-        MovieActorsView(store: store)
-
-      case let .showActorMovies(store):
-        ActorMoviesView(store: store)
+      case let .showMovieActors(store): MovieActorsView(store: store)
+      case let .showActorMovies(store): ActorMoviesView(store: store)
       }
     }
   }

@@ -27,11 +27,8 @@ struct FromStateView: View {
         .labelsHidden()
     } destination: { store in
       switch store.case {
-      case let .showMovieActors(store):
-        MovieActorsView(store: store)
-
-      case let .showActorMovies(store):
-        ActorMoviesView(store: store)
+      case let .showMovieActors(store): MovieActorsView(store: store)
+      case let .showActorMovies(store): ActorMoviesView(store: store)
       }
     }
     .onAppear {
@@ -47,14 +44,14 @@ private struct MovieListView: View {
     List(store.movies, id: \.self) { movie in
       NavigationLink(state: RootFeature.showMovieActors(movie)) {
         Utils.MovieView(movie: movie)
-          .swipeActions(allowsFullSwipe: false) {
-            Utils.deleteSwipeAction(movie) {
-              store.send(.deleteSwiped(movie), animation: .snappy)
-            }
-            Utils.favoriteSwipeAction(movie) {
-              store.send(.favoriteSwiped(movie), animation: .bouncy)
-            }
-          }
+      }
+      .swipeActions(allowsFullSwipe: false) {
+        Utils.deleteSwipeAction(movie) {
+          store.send(.deleteSwiped(movie), animation: .snappy)
+        }
+        Utils.favoriteSwipeAction(movie) {
+          store.send(.favoriteSwiped(movie), animation: .bouncy)
+        }
       }
     }
   }
