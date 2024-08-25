@@ -63,18 +63,16 @@ struct ConfettiModifier<Style: ShapeStyle>: ViewModifier {
 }
 
 extension AnyTransition {
-  static var confetti: AnyTransition {
-    .modifier(
-      active: ConfettiModifier(color: .blue, size: 3),
-      identity: ConfettiModifier(color: .blue, size: 3)
-    )
-  }
 
-  static func confetti<Style: ShapeStyle>(color: Style = .blue, size: Double = 3.0) -> AnyTransition {
-    AnyTransition.modifier(
-      active: ConfettiModifier(color: color, size: size),
-      identity: ConfettiModifier(color: color, size: size)
-    )
+  static func confetti<Style: ShapeStyle>(color: Style = .blue, size: Double = 3.0, enabled: Bool = true) -> AnyTransition {
+    if enabled {
+      AnyTransition.modifier(
+        active: ConfettiModifier(color: color, size: size),
+        identity: ConfettiModifier(color: color, size: size)
+      )
+    } else {
+      AnyTransition.identity
+    }
   }
 }
 

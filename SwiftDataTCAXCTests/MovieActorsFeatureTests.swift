@@ -71,6 +71,7 @@ final class MovieActorsFeatureTests: XCTestCase {
     XCTAssertFalse(store.state.movie.favorite)
     await store.send(.favoriteTapped) {
       $0.movie = $0.movie.toggleFavorite()
+      $0.animateButton = true
     }
     XCTAssertTrue(store.state.movie.favorite)
   }

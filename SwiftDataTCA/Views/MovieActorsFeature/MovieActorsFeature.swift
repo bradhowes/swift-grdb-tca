@@ -11,6 +11,7 @@ struct MovieActorsFeature {
     var movie: Movie
     var nameSort: SortOrder? = .forward
     var actors: [Actor]
+    var animateButton = false
 
     init(movie: Movie, nameSort: SortOrder? = .forward) {
       print("MovieActorsFeature.init - \(movie.name)")
@@ -55,6 +56,7 @@ extension MovieActorsFeature {
   func toggleFavoriteState(state: inout State) -> Effect<Action> {
     print("MovieActorFeature.favoriteTapped - \(state.movie.name)")
     state.movie = state.movie.toggleFavorite()
+    state.animateButton = state.movie.favorite
     return .none
   }
 }

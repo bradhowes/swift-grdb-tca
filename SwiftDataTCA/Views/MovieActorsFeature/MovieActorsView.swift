@@ -19,7 +19,7 @@ struct MovieActorsView: View {
             if store.movie.favorite {
               Image(systemName: "star.fill")
                 .foregroundStyle(Utils.favoriteColor)
-                // .transition(.confetti(color: Utils.favoriteColor, size: 3))
+                .transition(.confetti(color: Utils.favoriteColor, size: 3, enabled: store.animateButton))
             } else {
               Image(systemName: "star")
             }
