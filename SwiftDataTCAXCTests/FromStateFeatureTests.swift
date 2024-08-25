@@ -9,102 +9,88 @@ import XCTest
 
 final class FromStateFeatureTests: XCTestCase {
 
+  var store: TestStore<FromQueryFeature.State, FromQueryFeature.Action>!
+  var context: ModelContext { store.dependencies.modelContextProvider }
+
   override func setUpWithError() throws {
+    // isRecording = true
+    store = try withDependencies {
+      $0.modelContextProvider = try makeTestContext()
+      $0.continuousClock = ImmediateClock()
+    } operation: {
+      TestStore(initialState: FromQueryFeature.State()) {
+        FromQueryFeature()
+      }
+    }
   }
 
   override func tearDownWithError() throws {
-    @Dependency(\.modelContextProvider.container) var container
-    container.deleteAllData()
+    store.dependencies.modelContextProvider.container.deleteAllData()
   }
 
   @MainActor
-  func testFromStateAddButtonTapped() async throws {
-    let store = TestStore(initialState: FromStateFeature.State()) {
-      FromStateFeature()
-    }
-
-    XCTAssertTrue(store.state.movies.isEmpty)
-
+  func testAddButtonTapped() async throws {
     store.exhaustivity = .off
     await store.send(.addButtonTapped)
-    await store.receive(\._fetchMovies)
 
-    XCTAssertEqual(1, store.state.movies.count)
-    XCTAssertEqual("The Score", store.state.movies[0].name)
+    let movies = try! context.fetch(ActiveSchema.movieFetchDescriptor())
+
+    XCTAssertEqual(1, movies.count)
+    XCTAssertEqual("The Score", movies[0].title)
   }
 
   @MainActor
-  func testFromStateDeleteSwiped() async throws {
-    let store = TestStore(initialState: FromStateFeature.State()) {
-      FromStateFeature()
-    }
+  func testDeleteSwiped() async throws {
+    var movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    XCTAssertTrue(movies.isEmpty)
 
-    XCTAssertTrue(store.state.movies.isEmpty)
-
-    store.exhaustivity = .off
     await store.send(.addButtonTapped)
-    await store.receive(\._fetchMovies)
 
-    XCTAssertEqual(1, store.state.movies.count)
-    XCTAssertEqual("The Score", store.state.movies[0].name)
+    movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    XCTAssertFalse(movies.isEmpty)
+    let movie = movies[0].valueType
+    await store.send(.deleteSwiped(movie))
 
-    await store.send(.deleteSwiped(store.state.movies[0]))
-    await store.receive(\._fetchMovies)
-
-    XCTAssertEqual(0, store.state.movies.count)
+    movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    XCTAssertTrue(movies.isEmpty)
   }
 
   @MainActor
-  func testFromStateFavoriteSwiped() async throws {
-    let store = TestStore(initialState: FromStateFeature.State()) {
-      FromStateFeature()
-    }
+  func testFavoriteSwiped() async throws {
+    var movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    XCTAssertTrue(movies.isEmpty)
 
-    XCTAssertTrue(store.state.movies.isEmpty)
-
-    store.exhaustivity = .off
     await store.send(.addButtonTapped)
-    await store.receive(\._fetchMovies)
 
-    XCTAssertEqual(1, store.state.movies.count)
-    XCTAssertEqual("The Score", store.state.movies[0].name)
-    XCTAssertFalse(store.state.movies[0].favorite)
-
-    store.exhaustivity = .on
-    await store.send(.favoriteSwiped(store.state.movies[0])) {
-      $0.movies[0].favorite = true
-    }
-
-    // XCTAssertTrue(store.state.movies[0].favorite)
+    movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    XCTAssertFalse(movies[0].favorite)
+    let movie = movies[0].valueType
+    await store.send(.favoriteSwiped(movie))
+    await store.receive(\.toggleFavoriteState)
+    XCTAssertTrue(movies[0].favorite)
   }
 
   @MainActor
   func testPreviewRender() throws {
-    let view = FromStateView.preview
-    try assertSnapshot(matching: view)
+    try withDependencies {
+      $0.modelContextProvider = ModelContextKey.previewValue
+    } operation: {
+      try withSnapshotTesting(record: .missing) {
+        let view = FromStateView.preview
+        try assertSnapshot(matching: view)
+      }
+    }
   }
 
   @MainActor
-  func testNextMockMovieEntry() async {
+  func testRootContentViewRender() throws {
+    try withDependencies {
+      $0.modelContextProvider = ModelContextKey.previewValue
+    } operation: {
+      try withSnapshotTesting(record: .missing) {
+        let view = RootContentView.preview
+        try assertSnapshot(matching: view)
+      }
+    }
   }
 }
-
-#if hasFeature(RetroactiveAttribute)
-extension FromStateFeature.State: @retroactive Equatable {
-  public static func == (lhs: FromStateFeature.State, rhs: FromStateFeature.State) -> Bool {
-    lhs.movies == rhs.movies &&
-    lhs.titleSort == rhs.titleSort &&
-    lhs.isSearchFieldPresented == rhs.isSearchFieldPresented &&
-    lhs.searchString == rhs.searchString
-  }
-}
-#else
-extension FromStateFeature.State: Equatable {
-  public static func == (lhs: FromStateFeature.State, rhs: FromStateFeature.State) -> Bool {
-    lhs.movies == rhs.movies &&
-    lhs.titleSort == rhs.titleSort &&
-    lhs.isSearchFieldPresented == rhs.isSearchFieldPresented &&
-    lhs.searchString == rhs.searchString
-  }
-}
-#endif

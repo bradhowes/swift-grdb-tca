@@ -17,7 +17,7 @@ final class ModelContextProviderTests: XCTestCase {
     try? FileManager.default.removeItem(at: tmp)
     let container = makeLiveContainer(dbFile: tmp)
     let context = ModelContext(container)
-    Support.generateMocks(context: context, count: 20)
+    try? Support.generateMocks(context: context, count: 20)
     let movies = try context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
     XCTAssertEqual(20, movies.count)
   }

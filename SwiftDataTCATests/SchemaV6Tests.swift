@@ -8,7 +8,6 @@ import Testing
 
 @testable import SwiftDataTCA
 
-
 struct SchemaV6Tests {
 
   /// NOTE to self: do not use `await container.mainContext` in tests
@@ -113,7 +112,7 @@ struct SchemaV6Tests {
     let context = ModelContext(container)
 
     let _ = withDependencies {
-      $0.modelContextProvider = ModelContextProvider(context: context)
+      $0.modelContextProvider = context
     } operation: {
       ActiveSchema.makeMock(context: context, entry: ("A Second Movie", ["Actor 4", "Actor 1"]))
       ActiveSchema.makeMock(context: context, entry: ("The First Movie", ["Actor 2", "Actor 1", "Actor 3"]))

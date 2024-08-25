@@ -11,9 +11,9 @@ enum SchemaV2: VersionedSchema {
 
   @Model
   final class _Movie {
-    let id: UUID
-    let title: String
-    let cast: [String]
+    var id: UUID
+    var title: String
+    var cast: [String]
     var favorite: Bool = false
 
     init(id: UUID, title: String, cast: [String], favorite: Bool = false) {

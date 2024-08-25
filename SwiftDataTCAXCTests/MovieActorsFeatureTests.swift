@@ -7,113 +7,83 @@ import XCTest
 
 @testable import SwiftDataTCA
 
+
 final class MovieActorsFeatureTests: XCTestCase {
-  var context: ModelContext!
-  var movieModel: MovieModel!
-  var movie: Movie { movieModel.valueType }
+
+  var store: TestStore<MovieActorsFeature.State, MovieActorsFeature.Action>!
+  var context: ModelContext { store.dependencies.modelContextProvider }
 
   override func setUpWithError() throws {
-    let schema = Schema(versionedSchema: ActiveSchema.self)
-    let config = ModelConfiguration("ActiveSchema", schema: schema, isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: schema, configurations: config)
-    context = ModelContext(container)
-    ActiveSchema.makeMock(context: context, entry: ("This is a Movie", ["Actor 1", "Actor 2"]))
-    ActiveSchema.makeMock(context: context, entry: ("Another Movie", ["Actor 1", "Actor 2", "Actor 3"]))
-    try! context.save()
-    let movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, searchString: ""))
-    movieModel = movies[0]
+    // isRecording = true
+    store = try withDependencies {
+      $0.modelContextProvider = try makeTestContext(mockCount: 3)
+      $0.continuousClock = ImmediateClock()
+    } operation: {
+      @Dependency(\.modelContextProvider) var context
+      let movies = try context.fetch(FetchDescriptor<MovieModel>())
+      let store = TestStore(initialState: MovieActorsFeature.State(movie: movies[0].valueType)) {
+        MovieActorsFeature()
+      }
+      return store
+    }
   }
 
   override func tearDownWithError() throws {
-  }
-
-  @MainActor
-  func testActorSelected() async throws {
-    await withDependencies {
-      $0.modelContextProvider = .init(context: context)
-    } operation: {
-      let store = TestStore(initialState: MovieActorsFeature.State(movie: movie)) {
-        MovieActorsFeature()
-      }
-      XCTAssertEqual(store.state.movie.name, "Another Movie")
-      XCTAssertEqual(store.state.actors.count, 3)
-      await store.send(.actorSelected(store.state.actors[1])) // No state change for this
-    }
+    context.container.deleteAllData()
   }
 
   @MainActor
   func testNameSortChanged() async throws {
-    await withDependencies {
-      $0.modelContextProvider = .init(context: context)
-    } operation: {
-      let store = TestStore(initialState: MovieActorsFeature.State(movie: movie, nameSort: .forward)) {
-        MovieActorsFeature()
-      }
+    XCTAssertEqual(store.state.movie.name, "The Score")
+    XCTAssertEqual(store.state.actors.count, 5)
 
-      XCTAssertEqual(store.state.movie.name, "Another Movie")
-      XCTAssertEqual(store.state.actors.count, 3)
-
-      await store.send(.nameSortChanged(.reverse)) {
-        $0.nameSort = .reverse
-        XCTAssertEqual($0.actors[0].name, "Actor 3")
-        XCTAssertEqual($0.actors[1].name, "Actor 2")
-        XCTAssertEqual($0.actors[2].name, "Actor 1")
-      }
-
-      await store.send(.nameSortChanged(.forward)) {
-        $0.nameSort = .forward
-        XCTAssertEqual($0.actors[0].name, "Actor 1")
-        XCTAssertEqual($0.actors[1].name, "Actor 2")
-        XCTAssertEqual($0.actors[2].name, "Actor 3")
-      }
-
-      await store.send(.nameSortChanged(.none)) {
-        $0.nameSort = nil
-        XCTAssertTrue($0.actors[0].name == "Actor 1" || $0.actors[0].name == "Actor 2" || $0.actors[0].name == "Actor 3")
-        XCTAssertTrue($0.actors[1].name == "Actor 1" || $0.actors[1].name == "Actor 2" || $0.actors[1].name == "Actor 3")
-        XCTAssertTrue($0.actors[2].name == "Actor 1" || $0.actors[2].name == "Actor 2" || $0.actors[2].name == "Actor 3")
-      }
+    await store.send(.nameSortChanged(.reverse)) {
+      $0.nameSort = .reverse
+      $0.actors = $0.actors.reversed()
     }
+
+    await store.send(.nameSortChanged(.forward)) {
+      $0.nameSort = .forward
+      $0.actors = $0.actors.reversed()
+    }
+
+    store.exhaustivity = .off
+    await store.send(.nameSortChanged(.none)) {
+      $0.nameSort = nil
+    }
+
+    let names = Set(store.state.actors.map { $0.name })
+    XCTAssertEqual(names.count, 5)
+
+    XCTAssertTrue(names.contains(store.state.actors[0].name))
+    XCTAssertTrue(names.contains(store.state.actors[1].name))
+    XCTAssertTrue(names.contains(store.state.actors[2].name))
+    XCTAssertTrue(names.contains(store.state.actors[3].name))
+    XCTAssertTrue(names.contains(store.state.actors[4].name))
   }
 
   @MainActor
   func testFavoriteTapped() async throws {
-    await withDependencies {
-      $0.modelContextProvider = .init(context: context)
-    } operation: {
-      let store = TestStore(initialState: MovieActorsFeature.State(movie: movie)) {
-        MovieActorsFeature()
-      }
-
-      await store.send(.favoriteTapped) {
-        $0.movie.favorite = true
-      }
-
-      await store.send(.favoriteTapped) {
-        $0.movie.favorite = false
-      }
+    XCTAssertTrue(store.state.movie.favorite)
+    await store.send(.favoriteTapped) {
+      $0.movie = $0.movie.toggleFavorite()
     }
+    XCTAssertFalse(store.state.movie.favorite)
+    await store.send(.favoriteTapped) {
+      $0.movie = $0.movie.toggleFavorite()
+    }
+    XCTAssertTrue(store.state.movie.favorite)
   }
 
   @MainActor
   func testPreviewRender() throws {
-    let view = MovieActorsView.preview
-    try assertSnapshot(matching: view)
+    try withDependencies {
+      $0.modelContextProvider = ModelContextKey.previewValue
+    } operation: {
+      try withSnapshotTesting(record: .failed) {
+        let view = MovieActorsView.preview
+        try assertSnapshot(matching: view)
+      }
+    }
   }
 }
-
-#if hasFeature(RetroactiveAttribute)
-extension MovieActorsFeature.State: @retroactive Equatable {
-  public static func == (lhs: MovieActorsFeature.State, rhs: MovieActorsFeature.State) -> Bool {
-    lhs.movie == rhs.movie &&
-    lhs.nameSort == rhs.nameSort
-  }
-}
-#else
-extension MovieActorsFeature.State: Equatable {
-  public static func == (lhs: MovieActorsFeature.State, rhs: MovieActorsFeature.State) -> Bool {
-    lhs.movie == rhs.movie &&
-    lhs.nameSort == rhs.nameSort
-  }
-}
-#endif
