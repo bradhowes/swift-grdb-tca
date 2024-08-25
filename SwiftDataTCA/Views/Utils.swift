@@ -45,8 +45,6 @@ enum Utils {
           movieName
           actorsList
         }
-        Spacer()
-        chevronIndicator
       }
     }
 
@@ -79,8 +77,6 @@ enum Utils {
           actorName
           moviesList
         }
-        Spacer()
-        chevronIndicator
       }
     }
 
@@ -95,12 +91,6 @@ enum Utils {
         .font(.caption2)
         .foregroundStyle(infoColor)
     }
-  }
-
-  static var chevronIndicator: some View {
-    Image(systemName: "chevron.forward")
-      .font(.footnote.bold())
-      .foregroundColor(chevronColor)
   }
 
   static func favoriteSwipeAction(_ movie: Movie, action: @escaping () -> Void) -> some View {
