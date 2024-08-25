@@ -7,47 +7,63 @@ import SwiftUI
 struct ActorMoviesFeature {
 
   @ObservableState
-  struct State {
+  struct State: Equatable {
     let actor: Actor
-    var titleSort: SortOrder? = .forward
-    var movies: [Movie] = []
+    var titleSort: SortOrder?
+    var movies: [Movie]
+    var selectedMovie: Movie?
 
-    init(actor: Actor) {
+    init(actor: Actor, titleSort: SortOrder? = .forward) {
+      print("ActorMoviesFeature.init - \(actor.name)")
       self.actor = actor
-      self.movies = actor.movies(ordering: self.titleSort)
+      self.titleSort = titleSort
+      self.movies = actor.movies(ordering: titleSort)
     }
   }
 
   enum Action: Sendable {
     case favoriteSwiped(Movie)
-    case movieSelected(Movie)
-    case onAppear
     case titleSortChanged(SortOrder?)
+    case toggleFavoriteState(Movie)
   }
+
+  @Dependency(\.continuousClock) var clock
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .favoriteSwiped(var changed):
-        changed.toggleFavorite()
-        for (index, movie) in state.movies.enumerated() where movie.modelId == changed.modelId {
-          state.movies[index] = changed
-        }
-        return .none
-
-      case .movieSelected:
-        // NOTE: this is handled by the root feature
-        return .none
-
-      case .onAppear:
-        state.movies = state.actor.movies(ordering: state.titleSort)
-        return .none
-
-      case .titleSortChanged(let newSort):
-        state.titleSort = newSort
-        return .none
+      case .favoriteSwiped(let movie): return beginFavoriteChange(movie)
+      case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
+      case .toggleFavoriteState(let movie): return toggleFavoriteState(movie, state: &state)
       }
     }
+  }
+}
+
+extension ActorMoviesFeature {
+
+  private func beginFavoriteChange(_ movie: Movie) -> Effect<Action> {
+    print("ActorMoviesFeature.beginFavoriteChange - \(movie.name)")
+    return .run { send in
+      try await clock.sleep(for: .milliseconds(800))
+      await send(.toggleFavoriteState(movie), animation: .default)
+    }
+  }
+
+  private func setTitleSort(_ newSort: SortOrder?, state: inout State) -> Effect<Action> {
+    print("ActorMoviesFeature.setTitleSort - \(String(describing: newSort))")
+    state.titleSort = newSort
+    state.movies = state.actor.movies(ordering: newSort)
+    return .none
+  }
+
+  private func toggleFavoriteState(_ movie: Movie, state: inout State) -> Effect<Action> {
+    print("ActorMoviesFeature.toggleFavoriteState - \(movie)")
+    let changed = movie.toggleFavorite()
+    for (index, movie) in state.movies.enumerated() where movie.modelId == changed.modelId {
+      state.movies[index] = changed
+    }
+    return .none
   }
 }
 

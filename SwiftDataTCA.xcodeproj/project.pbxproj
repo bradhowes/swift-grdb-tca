@@ -17,6 +17,8 @@
 		23A64EAD2AD1AB46005B6344 /* MigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64EAC2AD1AB46005B6344 /* MigrationPlan.swift */; };
 		80180C422AFBECC900ADAB03 /* FromQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80180C412AFBECC900ADAB03 /* FromQueryView.swift */; };
 		BD0DC1DF2C41779D00821D09 /* FromStateFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0DC1DE2C41779D00821D09 /* FromStateFeatureTests.swift */; };
+		BD13EDFD2C7B98AA000F68B4 /* RootFeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD13EDFB2C7B98AA000F68B4 /* RootFeatureView.swift */; };
+		BD13EDFE2C7B98AA000F68B4 /* RootFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD13EDFA2C7B98AA000F68B4 /* RootFeature.swift */; };
 		BD21828A2C4D35DA00FCB16E /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = BD2182892C4D35DA00FCB16E /* SnapshotTesting */; };
 		BD21828E2C4D406D00FCB16E /* XCTest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD21828D2C4D406D00FCB16E /* XCTest+Extensions.swift */; };
 		BD2182902C4D433600FCB16E /* FromQueryFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD21828F2C4D433600FCB16E /* FromQueryFeatureTests.swift */; };
@@ -89,6 +91,8 @@
 		80180C412AFBECC900ADAB03 /* FromQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromQueryView.swift; sourceTree = "<group>"; };
 		BD0DC1DC2C41779D00821D09 /* SwiftDataTCAXCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftDataTCAXCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD0DC1DE2C41779D00821D09 /* FromStateFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromStateFeatureTests.swift; sourceTree = "<group>"; };
+		BD13EDFA2C7B98AA000F68B4 /* RootFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootFeature.swift; sourceTree = "<group>"; };
+		BD13EDFB2C7B98AA000F68B4 /* RootFeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootFeatureView.swift; sourceTree = "<group>"; };
 		BD21828D2C4D406D00FCB16E /* XCTest+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTest+Extensions.swift"; sourceTree = "<group>"; };
 		BD21828F2C4D433600FCB16E /* FromQueryFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromQueryFeatureTests.swift; sourceTree = "<group>"; };
 		BD2182912C4D861800FCB16E /* RootContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootContentView.swift; sourceTree = "<group>"; };
@@ -226,6 +230,7 @@
 		23A64EAA2AD0CCE4005B6344 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				BD13EDFC2C7B98AA000F68B4 /* RootFeature */,
 				BD2182912C4D861800FCB16E /* RootContentView.swift */,
 				BD8F4DB12C46C7D4004ACF0B /* ActorMoviesFeature */,
 				BD3C7FF12C4688CC00C68195 /* MovieActorsFeature */,
@@ -269,6 +274,15 @@
 				BD21828D2C4D406D00FCB16E /* XCTest+Extensions.swift */,
 			);
 			path = SwiftDataTCAXCTests;
+			sourceTree = "<group>";
+		};
+		BD13EDFC2C7B98AA000F68B4 /* RootFeature */ = {
+			isa = PBXGroup;
+			children = (
+				BD13EDFA2C7B98AA000F68B4 /* RootFeature.swift */,
+				BD13EDFB2C7B98AA000F68B4 /* RootFeatureView.swift */,
+			);
+			path = RootFeature;
 			sourceTree = "<group>";
 		};
 		BD13FE5C2C49395400606C7D /* Frameworks */ = {
@@ -547,6 +561,8 @@
 				BD8F4DAE2C4688FC004ACF0B /* MovieActorsFeature.swift in Sources */,
 				BD7338052C408769001D0E04 /* SchemaV3.swift in Sources */,
 				23A64EAD2AD1AB46005B6344 /* MigrationPlan.swift in Sources */,
+				BD13EDFD2C7B98AA000F68B4 /* RootFeatureView.swift in Sources */,
+				BD13EDFE2C7B98AA000F68B4 /* RootFeature.swift in Sources */,
 				BD3A16962C4905F40089082D /* Support.swift in Sources */,
 				23A64EA92ACF5855005B6344 /* ModelContextProvider.swift in Sources */,
 				23A64E8A2ACC5312005B6344 /* SwiftDataTCAApp.swift in Sources */,

@@ -7,39 +7,53 @@ import SwiftUI
 struct MovieActorsFeature {
 
   @ObservableState
-  struct State {
+  struct State: Equatable {
     var movie: Movie
     var nameSort: SortOrder? = .forward
-    var actors: [Actor] { movie.actors(ordering: nameSort) }
+    var actors: [Actor]
+
+    init(movie: Movie, nameSort: SortOrder? = .forward) {
+      print("MovieActorsFeature.init - \(movie.name)")
+      self.movie = movie
+      self.nameSort = nameSort
+      self.actors = movie.actors(ordering: nameSort)
+    }
   }
 
   enum Action: Sendable {
-    case actorSelected(Actor)
     case favoriteTapped
     case nameSortChanged(SortOrder?)
-    case onAppear
   }
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .actorSelected:
-        // NOTE: this is handled by the root feature
-        return .none
-
-      case .favoriteTapped:
-        state.movie.toggleFavorite()
-        return .none
-
-      case .nameSortChanged(let newSort):
-        state.nameSort = newSort
-        return .none
-
-      case .onAppear:
-        state.movie.favorite = state.movie.backingObject().favorite
-        return .none
+      case .favoriteTapped: return toggleFavoriteState(state: &state)
+      case .nameSortChanged(let newSort): return setTitleSort(newSort, state: &state)
       }
     }
+  }
+}
+
+extension MovieActorsFeature {
+
+  private func refreshState(state: inout State) -> Effect<Action> {
+    print("MovieActorFeature.refreshState - \(state.movie.name)")
+    state.movie = state.movie.backingObject().valueType
+    return .none
+  }
+
+  private func setTitleSort(_ newSort: SortOrder?, state: inout State) -> Effect<Action> {
+    print("MovieActorFeature.setTitleSort - \(String(describing: newSort))")
+    state.nameSort = newSort
+    state.actors = state.movie.actors(ordering: newSort)
+    return .none
+  }
+
+  func toggleFavoriteState(state: inout State) -> Effect<Action> {
+    print("MovieActorFeature.favoriteTapped - \(state.movie.name)")
+    state.movie = state.movie.toggleFavorite()
+    return .none
   }
 }
 

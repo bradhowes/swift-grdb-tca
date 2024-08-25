@@ -5,15 +5,10 @@ import SwiftUI
 
 @Reducer
 struct FromStateFeature {
-
-  @Reducer
-  enum Path {
-    case showMovieActors(MovieActorsFeature)
-    case showActorMovies(ActorMoviesFeature)
-  }
+  typealias Path = RootFeature.Path
 
   @ObservableState
-  struct State {
+  struct State: Equatable {
     var path = StackState<Path.State>()
     var movies: [Movie] = []
     var titleSort: SortOrder? = .forward
@@ -45,8 +40,7 @@ struct FromStateFeature {
     Reduce { state, action in
       switch action {
       case .addButtonTapped:
-        db.add()
-        db.save()
+        _ = db.add()
         return runSendFetchMovies
 
       case .deleteSwiped(let movie):
@@ -56,9 +50,9 @@ struct FromStateFeature {
 
       case .favoriteSwiped(var changed):
         // Could be improved on
-        changed.toggleFavorite()
+        let update = changed.toggleFavorite()
         for (index, movie) in state.movies.enumerated() where movie.modelId == changed.modelId {
-          state.movies[index] = changed
+          state.movies[index] = update
         }
         return .none
 
@@ -70,25 +64,25 @@ struct FromStateFeature {
         fetchChanges(state: &state)
         return .none
 
-      case .path(let pathAction):
-        // Watch for and handle the selections of child views. By doing so, we do not have to share
-        // the `StackState` with the child features.
-        switch pathAction {
-        case .element(id: _, action: .showMovieActors(.actorSelected(let actor))):
-          state.path.append(.showActorMovies(ActorMoviesFeature.State(actor: actor)))
-
-        case .element(id: _, action: .showActorMovies(.movieSelected(let movie))):
-          state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
-
-        case .popFrom:
-          if state.path.count == 1 {
-            fetchChanges(state: &state)
-          }
-
-        default:
-          break
-        }
-        return .none
+      case .path: return .none
+//        // Watch for and handle the selections of child views. By doing so, we do not have to share
+//        // the `StackState` with the child features.
+//        switch pathAction {
+//        case .element(id: _, action: .showMovieActors(.actorSelected(let actor))):
+//          state.path.append(.showActorMovies(ActorMoviesFeature.State(actor: actor)))
+//
+//        case .element(id: _, action: .showActorMovies(.movieSelected(let movie))):
+//          state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
+//
+//        case .popFrom:
+//          if state.path.count == 1 {
+//            fetchChanges(state: &state)
+//          }
+//
+//        default:
+//          break
+//        }
+//        return .none
 
       case .searchButtonTapped(let searching):
         state.isSearchFieldPresented = searching

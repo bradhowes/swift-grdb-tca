@@ -7,13 +7,21 @@ struct MovieActorsView: View {
   @Bindable var store: StoreOf<MovieActorsFeature>
 
   var body: some View {
-    ActorsListView(store: store)
+    ActorsListView(actors: store.actors)
       .navigationTitle(store.movie.name)
       .toolbar {
-        ToolbarItemGroup(placement: .navigationBarTrailing) {
+        ToolbarItemGroup(placement: .automatic) {
           Utils.pickerView(title: "Name", binding: $store.nameSort.sending(\.nameSortChanged).animation())
-          Button("favorite", systemImage: store.movie.favorite ? "star.fill" : "star") {
+          Button {
             store.send(.favoriteTapped)
+          } label: {
+            if store.movie.favorite {
+              Image(systemName: "star.fill")
+                .foregroundStyle(Utils.favoriteColor)
+                // .transition(.confetti(color: Utils.favoriteColor, size: 3))
+            } else {
+              Image(systemName: "star")
+            }
           }
         }
       }
@@ -22,39 +30,26 @@ struct MovieActorsView: View {
 }
 
 private struct ActorsListView: View {
-  @Bindable var store: StoreOf<MovieActorsFeature>
-  @State private var selectedActor: Actor?
+  var actors: [Actor]
 
   var body: some View {
-    List(store.actors, id: \.self, selection: $selectedActor) {
-      Utils.ActorView(actor: $0)
-    }
-    .onChange(of: selectedActor) { _, newValue in
-      if let newValue {
-        store.send(.actorSelected(newValue), animation: .bouncy)
-        selectedActor = nil
+    List(actors, id: \.modelId) { actor in
+      NavigationLink(state: RootFeature.showActorMovies(actor)) {
+        Utils.ActorView(actor: actor)
       }
-    }
-    .onAppear {
-      store.send(.onAppear)
     }
   }
 }
 
 extension MovieActorsView {
   static var preview: some View {
-    @Dependency(\.modelContextProvider) var modelContextProvider
-    let context = modelContextProvider.context
-    Support.generateMocks(context: context, count: 8)
-    let movies = (try? context.fetch(ActiveSchema.movieFetchDescriptor(
-      titleSort: .forward,
-      searchString: "Apoc"
-    ))) ?? []
+    @Dependency(\.modelContextProvider) var context
+    let movies = (try? context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward))) ?? []
     let movie = movies[0].valueType
     return NavigationView {
       MovieActorsView(store: Store(initialState: .init(movie: movie)) { MovieActorsFeature() })
-        .modelContainer(modelContextProvider.container)
-    }
+        .modelContext(context)
+    }.navigationViewStyle(.stack)
   }
 }
 

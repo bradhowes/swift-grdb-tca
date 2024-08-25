@@ -7,38 +7,33 @@ import SwiftData
  */
 struct Database {
   var fetchMovies: @Sendable (FetchDescriptor<MovieModel>) -> [MovieModel]
-  var add: @Sendable () -> Void
+  var add: @Sendable () -> MovieModel
   var delete: @Sendable (MovieModel) -> Void
   var save: @Sendable () -> Void
 }
 
 @Sendable
 private func doFetchMovies(_ descriptor: FetchDescriptor<MovieModel>) -> [MovieModel] {
-  @Dependency(\.modelContextProvider.context) var context
+  @Dependency(\.modelContextProvider) var context
   return (try? context.fetch(descriptor)) ?? []
 }
 
 @Sendable
-private func doAdd() {
-  @Dependency(\.modelContextProvider.context) var context
-  ActiveSchema.makeMock(
-    context: context,
-    entry: Support.nextMockMovieEntry(
-      context: context,
-      descriptor: ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: "")
-    )
-  )
+private func doAdd() -> MovieModel {
+  @Dependency(\.modelContextProvider) var context
+  return ActiveSchema.makeMock(context: context, entry: Support.nextMockMovieEntry(context: context))
 }
 
 @Sendable
 private func doDelete(_ model: MovieModel) {
-  @Dependency(\.modelContextProvider.context) var context
+  @Dependency(\.modelContextProvider) var context
   context.delete(model)
+  try? context.save()
 }
 
 @Sendable
 private func doSave() {
-  @Dependency(\.modelContextProvider.context) var context
+  @Dependency(\.modelContextProvider) var context
   try? context.save()
 }
 

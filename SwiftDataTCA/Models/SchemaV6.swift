@@ -15,7 +15,7 @@ enum SchemaV6: VersionedSchema {
 
   @Model
   final class ActorModel {
-    let name: String
+    var name: String
     var movies: [MovieModel]
 
     init(name: String) {
@@ -28,7 +28,7 @@ enum SchemaV6: VersionedSchema {
 
   @Model
   final class MovieModel {
-    let title: String
+    var title: String
     var favorite: Bool = false
     var sortableTitle: String = ""
     @Relationship(inverse: \ActorModel.movies) var actors: [ActorModel]
@@ -43,18 +43,18 @@ enum SchemaV6: VersionedSchema {
     var valueType: Movie { .init(modelId: persistentModelID, name: title, favorite: favorite) }
   }
 
-  struct Actor: Equatable, Hashable {
+  struct Actor: Hashable {
     let modelId: PersistentIdentifier
     let name: String
 
     func movies(ordering: SortOrder?) -> [Movie] {
-      @Dependency(\.modelContextProvider.context) var context
+      @Dependency(\.modelContextProvider) var context
       return Support.sortedMovies(for: backingObject(), order: ordering).map { $0.valueType }
     }
 
     @discardableResult
     private func backingObject(performing: ((ActorModel) -> Void)? = nil) -> ActorModel {
-      @Dependency(\.modelContextProvider.context) var context
+      @Dependency(\.modelContextProvider) var context
       guard let actor = context.model(for: self.modelId) as? ActorModel else {
         fatalError("Faied to resolve \(self.name) usiing \(self.modelId)")
       }
@@ -64,16 +64,20 @@ enum SchemaV6: VersionedSchema {
       }
       return actor
     }
+
+    func hash(into hasher: inout Hasher) { hasher.combine(modelId) }
+
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.modelId == rhs.modelId }
   }
 
-  struct Movie: Equatable, Hashable {
+  struct Movie: Hashable {
     let modelId: PersistentIdentifier
     let name: String
-    var favorite: Bool
+    let favorite: Bool
 
-    mutating func toggleFavorite() {
+    func toggleFavorite() -> Movie {
       backingObject { $0.favorite.toggle() }
-      favorite.toggle()
+      return .init(modelId: modelId, name: name, favorite: !favorite)
     }
 
     func actors(ordering: SortOrder?) -> [Actor] {
@@ -82,7 +86,7 @@ enum SchemaV6: VersionedSchema {
 
     @discardableResult
     func backingObject(performing: ((MovieModel) -> Void)? = nil) -> MovieModel {
-      @Dependency(\.modelContextProvider.context) var context
+      @Dependency(\.modelContextProvider) var context
       guard let movie = context.model(for: self.modelId) as? MovieModel else {
         fatalError("Faied to resolve \(self.name) usiing \(self.modelId)")
       }
@@ -92,6 +96,10 @@ enum SchemaV6: VersionedSchema {
       }
       return movie
     }
+
+    func hash(into hasher: inout Hasher) { hasher.combine(modelId) }
+
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.modelId == rhs.modelId && lhs.favorite == rhs.favorite }
   }
 
   @discardableResult
@@ -104,6 +112,8 @@ enum SchemaV6: VersionedSchema {
     for actor in actors {
       actor.movies.append(movie)
     }
+
+    try? context.save()
 
     return movie
   }
@@ -121,6 +131,7 @@ enum SchemaV6: VersionedSchema {
     return actor
   }
 
+  @inlinable
   static func searchPredicate(_ searchString: String) -> Predicate<MovieModel>? {
     searchString.isEmpty ? nil : #Predicate<MovieModel> { $0.title.localizedStandardContains(searchString) }
   }
@@ -134,8 +145,25 @@ enum SchemaV6: VersionedSchema {
    - parameter searchString: if not empty, only return `_Movie` entities whose `title` contains the search string
    - returns: new `FetchDescriptor`
    */
-  static func movieFetchDescriptor(titleSort: SortOrder?, searchString: String) -> FetchDescriptor<MovieModel> {
-    let sortBy: [SortDescriptor<MovieModel>] = Support.sortBy(.sortBy(\.sortableTitle, order: titleSort))
+  @inlinable
+  static func movieFetchDescriptor() -> FetchDescriptor<MovieModel> {
+    FetchDescriptor<MovieModel>()
+  }
+
+  /**
+   Obtain a `FetchDescriptor` that will return an ordered (optional) and possibly filtered set of known `_Movie`
+   entities. Ordering is done on the `_Movie.title` attribute when `titleSort` is not nil. Otherwise, ordering
+   is undetermined.
+
+   - parameter titleSort: the direction of the ordering -- alphabetical or reveresed alphabetical
+   - parameter searchString: if not empty, only return `_Movie` entities whose `title` contains the search string
+   - returns: new `FetchDescriptor`
+   */
+  static func movieFetchDescriptor(
+    titleSort: SortOrder? = .forward,
+    searchString: String = ""
+  ) -> FetchDescriptor<MovieModel> {
+    let sortBy: [ SortDescriptor<MovieModel>] = Support.sortBy(.sortBy(\.sortableTitle, order: titleSort))
     var fetchDescriptor = FetchDescriptor(predicate: searchPredicate(searchString), sortBy: sortBy)
     fetchDescriptor.relationshipKeyPathsForPrefetching = [\.actors]
     return fetchDescriptor

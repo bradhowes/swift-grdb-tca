@@ -21,17 +21,16 @@ enum Support {
   }
 
   /// Obtain a random entry from the collection of movie titles and cast members.
-  static func nextMockMovieEntry(context: ModelContext, descriptor: FetchDescriptor<MovieModel>) -> (String, [String]) {
-    let count = (try? context.fetchCount(descriptor)) ?? 0
-    return mockData[count]
+  static func nextMockMovieEntry(context: ModelContext) -> (String, [String]) {
+    mockData[(try? context.fetchCount(ActiveSchema.movieFetchDescriptor())) ?? 0]
   }
 
-  static func generateMocks(context: ModelContext, count: Int) {
-    for index in 0..<20 {
+  static func generateMocks(context: ModelContext, count: Int) throws {
+    for index in 0..<count {
       let movie = ActiveSchema.makeMock(context: context, entry: mockData[index])
       movie.favorite = index % 5 == 0
     }
-    try? context.save()
+    try context.save()
   }
 
   /**

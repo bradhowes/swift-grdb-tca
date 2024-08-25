@@ -5,15 +5,10 @@ import SwiftUI
 
 @Reducer
 struct FromQueryFeature {
-
-  @Reducer
-  enum Path {
-    case showMovieActors(MovieActorsFeature)
-    case showActorMovies(ActorMoviesFeature)
-  }
+  typealias Path = RootFeature.Path
 
   @ObservableState
-  struct State {
+  struct State: Equatable {
     var path = StackState<Path.State>()
     var titleSort: SortOrder? = .forward
     var isSearchFieldPresented = false
@@ -40,37 +35,35 @@ struct FromQueryFeature {
     Reduce { state, action in
       switch action {
       case .addButtonTapped:
-        db.add()
-        db.save()
+        _ = db.add()
         return .none
 
       case .deleteSwiped(let movie):
         db.delete(movie.backingObject())
-        db.save()
         return .none
 
       case .favoriteSwiped(var movie):
-        movie.toggleFavorite()
+        _ = movie.toggleFavorite()
         return .none
 
       case .movieSelected(let movie):
         state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
         return .none
 
-      case .path(let pathAction):
-        // Watch for and handle the selections of child views. By doing so, we do not have to share
-        // the `StackState` with the child features.
-        switch pathAction {
-        case .element(id: _, action: .showMovieActors(.actorSelected(let actor))):
-          state.path.append(.showActorMovies(ActorMoviesFeature.State(actor: actor)))
-
-        case .element(id: _, action: .showActorMovies(.movieSelected(let movie))):
-          state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
-
-        default:
-          break
-        }
-        return .none
+      case .path: return .none
+//        // Watch for and handle the selections of child views. By doing so, we do not have to share
+//        // the `StackState` with the child features.
+//        switch pathAction {
+//        case .element(id: _, action: .showMovieActors(.actorSelected(let actor))):
+//          state.path.append(.showActorMovies(ActorMoviesFeature.State(actor: actor)))
+//
+//        case .element(id: _, action: .showActorMovies(.movieSelected(let movie))):
+//          state.path.append(.showMovieActors(MovieActorsFeature.State(movie: movie)))
+//
+//        default:
+//          break
+//        }
+//        return .none
 
       case .searchButtonTapped(let searching):
         state.isSearchFieldPresented = searching

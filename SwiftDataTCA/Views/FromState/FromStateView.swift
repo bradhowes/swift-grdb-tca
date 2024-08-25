@@ -9,7 +9,7 @@ struct FromStateView: View {
   var body: some View {
     NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
       MovieListView(store: store)
-        .navigationTitle("From State")
+        .navigationTitle("FromState")
         .searchable(
           text: $store.searchString.sending(\.searchStringChanged),
           isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
@@ -42,24 +42,19 @@ struct FromStateView: View {
 
 private struct MovieListView: View {
   @Bindable var store: StoreOf<FromStateFeature>
-  @State private var selectedMovie: Movie?
 
   var body: some View {
-    List(store.movies, id: \.self, selection: $selectedMovie) { movie in
-      Utils.MovieView(movie: movie)
-        .swipeActions(allowsFullSwipe: false) {
-          Utils.deleteSwipeAction(movie) {
-            store.send(.deleteSwiped(movie), animation: .snappy)
+    List(store.movies, id: \.self) { movie in
+      NavigationLink(state: RootFeature.showMovieActors(movie)) {
+        Utils.MovieView(movie: movie)
+          .swipeActions(allowsFullSwipe: false) {
+            Utils.deleteSwipeAction(movie) {
+              store.send(.deleteSwiped(movie), animation: .snappy)
+            }
+            Utils.favoriteSwipeAction(movie) {
+              store.send(.favoriteSwiped(movie), animation: .bouncy)
+            }
           }
-          Utils.favoriteSwipeAction(movie) {
-            store.send(.favoriteSwiped(movie), animation: .bouncy)
-          }
-        }
-    }
-    .onChange(of: selectedMovie) { _, newValue in
-      if let newValue {
-        store.send(.movieSelected(newValue), animation: .bouncy)
-        selectedMovie = nil
       }
     }
   }
@@ -67,10 +62,9 @@ private struct MovieListView: View {
 
 extension FromStateView {
   static var preview: some View {
-    @Dependency(\.modelContextProvider) var modelContextProvider
-    Support.generateMocks(context: modelContextProvider.context, count: 20)
+    @Dependency(\.modelContextProvider) var context
     return FromStateView(store: Store(initialState: .init()) { FromStateFeature() })
-      .modelContainer(modelContextProvider.container)
+      .modelContext(context)
   }
 }
 

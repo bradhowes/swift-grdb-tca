@@ -3,6 +3,7 @@ import Foundation
 import SwiftData
 
 typealias ActiveSchema = SchemaV6
+
 typealias ActorModel = ActiveSchema.ActorModel
 typealias MovieModel = ActiveSchema.MovieModel
 
@@ -20,53 +21,72 @@ struct ModelContextProvider {
 }
 
 extension DependencyValues {
-  var modelContextProvider: ModelContextProvider {
-    get { self[ModelContextProvider.self] }
-    set { self[ModelContextProvider.self] = newValue }
+  var modelContextProvider: ModelContext {
+    get { self[ModelContextKey.self] }
+    set { self[ModelContextKey.self] = newValue }
   }
 }
 
-extension ModelContextProvider: DependencyKey {
-  public static let liveValue = Self(context: liveContext())
+public enum ModelContextKey: DependencyKey {
+  public static let liveValue = liveContext()
 }
 
-extension ModelContextProvider: TestDependencyKey {
-  public static var previewValue: ModelContextProvider { .init(context: previewContext()) }
-  public static var testValue: ModelContextProvider { .init(context: testContext()) }
+extension ModelContextKey: TestDependencyKey {
+  public static var previewValue: ModelContext { previewContext() }
+  public static var testValue: ModelContext {
+    unimplemented("ModelContextProvider testValue", placeholder: ModelContextKey.testValue)
+  }
 }
 
 /// Create a ModelContainer to be used in a live environment.
 func makeLiveContainer(dbFile: URL) -> ModelContainer {
   do {
     let schema = Schema(versionedSchema: ActiveSchema.self)
-    let config = ModelConfiguration(schema: schema, url: dbFile)
+    let config = ModelConfiguration(schema: schema, url: dbFile, cloudKitDatabase: .none)
     return try ModelContainer(for: schema, migrationPlan: MigrationPlan.self, configurations: config)
   } catch {
     fatalError("Failed to create live container.")
   }
 }
 
-/// Create a ModelContainer to be used in a live environment.
 private let liveContainer: ModelContainer = makeLiveContainer(
   dbFile: URL.applicationSupportDirectory.appending(path: "Modelv5.sqlite")
 )
 
-/// Create a ModelContainer to be used in test and preview environments.
-private func makeInMemoryContainer() -> ModelContainer {
+internal func makeTestContext(mockCount: Int = 0) throws -> ModelContext {
+  try makeMockContext(mockCount: mockCount)
+}
+
+internal func makeMockContext(mockCount: Int) throws -> ModelContext {
+  let context = ModelContext(makeInMemoryContainer())
+  try Support.generateMocks(context: context, count: mockCount)
+  return context
+}
+
+internal func makeInMemoryContainer() -> ModelContainer {
   do {
     let schema = Schema(versionedSchema: ActiveSchema.self)
-    let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, allowsSave: true)
+    let config = ModelConfiguration(
+      schema: schema,
+      isStoredInMemoryOnly: true,
+      groupContainer: .none,
+      cloudKitDatabase: .none
+    )
     return try ModelContainer(for: schema, migrationPlan: nil, configurations: config)
   } catch {
     fatalError("Failed to create in-memory container.")
   }
 }
 
-private let previewContainer: ModelContainer = makeInMemoryContainer()
-
 @MainActor private let liveContext: (() -> ModelContext) = { liveContainer.mainContext }
-@MainActor private let previewContext: (() -> ModelContext) = { previewContainer.mainContext }
-@MainActor private let testContext: (() -> ModelContext) = { ModelContext(makeInMemoryContainer()) }
+
+@MainActor private let previewContext: (() -> ModelContext) = {
+  do {
+    return try makeMockContext(mockCount: 4)
+  } catch {
+    fatalError("Failed to generate mocks in previw context")
+  }
+}
 
 #if hasFeature(RetroactiveAttribute)
 extension KeyPath: @unchecked @retroactive Sendable {}

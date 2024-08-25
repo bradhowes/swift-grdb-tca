@@ -1,24 +1,19 @@
-import Dependencies
-import SwiftData
+import ComposableArchitecture
 import SwiftUI
 
-struct RootContentView: View {
-  @Dependency(\.modelContextProvider) var context
-
-  enum Tab {
-    case contentView, queryView
-  }
-
-  @State private var selectedTab: Tab = .contentView
+// swiftlint:disable indentation_width
+struct RootFeatureView: View {
 
   init() {
+#if os(iOS)
     UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
       .lineBreakMode = .byTruncatingMiddle
+#elseif os(macOS)
+#endif
   }
 
   var body: some View {
-    // swiftlint:disable indentation_width
-    TabView(selection: $selectedTab) {
+    TabView {
       FromStateView(store: .init(initialState: .init()) {
         FromStateFeature()
 #if PRINT_CHANGES
@@ -29,7 +24,8 @@ struct RootContentView: View {
       .tabItem {
         Label("State", systemImage: "1.circle")
       }
-      .tag(Tab.contentView)
+      .tag(RootFeature.Tab.fromStateFeature)
+
       FromQueryView(store: .init(initialState: .init()) {
         FromQueryFeature()
 #if PRINT_CHANGES
@@ -40,20 +36,20 @@ struct RootContentView: View {
       .tabItem {
         Label("Query", systemImage: "2.circle")
       }
-      .tag(Tab.queryView)
+      .tag(RootFeature.Tab.fromQueryFeature)
     }
-    .modelContext(context)
   }
-  // swiftlint:enable indentation_width
 }
+// swiftlint:enable indentation_width
 
-extension RootContentView {
+extension RootFeatureView {
   static var preview: some View {
     @Dependency(\.modelContextProvider) var context
-    return RootContentView()
+    return RootFeatureView()
+      .modelContext(context)
   }
 }
 
 #Preview {
-  RootContentView.preview
+  RootFeatureView.preview
 }
