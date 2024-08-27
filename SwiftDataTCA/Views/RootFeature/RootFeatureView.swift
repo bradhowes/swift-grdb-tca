@@ -2,9 +2,9 @@ import ComposableArchitecture
 import SwiftUI
 
 // swiftlint:disable indentation_width
+@MainActor
 struct RootFeatureView: View {
 
-  @MainActor
   init() {
 #if os(iOS)
     UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
