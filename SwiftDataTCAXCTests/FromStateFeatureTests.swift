@@ -88,7 +88,7 @@ final class FromStateFeatureTests: XCTestCase {
       $0.modelContextProvider = ModelContextKey.previewValue
     } operation: {
       try withSnapshotTesting(record: .missing) {
-        let view = RootContentView.preview
+        let view = RootFeatureView.preview
         try assertSnapshot(matching: view)
       }
     }
