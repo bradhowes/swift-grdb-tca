@@ -5,7 +5,7 @@ import SwiftUI
 struct SwiftDataTCAApp: App {
   var body: some Scene {
     WindowGroup {
-      RootContentView()
+      RootFeatureView()
     }
   }
 }
