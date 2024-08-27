@@ -45,17 +45,21 @@ enum Utils {
           movieName
           actorsList
         }
+        Spacer()
+        Image(systemName: "chevron.forward")
+          .font(.footnote.bold())
+          .foregroundColor(Color(UIColor.tertiaryLabel))
       }
     }
 
-    var movieName: some View {
+    private var movieName: some View {
       Text(movie.name)
         .font(.headline)
         .foregroundStyle(titleColor)
         .animation(.easeInOut)
     }
 
-    var actorsList: some View {
+    private var actorsList: some View {
       Text(actorNames)
         .font(.caption2)
         .foregroundStyle(infoColor)
@@ -77,6 +81,10 @@ enum Utils {
           actorName
           moviesList
         }
+        Spacer()
+        Image(systemName: "chevron.forward")
+          .font(.footnote.bold())
+          .foregroundColor(Color(UIColor.tertiaryLabel))
       }
     }
 
