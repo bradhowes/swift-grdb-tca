@@ -45,11 +45,18 @@ extension RootFeature {
 
 extension RootFeature {
 
+  @MainActor
+  static func link(_ movie: Movie) -> some View {
+    NavigationLink(state: RootFeature.showMovieActors(movie)) {
+      Utils.MovieView(movie: movie, showChevron: false)
+    }
+  }
+
   static func showMovieActors(_ movie: Movie) -> Path.State {
-    Path.State.showMovieActors(.init(movie: movie))
+    .showMovieActors(.init(movie: movie))
   }
 
   static func showActorMovies(_ actor: Actor) -> Path.State {
-    Path.State.showActorMovies(.init(actor: actor))
+    .showActorMovies(.init(actor: actor))
   }
 }

@@ -9,6 +9,7 @@ struct FromQueryFeature {
 
   @ObservableState
   struct State: Equatable {
+    let useLinks = true
     var path = StackState<Path.State>()
     var titleSort: SortOrder? = .forward
     var isSearchFieldPresented = false
@@ -20,6 +21,7 @@ struct FromQueryFeature {
 
   enum Action: Sendable {
     case addButtonTapped
+    case detailButtonTapped(Movie)
     case searchButtonTapped(Bool)
     case deleteSwiped(Movie)
     case favoriteSwiped(Movie)
@@ -35,9 +37,10 @@ struct FromQueryFeature {
     Reduce { state, action in
       switch action {
       case .addButtonTapped: return addRandomMovie(state: &state)
+      case .detailButtonTapped(let movie): return drillDown(movie, state: &state)
       case .deleteSwiped(let movie): return deleteMovie(movie)
       case .favoriteSwiped(let movie): return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
-      case .path: return .none
+      case .path(let pathAction): return monitorPathChange(pathAction, state: &state)
       case .searchButtonTapped(let enabled): return setSearchMode(enabled, state: &state)
       case .searchStringChanged(let query): return search(query, state: &state)
       case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
@@ -57,6 +60,32 @@ extension FromQueryFeature {
 
   private func deleteMovie(_ movie: Movie) -> Effect<Action> {
     db.delete(movie.backingObject())
+    return .none
+  }
+
+  private func drillDown(_ movie: Movie, state: inout State) -> Effect<Action> {
+    state.isSearchFieldPresented = false
+    state.path.append(RootFeature.showMovieActors(movie))
+    return .none
+  }
+
+  private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
+    print("monitorPathChange - \(String(describing: pathAction))")
+    switch pathAction {
+
+      // Detect when the MovieActorsFeature list button is tapped, and show a new ActorMoviesView for the actor that was
+      // tapped.
+    case .element(id: _, action: .showMovieActors(.detailButtonTapped(let actor))):
+      state.path.append(RootFeature.showActorMovies(actor))
+
+      // Detect when the ActorMoviesFeature list button is tapped, and show a new MoveActorsView for the movie that was
+      // tapped.
+    case .element(id: _, action: .showActorMovies(.detailButtonTapped(let movie))):
+      state.path.append(RootFeature.showMovieActors(movie))
+
+    default:
+      break
+    }
     return .none
   }
 

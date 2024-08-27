@@ -9,8 +9,8 @@ struct FromQueryView: View {
 
   var body: some View {
     NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-      MovieListView(store: $store)
-        .navigationTitle("From Query")
+      MovieListView(store: $store, send: store.useLinks ? nil : store.send)
+        .navigationTitle("FromQuery")
         .searchable(
           text: $store.searchString.sending(\.searchStringChanged),
           isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
@@ -20,7 +20,7 @@ struct FromQueryView: View {
         .toolbar {
           if !store.isSearchFieldPresented {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-              Button("Add") { store.send(.addButtonTapped) }
+              Button("", systemImage: "plus") { store.send(.addButtonTapped) }
               Utils.pickerView(title: "Title", binding: $store.titleSort.sending(\.titleSortChanged).animation())
             }
           }
@@ -37,20 +37,45 @@ struct FromQueryView: View {
 
 private struct MovieListView: View {
   @Bindable var store: StoreOf<FromQueryFeature>
+  let send: ((FromQueryFeature.Action) -> StoreTask)?
   @Query var moviesQuery: [MovieModel]
-  var movies: [Movie] { moviesQuery.map { $0.valueType } }
+  var movies: [Movie] { moviesQuery.map(\.valueType) }
 
-  init(store: Bindable<Store<FromQueryFeature.State, FromQueryFeature.Action>>) {
+  init(
+    store: Bindable<Store<FromQueryFeature.State, FromQueryFeature.Action>>,
+    send: ((FromQueryFeature.Action) -> StoreTask)?
+  ) {
     self._store = store
+    self.send = send
     self._moviesQuery = Query(self.store.fetchDescriptor, animation: .default)
   }
 
   var body: some View {
     List(movies, id: \.self) { movie in
-      NavigationLink(state: RootFeature.showMovieActors(movie)) {
-        Utils.MovieView(movie: movie)
+      withSwipeActions(movie: movie) {
+        if let send {
+          detailButton(movie, send: send)
+        } else {
+          RootFeature.link(movie)
+        }
       }
-      .swipeActions {
+    }
+  }
+
+  private func detailButton(_ movie: Movie, send: @escaping (FromQueryFeature.Action) -> StoreTask) -> some View {
+    Button {
+      _ = send(.detailButtonTapped(movie))
+    } label: {
+      Utils.MovieView(movie: movie, showChevron: true)
+    }
+  }
+}
+
+extension MovieListView {
+
+  func withSwipeActions<T>(movie: Movie, @ViewBuilder content: () -> T) -> some View where T: View {
+    content()
+      .swipeActions(allowsFullSwipe: false) {
         Utils.deleteSwipeAction(movie) {
           store.send(.deleteSwiped(movie), animation: .snappy)
         }
@@ -58,7 +83,6 @@ private struct MovieListView: View {
           store.send(.favoriteSwiped(movie), animation: .bouncy)
         }
       }
-    }
   }
 }
 

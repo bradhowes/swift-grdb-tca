@@ -7,37 +7,50 @@ struct MovieActorsView: View {
   @Bindable var store: StoreOf<MovieActorsFeature>
 
   var body: some View {
-    ActorsListView(actors: store.actors)
+    ActorsListView(actors: store.actors, send: store.send)
       .navigationTitle(store.movie.name)
       .toolbar(.hidden, for: .tabBar)
       .toolbar {
         ToolbarItemGroup(placement: .automatic) {
           Utils.pickerView(title: "Name", binding: $store.nameSort.sending(\.nameSortChanged).animation())
-          Button {
-            store.send(.favoriteTapped)
-          } label: {
-            if store.movie.favorite {
-              Image(systemName: "star.fill")
-                .foregroundStyle(Utils.favoriteColor)
-                .transition(.confetti(color: Utils.favoriteColor, size: 3, enabled: store.animateButton))
-            } else {
-              Image(systemName: "star")
-            }
-          }
+          favoriteButton
         }
       }
       .labelsHidden()
       .onAppear { store.send(.refresh) }
   }
+
+  private var favoriteButton: some View {
+    Button {
+      store.send(.favoriteTapped)
+    } label: {
+      if store.movie.favorite {
+        Image(systemName: "star.fill")
+          .foregroundStyle(Utils.favoriteColor)
+          .transition(.confetti(color: Utils.favoriteColor, size: 3, enabled: store.animateButton))
+      } else {
+        Image(systemName: "star")
+      }
+    }
+  }
 }
 
 private struct ActorsListView: View {
   var actors: [Actor]
+  let send: ((MovieActorsFeature.Action) -> StoreTask)?
 
   var body: some View {
     List(actors, id: \.modelId) { actor in
-      NavigationLink(state: RootFeature.showActorMovies(actor)) {
-        Utils.ActorView(actor: actor)
+      if let send {
+        Button {
+          _ = send(.detailButtonTapped(actor))
+        } label: {
+          Utils.ActorView(actor: actor, showChevron: true)
+        }
+      } else {
+        NavigationLink(state: RootFeature.showActorMovies(actor)) {
+          Utils.ActorView(actor: actor, showChevron: false)
+        }
       }
     }
   }

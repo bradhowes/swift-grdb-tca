@@ -69,7 +69,7 @@ extension SchemaV5._Movie: Encodable {
   func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeysV5.self)
     try container.encode(self.title, forKey: .title)
-    try container.encode(self.actors.map { $0.name }, forKey: .actors)
+    try container.encode(self.actors.map(\.name), forKey: .actors)
     try container.encode(self.favorite, forKey: .favorite)
   }
 }

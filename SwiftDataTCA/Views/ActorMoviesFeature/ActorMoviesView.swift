@@ -7,7 +7,7 @@ struct ActorMoviesView: View {
   @Bindable var store: StoreOf<ActorMoviesFeature>
 
   var body: some View {
-    MoviesListView(store: store)
+    MoviesListView(store: store, send: store.useLinks ? nil : store.send)
       .navigationTitle(store.actor.name)
       .toolbar(.hidden, for: .tabBar)
       .toolbar {
@@ -21,22 +21,38 @@ struct ActorMoviesView: View {
 
 private struct MoviesListView: View {
   @Bindable var store: StoreOf<ActorMoviesFeature>
+  let send: ((ActorMoviesFeature.Action) -> StoreTask)?
 
   var body: some View {
     List(store.movies, id: \.modelId) { movie in
-      NavigationLink(state: RootFeature.showMovieActors(movie)) {
-        Utils.MovieView(movie: movie)
-          .swipeActions { favoriteSwipAction(for: movie) }
+      withSwipeActions(movie: movie) {
+        if let send {
+          Button {
+            _ = send(.detailButtonTapped(movie))
+          } label: {
+            Utils.MovieView(movie: movie, showChevron: true)
+          }
+        } else {
+          NavigationLink(state: RootFeature.showMovieActors(movie)) {
+            Utils.MovieView(movie: movie, showChevron: false)
+          }
+        }
       }
     }.onAppear {
       store.send(.refresh)
     }
   }
+}
 
-  private func favoriteSwipAction(for movie: Movie) -> some View {
-    Utils.favoriteSwipeAction(movie) {
-      store.send(.favoriteSwiped(movie), animation: .bouncy)
-    }
+extension MoviesListView {
+
+  func withSwipeActions<T>(movie: Movie, @ViewBuilder content: () -> T) -> some View where T: View {
+    content()
+      .swipeActions {
+        Utils.favoriteSwipeAction(movie) {
+          store.send(.favoriteSwiped(movie), animation: .bouncy)
+        }
+      }
   }
 }
 

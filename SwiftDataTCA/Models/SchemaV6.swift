@@ -49,7 +49,7 @@ enum SchemaV6: VersionedSchema {
 
     func movies(ordering: SortOrder?) -> [Movie] {
       @Dependency(\.modelContextProvider) var context
-      return Support.sortedMovies(for: backingObject(), order: ordering).map { $0.valueType }
+      return Support.sortedMovies(for: backingObject(), order: ordering).map(\.valueType)
     }
 
     @discardableResult
@@ -81,7 +81,7 @@ enum SchemaV6: VersionedSchema {
     }
 
     func actors(ordering: SortOrder?) -> [Actor] {
-      Support.sortedActors(for: backingObject(), order: ordering).map { $0.valueType }
+      Support.sortedActors(for: backingObject(), order: ordering).map(\.valueType)
     }
 
     @discardableResult

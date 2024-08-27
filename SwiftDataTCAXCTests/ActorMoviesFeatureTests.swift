@@ -82,7 +82,7 @@ final class ActorMoviesFeatureTests: XCTestCase {
       $0.titleSort = nil
     }
 
-    let titles = Set(store.state.movies.map { $0.name })
+    let titles = Set(store.state.movies.map(\.name))
     XCTAssertEqual(titles.count, 3)
     for movie in store.state.movies {
       XCTAssertTrue(titles.contains(movie.name))

@@ -24,31 +24,43 @@ enum Utils {
 
   static func pickerView(title: String, binding: Binding<SortOrder?>) -> some View {
     Picker("", systemImage: "arrow.up.arrow.down", selection: binding) {
-      Text(title + " ↑").tag(SortOrder?.some(.forward))
-      Text(title + " ↓").tag(SortOrder?.some(.reverse))
-      Text(title + " ⊝").tag(SortOrder?.none)
+      Label("", systemImage: "arrow.up").tag(SortOrder?.some(.forward))
+      Label("", systemImage: "arrow.down").tag(SortOrder?.some(.reverse))
+      Label("", systemImage: "alternatingcurrent").tag(SortOrder?.none)
     }.pickerStyle(.automatic)
   }
 
   struct MovieView: View {
     let movie: Movie
+    let showChevron: Bool
     var titleColor: Color { movie.favorite ? favoriteColor : Utils.titleColor }
-    var actorNames: String {
-      movie.actors(ordering: .forward)
-        .map { $0.name }
-        .formatted(.list(type: .and))
+    var actorNames: String { movie.actors(ordering: .forward).map(\.name).formatted(.list(type: .and)) }
+
+    init(movie: Movie, showChevron: Bool) {
+      self.movie = movie
+      self.showChevron = showChevron
     }
 
     var body: some View {
+      if showChevron {
+        withChevron
+      } else {
+        movieEntry
+      }
+    }
+
+    private var withChevron: some View {
       HStack(spacing: 8) {
-        VStack(alignment: .leading) {
-          movieName
-          actorsList
-        }
+        movieEntry
         Spacer()
-        Image(systemName: "chevron.forward")
-          .font(.footnote.bold())
-          .foregroundColor(Color(UIColor.tertiaryLabel))
+        Utils.chevron
+      }
+    }
+
+    private var movieEntry: some View {
+      VStack(alignment: .leading) {
+        movieName
+        actorsList
       }
     }
 
@@ -68,23 +80,34 @@ enum Utils {
 
   struct ActorView: View {
     let actor: Actor
+    let showChevron: Bool
+    var movieTitles: String { actor.movies(ordering: .forward).map(\.name).formatted(.list(type: .and)) }
 
-    var movieTitles: String {
-      actor.movies(ordering: .forward)
-        .map { $0.name }
-        .formatted(.list(type: .and))
+    init(actor: Actor, showChevron: Bool) {
+      self.actor = actor
+      self.showChevron = showChevron
     }
 
     var body: some View {
+      if showChevron {
+        withChevron
+      } else {
+        actorEntry
+      }
+    }
+
+    private var withChevron: some View {
       HStack(spacing: 8) {
-        VStack(alignment: .leading) {
-          actorName
-          moviesList
-        }
+        actorEntry
         Spacer()
-        Image(systemName: "chevron.forward")
-          .font(.footnote.bold())
-          .foregroundColor(Color(UIColor.tertiaryLabel))
+        Utils.chevron
+      }
+    }
+
+    private var actorEntry: some View {
+      VStack(alignment: .leading) {
+        actorName
+        moviesList
       }
     }
 
@@ -99,6 +122,12 @@ enum Utils {
         .font(.caption2)
         .foregroundStyle(infoColor)
     }
+  }
+
+  static var chevron: some View {
+    Image(systemName: "chevron.forward")
+      .font(.footnote.bold())
+      .foregroundColor(Color(UIColor.tertiaryLabel))
   }
 
   static func favoriteSwipeAction(_ movie: Movie, action: @escaping () -> Void) -> some View {

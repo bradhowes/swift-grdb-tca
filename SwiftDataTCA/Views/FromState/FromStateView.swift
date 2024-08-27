@@ -8,7 +8,7 @@ struct FromStateView: View {
 
   var body: some View {
     NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-      MovieListView(store: store)
+      MovieListView(store: store, send: store.useLinks ? nil : store.send)
         .navigationTitle("FromState")
         .searchable(
           text: $store.searchString.sending(\.searchStringChanged),
@@ -19,7 +19,7 @@ struct FromStateView: View {
         .toolbar {
           if !store.isSearchFieldPresented {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-              Button("Add") { store.send(.addButtonTapped) }
+              Button("", systemImage: "plus") { store.send(.addButtonTapped) }
               Utils.pickerView(title: "Title", binding: $store.titleSort.sending(\.titleSortChanged).animation())
             }
           }
@@ -39,12 +39,33 @@ struct FromStateView: View {
 
 private struct MovieListView: View {
   @Bindable var store: StoreOf<FromStateFeature>
+  let send: ((FromStateFeature.Action) -> StoreTask)?
 
   var body: some View {
     List(store.movies, id: \.self) { movie in
-      NavigationLink(state: RootFeature.showMovieActors(movie)) {
-        Utils.MovieView(movie: movie)
+      withSwipeActions(movie: movie) {
+        if let send {
+          detailButton(movie, send: send)
+        } else {
+          RootFeature.link(movie)
+        }
       }
+    }
+  }
+
+  private func detailButton(_ movie: Movie, send: @escaping (FromStateFeature.Action) -> StoreTask) -> some View {
+    Button {
+      _ = send(.detailButtonTapped(movie))
+    } label: {
+      Utils.MovieView(movie: movie, showChevron: true)
+    }
+  }
+}
+
+extension MovieListView {
+
+  func withSwipeActions<T>(movie: Movie, @ViewBuilder content: () -> T) -> some View where T: View {
+    content()
       .swipeActions(allowsFullSwipe: false) {
         Utils.deleteSwipeAction(movie) {
           store.send(.deleteSwiped(movie), animation: .snappy)
@@ -53,7 +74,6 @@ private struct MovieListView: View {
           store.send(.favoriteSwiped(movie), animation: .bouncy)
         }
       }
-    }
   }
 }
 
