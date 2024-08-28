@@ -14,6 +14,7 @@ struct FromQueryFeature {
     var titleSort: SortOrder? = .forward
     var isSearchFieldPresented = false
     var searchText: String = ""
+    var scrollTo: Movie?
     var fetchDescriptor: FetchDescriptor<MovieModel> {
       ActiveSchema.movieFetchDescriptor(titleSort: titleSort, search: searchText)
     }
@@ -21,11 +22,12 @@ struct FromQueryFeature {
 
   enum Action: Sendable {
     case addButtonTapped
+    case clearScrollTo
     case detailButtonTapped(Movie)
-    case searchButtonTapped(Bool)
     case deleteSwiped(Movie)
     case favoriteSwiped(Movie)
     case path(StackActionOf<Path>)
+    case searchButtonTapped(Bool)
     case searchTextChanged(String)
     case titleSortChanged(SortOrder?)
     case toggleFavoriteState(Movie)
@@ -36,7 +38,15 @@ struct FromQueryFeature {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .addButtonTapped: return addRandomMovie(state: &state)
+      case .addButtonTapped:
+        let movieModel = db.add()
+        state.scrollTo = movieModel.valueType
+        return .none
+
+      case .clearScrollTo:
+        state.scrollTo = nil
+        return .none
+
       case .detailButtonTapped(let movie): return drillDown(movie, state: &state)
       case .deleteSwiped(let movie): return deleteMovie(movie)
       case .favoriteSwiped(let movie): return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
@@ -52,11 +62,6 @@ struct FromQueryFeature {
 }
 
 extension FromQueryFeature {
-
-  private func addRandomMovie(state: inout State) -> Effect<Action> {
-    _ = db.add()
-    return .none
-  }
 
   private func deleteMovie(_ movie: Movie) -> Effect<Action> {
     db.delete(movie.backingObject())

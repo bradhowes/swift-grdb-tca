@@ -20,7 +20,6 @@ struct FromStateView: View {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
               Button("", systemImage: "plus") { store.send(.addButtonTapped) }
               Utils.pickerView(title: "Title", binding: $store.titleSort.sending(\.titleSortChanged).animation())
-              Button("", systemImage: "magnifyingglass") { store.send(.searchButtonTapped(true)) }
             }
           }
         }

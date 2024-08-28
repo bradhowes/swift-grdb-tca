@@ -51,12 +51,22 @@ private struct MovieListView: View {
   }
 
   var body: some View {
-    List(movies, id: \.self) { movie in
-      withSwipeActions(movie: movie) {
-        if let send {
-          detailButton(movie, send: send)
-        } else {
-          RootFeature.link(movie)
+    ScrollViewReader { proxy in
+      List(movies, id: \.modelId) { movie in
+        withSwipeActions(movie: movie) {
+          if let send {
+            detailButton(movie, send: send)
+          } else {
+            RootFeature.link(movie)
+          }
+        }
+      }
+      .onChange(of: store.scrollTo) { _, movie in
+        if let movie {
+          withAnimation {
+            proxy.scrollTo(movie.modelId)
+          }
+          store.send(.clearScrollTo)
         }
       }
     }
