@@ -13,9 +13,9 @@ struct FromQueryFeature {
     var path = StackState<Path.State>()
     var titleSort: SortOrder? = .forward
     var isSearchFieldPresented = false
-    var searchString: String = ""
+    var searchText: String = ""
     var fetchDescriptor: FetchDescriptor<MovieModel> {
-      ActiveSchema.movieFetchDescriptor(titleSort: titleSort, searchString: searchString)
+      ActiveSchema.movieFetchDescriptor(titleSort: titleSort, search: searchText)
     }
   }
 
@@ -26,7 +26,7 @@ struct FromQueryFeature {
     case deleteSwiped(Movie)
     case favoriteSwiped(Movie)
     case path(StackActionOf<Path>)
-    case searchStringChanged(String)
+    case searchTextChanged(String)
     case titleSortChanged(SortOrder?)
     case toggleFavoriteState(Movie)
   }
@@ -42,7 +42,7 @@ struct FromQueryFeature {
       case .favoriteSwiped(let movie): return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
       case .path(let pathAction): return monitorPathChange(pathAction, state: &state)
       case .searchButtonTapped(let enabled): return setSearchMode(enabled, state: &state)
-      case .searchStringChanged(let query): return search(query, state: &state)
+      case .searchTextChanged(let query): return search(query, state: &state)
       case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
       case .toggleFavoriteState(let movie): return toggleFavoriteState(movie)
       }
@@ -95,8 +95,8 @@ extension FromQueryFeature {
   }
 
   private func search(_ query: String, state: inout State) -> Effect<Action> {
-    if query != state.searchString {
-      state.searchString = query
+    if query != state.searchText {
+      state.searchText = query
     }
     return .none
   }

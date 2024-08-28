@@ -12,7 +12,7 @@ struct FromQueryView: View {
       MovieListView(store: $store, send: store.useLinks ? nil : store.send)
         .navigationTitle("FromQuery")
         .searchable(
-          text: $store.searchString.sending(\.searchStringChanged),
+          text: $store.searchText.sending(\.searchTextChanged),
           isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
           placement: .automatic,
           prompt: "Title"

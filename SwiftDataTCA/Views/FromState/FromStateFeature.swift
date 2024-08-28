@@ -14,27 +14,28 @@ struct FromStateFeature {
     var movies: [Movie] = []
     var titleSort: SortOrder? = .forward
     var isSearchFieldPresented = false
-    var searchString: String = ""
+    var searchText: String = ""
     var scrollTo: Movie?
     var fetchDescriptor: FetchDescriptor<MovieModel> {
-      ActiveSchema.movieFetchDescriptor(titleSort: self.titleSort, searchString: searchString)
+      ActiveSchema.movieFetchDescriptor(titleSort: self.titleSort, search: searchText)
     }
   }
 
   enum Action: Sendable {
     case addButtonTapped
+    case clearScrollTo
     case deleteSwiped(Movie)
     case detailButtonTapped(Movie)
     case favoriteSwiped(Movie)
     case onAppear
     case path(StackActionOf<Path>)
     case searchButtonTapped(Bool)
-    case searchStringChanged(String)
+    case searchTextChanged(String)
     case titleSortChanged(SortOrder?)
     case toggleFavoriteState(Movie)
     // Reducer-only action to refresh the array of movies when another action changed what would be returned by the
     // `fetchDescriptor`.
-    case _fetchMovies
+    case _fetchMovies(Movie?)
   }
 
   @Dependency(\.database) var db
@@ -42,9 +43,15 @@ struct FromStateFeature {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+
       case .addButtonTapped:
-        _ = db.add()
-        return doSendFetchMovies()
+        let movieModel = db.add()
+        print("addButton - movie: \(movieModel.valueType)")
+        return doSendFetchMovies(movieModel.valueType)
+
+      case .clearScrollTo:
+        state.scrollTo = nil
+        return .none
 
       case .deleteSwiped(let movie):
         db.delete(movie.backingObject())
@@ -67,9 +74,9 @@ struct FromStateFeature {
         state.isSearchFieldPresented = enabled
         return .none
 
-      case .searchStringChanged(let query):
-        if query != state.searchString {
-          state.searchString = query
+      case .searchTextChanged(let query):
+        if query != state.searchText {
+          state.searchText = query
           return doSendFetchMovies()
         }
         return .none
@@ -81,8 +88,8 @@ struct FromStateFeature {
       case .toggleFavoriteState(let movie):
         return Utils.toggleFavoriteState(movie, movies: &state.movies)
 
-      case ._fetchMovies:
-        return fetchMovies(state: &state)
+      case ._fetchMovies(let movie):
+        return fetchMovies(movie, state: &state)
       }
     }
     .forEach(\.path, action: \.path)
@@ -91,15 +98,23 @@ struct FromStateFeature {
 
 extension FromStateFeature {
 
-  private func doSendFetchMovies() -> Effect<Action> {
+  private func doSendFetchMovies(_ movie: Movie? = nil) -> Effect<Action> {
     .run { @MainActor send in
-      send(._fetchMovies, animation: .default)
+      send(._fetchMovies(movie), animation: .default)
     }
   }
 
-  private func fetchMovies(state: inout State) -> Effect<Action> {
+  private func fetchMovies(_ movie: Movie?, state: inout State) -> Effect<Action> {
     @Dependency(\.database) var db
+    let firstTime = state.movies.isEmpty
     state.movies = db.fetchMovies(state.fetchDescriptor).map(\.valueType)
+    if let movie {
+      print("fetchMovies - setting state.scrollTo - \(String(describing: movie))")
+      state.scrollTo = movie
+    } else if firstTime && !state.movies.isEmpty {
+      print("fetchMovies - setting state.scrollTo - \(String(describing: state.movies[0]))")
+      state.scrollTo = state.movies[0]
+    }
     return .none
   }
 
@@ -121,7 +136,7 @@ extension FromStateFeature {
       // of the detail views.
     case .popFrom:
       if state.path.count == 1 {
-        return fetchMovies(state: &state)
+        return fetchMovies(nil, state: &state)
       }
 
     default:

@@ -156,15 +156,15 @@ enum SchemaV6: VersionedSchema {
    is undetermined.
 
    - parameter titleSort: the direction of the ordering -- alphabetical or reveresed alphabetical
-   - parameter searchString: if not empty, only return `_Movie` entities whose `title` contains the search string
+   - parameter search: if not empty, only return `_Movie` entities whose `title` contains the search string
    - returns: new `FetchDescriptor`
    */
   static func movieFetchDescriptor(
     titleSort: SortOrder? = .forward,
-    searchString: String = ""
+    search: String = ""
   ) -> FetchDescriptor<MovieModel> {
     let sortBy: [ SortDescriptor<MovieModel>] = Support.sortBy(.sortBy(\.sortableTitle, order: titleSort))
-    var fetchDescriptor = FetchDescriptor(predicate: searchPredicate(searchString), sortBy: sortBy)
+    var fetchDescriptor = FetchDescriptor(predicate: searchPredicate(search), sortBy: sortBy)
     fetchDescriptor.relationshipKeyPathsForPrefetching = [\.actors]
     return fetchDescriptor
   }

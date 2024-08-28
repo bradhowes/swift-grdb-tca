@@ -1,5 +1,3 @@
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
 
-// Control addition of `_print_changes()` to application's top-level reducer.
-PRINT_CHANGES = YES

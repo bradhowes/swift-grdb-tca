@@ -11,9 +11,8 @@ struct FromStateView: View {
       MovieListView(store: store, send: store.useLinks ? nil : store.send)
         .navigationTitle("FromState")
         .searchable(
-          text: $store.searchString.sending(\.searchStringChanged),
+          text: $store.searchText.sending(\.searchTextChanged),
           isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
-          placement: .automatic,
           prompt: "Title"
         )
         .toolbar {
@@ -21,6 +20,7 @@ struct FromStateView: View {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
               Button("", systemImage: "plus") { store.send(.addButtonTapped) }
               Utils.pickerView(title: "Title", binding: $store.titleSort.sending(\.titleSortChanged).animation())
+              Button("", systemImage: "magnifyingglass") { store.send(.searchButtonTapped(true)) }
             }
           }
         }
@@ -42,20 +42,21 @@ private struct MovieListView: View {
   let send: ((FromStateFeature.Action) -> StoreTask)?
 
   var body: some View {
-    if store.movies.isEmpty {
-      Button {
-        store.send(.addButtonTapped)
-      } label: {
-        Text("No movies. Tap to add one.")
-      }
-    } else {
-      List(store.movies, id: \.self) { movie in
+    ScrollViewReader { proxy in
+      List(store.movies, id: \.modelId) { movie in
         withSwipeActions(movie: movie) {
           if let send {
             detailButton(movie, send: send)
           } else {
             RootFeature.link(movie)
           }
+        }
+      }
+      .onChange(of: store.scrollTo) { _, movie in
+        if let movie {
+          print("proxy.scrollTo - \(movie)")
+          proxy.scrollTo(movie.modelId)
+          store.send(.clearScrollTo)
         }
       }
     }

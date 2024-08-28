@@ -17,9 +17,7 @@ struct RootFeatureView: View {
     TabView(selection: $store.activeTab.sending(\.tabChanged)) {
       FromStateView(store: .init(initialState: .init()) {
         FromStateFeature()
-#if PRINT_CHANGES
-          ._printChanges()
-#endif
+        // ._printChanges()
       })
       .padding()
       .tabItem {
@@ -29,9 +27,7 @@ struct RootFeatureView: View {
 
       FromQueryView(store: .init(initialState: .init()) {
         FromQueryFeature()
-#if PRINT_CHANGES
-          ._printChanges()
-#endif
+        // ._printChanges()
       })
       .padding()
       .tabItem {

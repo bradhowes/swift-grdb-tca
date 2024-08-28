@@ -1,6 +1,3 @@
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
 
-// Disable `_print_changes()` added to top-level reducer. Not really necessary since `_print_changes()` code itself only
-// runs when DEBUG is defined.
-PRINT_CHANGES = NO
