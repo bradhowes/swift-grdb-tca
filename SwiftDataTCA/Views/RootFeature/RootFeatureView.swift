@@ -4,17 +4,17 @@ import SwiftUI
 // swiftlint:disable indentation_width
 @MainActor
 struct RootFeatureView: View {
+  @Bindable var store: StoreOf<RootFeature> = Store(initialState: .init()) { RootFeature() }
 
   init() {
 #if os(iOS)
     UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
       .lineBreakMode = .byTruncatingMiddle
-#elseif os(macOS)
 #endif
   }
 
   var body: some View {
-    TabView {
+    TabView(selection: $store.activeTab.sending(\.tabChanged)) {
       FromStateView(store: .init(initialState: .init()) {
         FromStateFeature()
 #if PRINT_CHANGES
@@ -23,7 +23,7 @@ struct RootFeatureView: View {
       })
       .padding()
       .tabItem {
-        Label("State", systemImage: "1.circle")
+        Label("FromState", systemImage: "1.circle")
       }
       .tag(RootFeature.Tab.fromStateFeature)
 
@@ -35,7 +35,7 @@ struct RootFeatureView: View {
       })
       .padding()
       .tabItem {
-        Label("Query", systemImage: "2.circle")
+        Label("FromQuery", systemImage: "2.circle")
       }
       .tag(RootFeature.Tab.fromQueryFeature)
     }

@@ -6,6 +6,7 @@ import SwiftUI
 @Reducer
 struct RootFeature {
 
+  // NOTE: declared here but not used. Each tab root view has its own StackState
   @Reducer(state: .equatable)
   enum Path {
     case showMovieActors(MovieActorsFeature)
@@ -29,17 +30,11 @@ struct RootFeature {
   var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case .tabChanged(let tab): return setTab(tab, state: &state)
+      case .tabChanged(let tab):
+        state.activeTab = tab
+        return .none
       }
     }
-  }
-}
-
-extension RootFeature {
-
-  private func setTab(_ tab: Tab, state: inout State) -> Effect<Action> {
-    state.activeTab = tab
-    return .none
   }
 }
 

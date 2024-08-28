@@ -42,12 +42,20 @@ private struct MovieListView: View {
   let send: ((FromStateFeature.Action) -> StoreTask)?
 
   var body: some View {
-    List(store.movies, id: \.self) { movie in
-      withSwipeActions(movie: movie) {
-        if let send {
-          detailButton(movie, send: send)
-        } else {
-          RootFeature.link(movie)
+    if store.movies.isEmpty {
+      Button {
+        store.send(.addButtonTapped)
+      } label: {
+        Text("No movies. Tap to add one.")
+      }
+    } else {
+      List(store.movies, id: \.self) { movie in
+        withSwipeActions(movie: movie) {
+          if let send {
+            detailButton(movie, send: send)
+          } else {
+            RootFeature.link(movie)
+          }
         }
       }
     }
