@@ -9,7 +9,7 @@ struct FromQueryView: View {
 
   var body: some View {
     NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-      MovieListView(store: $store, send: store.useLinks ? nil : store.send)
+      MovieListView(store: $store)
         .navigationTitle("FromQuery")
         .searchable(
           text: $store.searchText.sending(\.searchTextChanged),
@@ -37,62 +37,66 @@ struct FromQueryView: View {
 
 private struct MovieListView: View {
   @Bindable var store: StoreOf<FromQueryFeature>
-  let send: ((FromQueryFeature.Action) -> StoreTask)?
   @Query var moviesQuery: [MovieModel]
   var movies: [Movie] { moviesQuery.map(\.valueType) }
 
-  init(
-    store: Bindable<Store<FromQueryFeature.State, FromQueryFeature.Action>>,
-    send: ((FromQueryFeature.Action) -> StoreTask)?
-  ) {
+  init(store: Bindable<StoreOf<FromQueryFeature>>) {
     self._store = store
-    self.send = send
     self._moviesQuery = Query(self.store.fetchDescriptor, animation: .default)
   }
 
   var body: some View {
     ScrollViewReader { proxy in
       List(movies, id: \.modelId) { movie in
-        withSwipeActions(movie: movie) {
-          if let send {
-            detailButton(movie, send: send)
-          } else {
-            RootFeature.link(movie)
+        MovieListRow(store: $store, movie: movie)
+          .swipeActions(allowsFullSwipe: false) {
+            Utils.deleteSwipeAction(movie) {
+              store.send(.deleteSwiped(movie), animation: .snappy)
+            }
+            Utils.favoriteSwipeAction(movie) {
+              store.send(.favoriteSwiped(movie), animation: .bouncy)
+            }
           }
-        }
       }
       .onChange(of: store.scrollTo) { _, movie in
         if let movie {
-          withAnimation {
-            proxy.scrollTo(movie.modelId)
-          }
+          proxy.scrollTo(movie.modelId)
           store.send(.clearScrollTo)
         }
       }
     }
   }
+}
 
-  private func detailButton(_ movie: Movie, send: @escaping (FromQueryFeature.Action) -> StoreTask) -> some View {
+private struct MovieListRow: View {
+  @Bindable var store: StoreOf<FromQueryFeature>
+  let movie: Movie
+
+  init(store: Bindable<StoreOf<FromQueryFeature>>, movie: Movie) {
+    self._store = store
+    self.movie = movie
+  }
+
+  var body: some View {
+    if store.useLinks {
+      RootFeature.link(movie)
+        .fadeIn(enabled: store.highlight == movie, duration: 2.0) {
+          store.send(.clearHighlight)
+        }
+    } else {
+      detailButton(movie)
+        .fadeIn(enabled: store.highlight == movie, duration: 2.0) {
+          store.send(.clearHighlight)
+        }
+    }
+  }
+
+  private func detailButton(_ movie: Movie) -> some View {
     Button {
-      _ = send(.detailButtonTapped(movie))
+      _ = store.send(.detailButtonTapped(movie))
     } label: {
       Utils.MovieView(movie: movie, showChevron: true)
     }
-  }
-}
-
-extension MovieListView {
-
-  func withSwipeActions<T>(movie: Movie, @ViewBuilder content: () -> T) -> some View where T: View {
-    content()
-      .swipeActions(allowsFullSwipe: false) {
-        Utils.deleteSwipeAction(movie) {
-          store.send(.deleteSwiped(movie), animation: .snappy)
-        }
-        Utils.favoriteSwipeAction(movie) {
-          store.send(.favoriteSwiped(movie), animation: .bouncy)
-        }
-      }
   }
 }
 

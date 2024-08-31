@@ -15,6 +15,7 @@ struct FromQueryFeature {
     var isSearchFieldPresented = false
     var searchText: String = ""
     var scrollTo: Movie?
+    var highlight: Movie?
     var fetchDescriptor: FetchDescriptor<MovieModel> {
       ActiveSchema.movieFetchDescriptor(titleSort: titleSort, search: searchText)
     }
@@ -22,11 +23,14 @@ struct FromQueryFeature {
 
   enum Action: Sendable {
     case addButtonTapped
+    case clearHighlight
     case clearScrollTo
     case detailButtonTapped(Movie)
     case deleteSwiped(Movie)
     case favoriteSwiped(Movie)
+    case highlight(Movie)
     case path(StackActionOf<Path>)
+    case scrollTo(Movie)
     case searchButtonTapped(Bool)
     case searchTextChanged(String)
     case titleSortChanged(SortOrder?)
@@ -38,23 +42,64 @@ struct FromQueryFeature {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
+
       case .addButtonTapped:
         let movieModel = db.add()
-        state.scrollTo = movieModel.valueType
+        return .run { @MainActor send in send(.scrollTo(movieModel.valueType)) }
+
+      case .clearHighlight:
+        state.highlight = nil
         return .none
 
       case .clearScrollTo:
+        guard let movie = state.scrollTo else {
+          return .none
+        }
+
         state.scrollTo = nil
+        return .run { @MainActor send in
+          send(.highlight(movie), animation: .default)
+        }
+
+      case .deleteSwiped(let movie):
+        db.delete(movie.backingObject())
         return .none
 
-      case .detailButtonTapped(let movie): return drillDown(movie, state: &state)
-      case .deleteSwiped(let movie): return deleteMovie(movie)
-      case .favoriteSwiped(let movie): return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
-      case .path(let pathAction): return monitorPathChange(pathAction, state: &state)
-      case .searchButtonTapped(let enabled): return setSearchMode(enabled, state: &state)
-      case .searchTextChanged(let query): return search(query, state: &state)
-      case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
-      case .toggleFavoriteState(let movie): return toggleFavoriteState(movie)
+      case .detailButtonTapped(let movie):
+        state.path.append(RootFeature.showMovieActors(movie))
+        return .none
+
+      case .favoriteSwiped(let movie):
+        return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
+
+      case .highlight(let movie):
+        state.highlight = movie
+        return .none
+
+      case .path(let pathAction):
+        return monitorPathChange(pathAction, state: &state)
+
+      case .searchButtonTapped(let enabled):
+        state.isSearchFieldPresented = enabled
+        return .none
+
+      case .searchTextChanged(let query):
+        if query != state.searchText {
+          state.searchText = query
+        }
+        return .none
+
+      case .scrollTo(let movie):
+        state.scrollTo = movie
+        return .none
+
+      case .titleSortChanged(let newSort):
+        state.titleSort = newSort
+        return .none
+
+      case .toggleFavoriteState(let movie):
+        _ = movie.toggleFavorite()
+        return .none
       }
     }
     .forEach(\.path, action: \.path)
@@ -62,17 +107,6 @@ struct FromQueryFeature {
 }
 
 extension FromQueryFeature {
-
-  private func deleteMovie(_ movie: Movie) -> Effect<Action> {
-    db.delete(movie.backingObject())
-    return .none
-  }
-
-  private func drillDown(_ movie: Movie, state: inout State) -> Effect<Action> {
-    state.isSearchFieldPresented = false
-    state.path.append(RootFeature.showMovieActors(movie))
-    return .none
-  }
 
   private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
     print("monitorPathChange - \(String(describing: pathAction))")
@@ -93,29 +127,8 @@ extension FromQueryFeature {
     }
     return .none
   }
-
-  private func setSearchMode(_ enabled: Bool, state: inout State) -> Effect<Action> {
-    state.isSearchFieldPresented = enabled
-    return .none
-  }
-
-  private func search(_ query: String, state: inout State) -> Effect<Action> {
-    if query != state.searchText {
-      state.searchText = query
-    }
-    return .none
-  }
-
-  private func setTitleSort(_ sort: SortOrder?, state: inout State) -> Effect<Action> {
-    state.titleSort = sort
-    return .none
-  }
-
-  private func toggleFavoriteState(_ movie: Movie) -> Effect<Action> {
-    _ = movie.toggleFavorite()
-    return .none
-  }
 }
+
 #Preview {
   FromQueryView.preview
 }

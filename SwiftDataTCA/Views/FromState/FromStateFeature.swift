@@ -16,6 +16,7 @@ struct FromStateFeature {
     var isSearchFieldPresented = false
     var searchText: String = ""
     var scrollTo: Movie?
+    var highlight: Movie?
     var fetchDescriptor: FetchDescriptor<MovieModel> {
       ActiveSchema.movieFetchDescriptor(titleSort: self.titleSort, search: searchText)
     }
@@ -23,10 +24,12 @@ struct FromStateFeature {
 
   enum Action: Sendable {
     case addButtonTapped
+    case clearHighlight
     case clearScrollTo
     case deleteSwiped(Movie)
     case detailButtonTapped(Movie)
     case favoriteSwiped(Movie)
+    case highlight(Movie)
     case onAppear
     case path(StackActionOf<Path>)
     case searchButtonTapped(Bool)
@@ -46,12 +49,21 @@ struct FromStateFeature {
 
       case .addButtonTapped:
         let movieModel = db.add()
-        print("addButton - movie: \(movieModel.valueType)")
         return doSendFetchMovies(movieModel.valueType)
 
-      case .clearScrollTo:
-        state.scrollTo = nil
+      case .clearHighlight:
+        state.highlight = nil
         return .none
+
+      case .clearScrollTo:
+        guard let movie = state.scrollTo else {
+          return .none
+        }
+
+        state.scrollTo = nil
+        return .run { @MainActor send in
+          send(.highlight(movie), animation: .default)
+        }
 
       case .deleteSwiped(let movie):
         db.delete(movie.backingObject())
@@ -63,6 +75,10 @@ struct FromStateFeature {
 
       case .favoriteSwiped(let movie):
         return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
+
+      case .highlight(let movie):
+        state.highlight = movie
+        return .none
 
       case .onAppear:
         return doSendFetchMovies()
@@ -106,14 +122,9 @@ extension FromStateFeature {
 
   private func fetchMovies(_ movie: Movie?, state: inout State) -> Effect<Action> {
     @Dependency(\.database) var db
-    let firstTime = state.movies.isEmpty
     state.movies = db.fetchMovies(state.fetchDescriptor).map(\.valueType)
     if let movie {
-      print("fetchMovies - setting state.scrollTo - \(String(describing: movie))")
       state.scrollTo = movie
-    } else if firstTime && !state.movies.isEmpty {
-      print("fetchMovies - setting state.scrollTo - \(String(describing: state.movies[0]))")
-      state.scrollTo = state.movies[0]
     }
     return .none
   }

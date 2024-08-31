@@ -158,12 +158,4 @@ enum Utils {
     }
     return .none
   }
-
-  static func beginFavoriteChange<Action: Sendable>(action: Action) -> Effect<Action> {
-    @Dependency(\.continuousClock) var clock
-    return .run { send in
-      try await clock.sleep(for: .milliseconds(800))
-      await send(action, animation: .default)
-    }
-  }
 }
