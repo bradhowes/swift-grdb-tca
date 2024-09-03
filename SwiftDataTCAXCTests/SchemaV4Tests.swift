@@ -28,7 +28,7 @@ final class SchemaV4Tests: XCTestCase {
       try! context.save()
     }
 
-    var movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, searchString: ""))
+    var movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, search: ""))
 
     XCTAssertEqual(movies.count, 3)
     XCTAssertEqual(movies[0].title, "The First Movie")
@@ -40,14 +40,14 @@ final class SchemaV4Tests: XCTestCase {
     XCTAssertEqual(movies[2].actors.count, 1)
     XCTAssertEqual(movies[2].actors[0].name, "Actor 2")
 
-    movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .reverse, searchString: ""))
+    movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .reverse, search: ""))
 
     XCTAssertEqual(movies.count, 3)
     XCTAssertEqual(movies[2].title, "The First Movie")
     XCTAssertEqual(movies[1].title, "A Second Movie")
     XCTAssertEqual(movies[0].title, "El Third Movie")
 
-    movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, searchString: "th"))
+    movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, search: "th"))
 
     XCTAssertEqual(movies.count, 2)
     XCTAssertEqual(movies[0].title, "The First Movie")
@@ -73,7 +73,7 @@ final class SchemaV4Tests: XCTestCase {
       try! contextV3.save()
     }
 
-    let moviesV3 = try! contextV3.fetch(SchemaV3.movieFetchDescriptor(titleSort: .forward, uuidSort: .none, searchString: ""))
+    let moviesV3 = try! contextV3.fetch(SchemaV3.movieFetchDescriptor(titleSort: .forward, uuidSort: .none, search: ""))
     XCTAssertEqual(moviesV3[0].title, "Les Enfants")
     XCTAssertEqual(moviesV3[1].title, "El Mariachi")
     XCTAssertEqual(moviesV3[2].title, "Le Monde")
@@ -90,7 +90,7 @@ final class SchemaV4Tests: XCTestCase {
     }
 
     let contextV4 = ModelContext(containerV4)
-    let moviesV4 = try! contextV4.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, searchString: ""))
+    let moviesV4 = try! contextV4.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, search: ""))
 
     XCTAssertEqual(moviesV4.count, moviesV3.count)
     XCTAssertEqual(moviesV4[0].title, "Les Enfants")

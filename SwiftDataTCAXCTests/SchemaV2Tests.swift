@@ -28,8 +28,7 @@ final class SchemaV2Tests: XCTestCase {
       try! context.save()
     }
 
-    var movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .forward, uuidSort: .none,
-                                                                  searchString: ""))
+    var movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .forward, uuidSort: .none, search: ""))
 
     XCTAssertEqual(movies.count, 3)
     XCTAssertEqual(movies[0].title, "A Second Movie")
@@ -40,32 +39,28 @@ final class SchemaV2Tests: XCTestCase {
     XCTAssertEqual(movies[0].cast[0], "Actor 1")
     XCTAssertEqual(movies[0].cast[1], "Actor 4")
 
-    movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .reverse, uuidSort: .none,
-                                                              searchString: ""))
+    movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .reverse, uuidSort: .none, search: ""))
 
     XCTAssertEqual(movies.count, 3)
     XCTAssertEqual(movies[2].title, "A Second Movie")
     XCTAssertEqual(movies[1].title, "El Third Movie")
     XCTAssertEqual(movies[0].title, "The First Movie")
 
-    movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .none, uuidSort: .forward,
-                                                              searchString: ""))
+    movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .none, uuidSort: .forward, search: ""))
 
     XCTAssertEqual(movies.count, 3)
     XCTAssertEqual(movies[0].title, "The First Movie")
     XCTAssertEqual(movies[1].title, "A Second Movie")
     XCTAssertEqual(movies[2].title, "El Third Movie")
 
-    movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .none, uuidSort: .reverse,
-                                                              searchString: ""))
+    movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .none, uuidSort: .reverse, search: ""))
 
     XCTAssertEqual(movies.count, 3)
     XCTAssertEqual(movies[2].title, "The First Movie")
     XCTAssertEqual(movies[1].title, "A Second Movie")
     XCTAssertEqual(movies[0].title, "El Third Movie")
 
-    movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .forward, uuidSort: .none,
-                                                              searchString: "th"))
+    movies = try! context.fetch(SchemaV2.movieFetchDescriptor(titleSort: .forward, uuidSort: .none, search: "th"))
 
     XCTAssertEqual(movies.count, 2)
     XCTAssertEqual(movies[0].title, "El Third Movie")

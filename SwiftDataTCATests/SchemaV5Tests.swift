@@ -74,7 +74,7 @@ struct SchemaV5Tests {
       OldSchema.makeMock(context: oldContext, entry: ("El Third Movie", ["Actor 2"]))
       try! oldContext.save()
       
-      let oldMovies = try! oldContext.fetch(OldSchema.movieFetchDescriptor(titleSort: .forward, searchString: ""))
+      let oldMovies = try! oldContext.fetch(OldSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
       #expect(oldMovies[0].title == "The First Movie")
       #expect(oldMovies[1].title == "A Second Movie")
       #expect(oldMovies[2].title == "El Third Movie")
@@ -86,7 +86,7 @@ struct SchemaV5Tests {
                                              configurations: newConfig)
       
       let newContext = ModelContext(newContainer)
-      let newMovies = try! newContext.fetch(NewSchema.movieFetchDescriptor(titleSort: .forward, searchString: ""))
+      let newMovies = try! newContext.fetch(NewSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
       
       #expect(newMovies.count == oldMovies.count)
       #expect(newMovies[0].title == "The First Movie")

@@ -29,7 +29,7 @@ final class SchemaV3Tests: XCTestCase {
     }
 
     var movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .forward, uuidSort: .none,
-                                                                  searchString: ""))
+                                                                  search: ""))
 
     XCTAssertEqual(movies.count, 3)
     XCTAssertEqual(movies[0].title, "The First Movie")
@@ -42,7 +42,7 @@ final class SchemaV3Tests: XCTestCase {
     XCTAssertEqual(movies[0].cast[2], "Actor 3")
 
     movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .reverse, uuidSort: .none,
-                                                              searchString: ""))
+                                                              search: ""))
 
     XCTAssertEqual(movies.count, 3)
     XCTAssertEqual(movies[2].title, "The First Movie")
@@ -50,7 +50,7 @@ final class SchemaV3Tests: XCTestCase {
     XCTAssertEqual(movies[0].title, "El Third Movie")
 
     movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .none, uuidSort: .forward,
-                                                              searchString: ""))
+                                                              search: ""))
 
     XCTAssertEqual(movies.count, 3)
     XCTAssertEqual(movies[0].title, "A Second Movie")
@@ -58,7 +58,7 @@ final class SchemaV3Tests: XCTestCase {
     XCTAssertEqual(movies[2].title, "El Third Movie")
 
     movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .none, uuidSort: .reverse,
-                                                              searchString: ""))
+                                                              search: ""))
 
     XCTAssertEqual(movies.count, 3)
     XCTAssertEqual(movies[2].title, "A Second Movie")
@@ -66,7 +66,7 @@ final class SchemaV3Tests: XCTestCase {
     XCTAssertEqual(movies[0].title, "El Third Movie")
 
     movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .forward, uuidSort: .none,
-                                                              searchString: "th"))
+                                                              search: "th"))
 
     XCTAssertEqual(movies.count, 2)
     XCTAssertEqual(movies[0].title, "The First Movie")
@@ -92,7 +92,7 @@ final class SchemaV3Tests: XCTestCase {
       try! contextV2.save()
     }
 
-    let moviesV2 = try! contextV2.fetch(SchemaV2.movieFetchDescriptor(titleSort: .forward, uuidSort: .none, searchString: ""))
+    let moviesV2 = try! contextV2.fetch(SchemaV2.movieFetchDescriptor(titleSort: .forward, uuidSort: .none, search: ""))
     XCTAssertEqual(moviesV2[0].title, "El Mariachi")
     XCTAssertEqual(moviesV2[1].title, "Le Monde")
     XCTAssertEqual(moviesV2[2].title, "Les Enfants")
@@ -109,7 +109,7 @@ final class SchemaV3Tests: XCTestCase {
     }
 
     let contextV3 = ModelContext(containerV3)
-    let moviesV3 = try! contextV3.fetch(SchemaV3.movieFetchDescriptor(titleSort: .forward, uuidSort: .none, searchString: ""))
+    let moviesV3 = try! contextV3.fetch(SchemaV3.movieFetchDescriptor(titleSort: .forward, uuidSort: .none, search: ""))
 
     XCTAssertEqual(moviesV3.count, moviesV3.count)
     XCTAssertEqual(moviesV3[0].title, "Les Enfants")

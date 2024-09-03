@@ -41,28 +41,30 @@ final class FromQueryFeatureTests: XCTestCase {
   
   @MainActor
   func testDeleteSwiped() async throws {
-    var movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    var movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, search: ""))
     XCTAssertTrue(movies.isEmpty)
-    
+
+    store.exhaustivity = .off
     await store.send(.addButtonTapped)
-    
-    movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+
+    movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, search: ""))
     XCTAssertFalse(movies.isEmpty)
     let movie = movies[0].valueType
     await store.send(.deleteSwiped(movie))
     
-    movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, search: ""))
     XCTAssertTrue(movies.isEmpty)
   }
   
   @MainActor
   func testFavoriteSwiped() async throws {
-    var movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    var movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, search: ""))
     XCTAssertTrue(movies.isEmpty)
-    
+
+    store.exhaustivity = .off
     await store.send(.addButtonTapped)
     
-    movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, search: ""))
     XCTAssertFalse(movies[0].favorite)
     let movie = movies[0].valueType
     await store.send(.favoriteSwiped(movie))

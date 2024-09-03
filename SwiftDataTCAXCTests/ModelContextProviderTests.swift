@@ -18,7 +18,7 @@ final class ModelContextProviderTests: XCTestCase {
     let container = makeLiveContainer(dbFile: tmp)
     let context = ModelContext(container)
     try? Support.generateMocks(context: context, count: 20)
-    let movies = try context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, searchString: ""))
+    let movies = try context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, search: ""))
     XCTAssertEqual(20, movies.count)
   }
 }

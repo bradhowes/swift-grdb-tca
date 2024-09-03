@@ -45,7 +45,7 @@ struct SchemaV4Tests {
 
       try! context.save()
 
-      var movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, searchString: ""))
+      var movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, search: ""))
 
       #expect(movies.count == 3)
       #expect(movies[0].title == "The First Movie")
@@ -56,14 +56,14 @@ struct SchemaV4Tests {
       #expect(movies[1].actors.count == 3)
       #expect(movies[2].actors.count == 1)
 
-      movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .reverse, searchString: ""))
+      movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .reverse, search: ""))
 
       #expect(movies.count == 3)
       #expect(movies[2].title == "The First Movie")
       #expect(movies[1].title == "A Second Movie")
       #expect(movies[0].title == "El Third Movie")
 
-      movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, searchString: "th"))
+      movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, search: "th"))
 
       #expect(movies.count == 2)
       #expect(movies[0].title == "The First Movie")
@@ -101,7 +101,7 @@ struct SchemaV4Tests {
       SchemaV3.makeMock(context: contextV3, entry: (title: "Le Monde", cast: ["Zoe"]))
       SchemaV3.makeMock(context: contextV3, entry: (title: "Les Enfants", cast: ["Zoe"]))
       try! contextV3.save()
-      let moviesV3 = try! contextV3.fetch(SchemaV3.movieFetchDescriptor(titleSort: .forward, uuidSort: .none, searchString: ""))
+      let moviesV3 = try! contextV3.fetch(SchemaV3.movieFetchDescriptor(titleSort: .forward, uuidSort: .none, search: ""))
       #expect(moviesV3[0].title == "Les Enfants")
       #expect(moviesV3[1].title == "El Mariachi")
       #expect(moviesV3[2].title == "Le Monde")
@@ -114,7 +114,7 @@ struct SchemaV4Tests {
                                             configurations: configV4)
       
       let contextV4 = ModelContext(containerV4)
-      let moviesV4 = try! contextV4.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, searchString: ""))
+      let moviesV4 = try! contextV4.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, search: ""))
       
       #expect(moviesV4.count == moviesV3.count)
       #expect(moviesV4[0].title == "Les Enfants")

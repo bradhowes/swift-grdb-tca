@@ -99,7 +99,7 @@ struct SchemaV3Tests {
       SchemaV3.makeMock(context: context, entry: ("El Third Movie", ["Actor 2"]))
       try! context.save()
 
-      var movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .forward, uuidSort: .reverse, searchString: ""))
+      var movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .forward, uuidSort: .reverse, search: ""))
 
       #expect(movies.count == 3)
       #expect(movies[0].title == "The First Movie")
@@ -109,19 +109,19 @@ struct SchemaV3Tests {
       #expect(movies[0].cast.count == 3)
       #expect(movies[0].cast[0] == "Actor 1")
 
-      movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .reverse, uuidSort: .reverse, searchString: ""))
+      movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .reverse, uuidSort: .reverse, search: ""))
       #expect(movies.count == 3)
       #expect(movies[2].title == "The First Movie")
       #expect(movies[1].title == "A Second Movie")
       #expect(movies[0].title == "El Third Movie")
 
-      movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .none, uuidSort: .forward, searchString: ""))
+      movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .none, uuidSort: .forward, search: ""))
       #expect(movies.count == 3)
       #expect(movies[0].title == "A Second Movie")
       #expect(movies[1].title == "The First Movie")
       #expect(movies[2].title == "El Third Movie")
 
-      movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .none, uuidSort: .reverse, searchString: ""))
+      movies = try! context.fetch(SchemaV3.movieFetchDescriptor(titleSort: .none, uuidSort: .reverse, search: ""))
       #expect(movies.count == 3)
       #expect(movies[2].title == "A Second Movie")
       #expect(movies[1].title == "The First Movie")

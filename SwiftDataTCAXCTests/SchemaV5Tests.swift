@@ -28,7 +28,7 @@ final class SchemaV5Tests: XCTestCase {
       try! context.save()
     }
 
-    var movies = try! context.fetch(SchemaV5.movieFetchDescriptor(titleSort: .forward, searchString: ""))
+    var movies = try! context.fetch(SchemaV5.movieFetchDescriptor(titleSort: .forward, search: ""))
 
     XCTAssertEqual(movies.count, 3)
     XCTAssertEqual(movies[0].title, "The First Movie")
@@ -40,14 +40,14 @@ final class SchemaV5Tests: XCTestCase {
     XCTAssertEqual(movies[2].actors.count, 1)
     XCTAssertEqual(movies[2].actors[0].name, "Actor 2")
 
-    movies = try! context.fetch(SchemaV5.movieFetchDescriptor(titleSort: .reverse, searchString: ""))
+    movies = try! context.fetch(SchemaV5.movieFetchDescriptor(titleSort: .reverse, search: ""))
 
     XCTAssertEqual(movies.count, 3)
     XCTAssertEqual(movies[2].title, "The First Movie")
     XCTAssertEqual(movies[1].title, "A Second Movie")
     XCTAssertEqual(movies[0].title, "El Third Movie")
 
-    movies = try! context.fetch(SchemaV5.movieFetchDescriptor(titleSort: .forward, searchString: "th"))
+    movies = try! context.fetch(SchemaV5.movieFetchDescriptor(titleSort: .forward, search: "th"))
 
     XCTAssertEqual(movies.count, 2)
     XCTAssertEqual(movies[0].title, "The First Movie")
@@ -75,7 +75,7 @@ final class SchemaV5Tests: XCTestCase {
       try! oldContext.save()
     }
 
-    let oldMovies = try! oldContext.fetch(OldSchema.movieFetchDescriptor(titleSort: .forward, searchString: ""))
+    let oldMovies = try! oldContext.fetch(OldSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
     XCTAssertEqual(oldMovies.count, 3)
     XCTAssertEqual(oldMovies[0].title, "The First Movie")
     XCTAssertEqual(oldMovies[1].title, "A Second Movie")
@@ -88,7 +88,7 @@ final class SchemaV5Tests: XCTestCase {
                                           configurations: newConfig)
 
     let newContext = ModelContext(newContainer)
-    let newMovies = try! newContext.fetch(NewSchema.movieFetchDescriptor(titleSort: .forward, searchString: ""))
+    let newMovies = try! newContext.fetch(NewSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
 
     XCTAssertEqual(newMovies.count, oldMovies.count)
     XCTAssertEqual(newMovies[0].title, "The First Movie")

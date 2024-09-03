@@ -35,8 +35,8 @@ extension SchemaV3 {
     context.insert(movie)
   }
 
-  static func searchPredicate(_ searchString: String) -> Predicate<_Movie>? {
-    searchString.isEmpty ? nil : #Predicate<_Movie> { $0.title.localizedStandardContains(searchString) }
+  static func searchPredicate(_ search: String) -> Predicate<_Movie>? {
+    search.isEmpty ? nil : #Predicate<_Movie> { $0.title.localizedStandardContains(search) }
   }
 
   /**
@@ -52,13 +52,13 @@ extension SchemaV3 {
   static func movieFetchDescriptor(
     titleSort: SortOrder?,
     uuidSort: SortOrder?,
-    searchString: String
+    search: String
   ) -> FetchDescriptor<_Movie> {
     let sortBy: [SortDescriptor<_Movie>] = Support.sortBy(
       .sortBy(\.sortableTitle, order: titleSort),
       .sortBy(\.id, order: uuidSort)
     )
-    return FetchDescriptor(predicate: searchPredicate(searchString), sortBy: sortBy)
+    return FetchDescriptor(predicate: searchPredicate(search), sortBy: sortBy)
   }
 }
 

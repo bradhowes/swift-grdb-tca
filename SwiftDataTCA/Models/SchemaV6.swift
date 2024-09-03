@@ -132,8 +132,8 @@ enum SchemaV6: VersionedSchema {
   }
 
   @inlinable
-  static func searchPredicate(_ searchString: String) -> Predicate<MovieModel>? {
-    searchString.isEmpty ? nil : #Predicate<MovieModel> { $0.title.localizedStandardContains(searchString) }
+  static func searchPredicate(_ search: String) -> Predicate<MovieModel>? {
+    search.isEmpty ? nil : #Predicate<MovieModel> { $0.title.localizedStandardContains(search) }
   }
 
   /**

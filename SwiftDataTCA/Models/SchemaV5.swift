@@ -65,8 +65,8 @@ enum SchemaV5: VersionedSchema {
     return actor
   }
 
-  static func searchPredicate(_ searchString: String) -> Predicate<_Movie>? {
-    searchString.isEmpty ? nil : #Predicate<_Movie> { $0.title.localizedStandardContains(searchString) }
+  static func searchPredicate(_ search: String) -> Predicate<_Movie>? {
+    search.isEmpty ? nil : #Predicate<_Movie> { $0.title.localizedStandardContains(search) }
   }
 
   /**
@@ -78,9 +78,9 @@ enum SchemaV5: VersionedSchema {
    - parameter searchString: if not empty, only return `_Movie` entities whose `title` contains the search string
    - returns: new `FetchDescriptor`
    */
-  static func movieFetchDescriptor(titleSort: SortOrder?, searchString: String) -> FetchDescriptor<_Movie> {
+  static func movieFetchDescriptor(titleSort: SortOrder?, search: String) -> FetchDescriptor<_Movie> {
     let sortBy: [SortDescriptor<_Movie>] = Support.sortBy(.sortBy(\.sortableTitle, order: titleSort))
-    var fetchDescriptor = FetchDescriptor(predicate: searchPredicate(searchString), sortBy: sortBy)
+    var fetchDescriptor = FetchDescriptor(predicate: searchPredicate(search), sortBy: sortBy)
     fetchDescriptor.relationshipKeyPathsForPrefetching = [\.actors]
     return fetchDescriptor
   }
