@@ -26,6 +26,7 @@ struct FromStateFeature {
     case addButtonTapped
     case clearHighlight
     case clearScrollTo
+    case delete(IndexSet)
     case deleteSwiped(Movie)
     case detailButtonTapped(Movie)
     case favoriteSwiped(Movie)
@@ -64,6 +65,12 @@ struct FromStateFeature {
         return .run { @MainActor send in
           send(.highlight(movie), animation: .default)
         }
+
+      case .delete(let offsets):
+        for movie in offsets.map({ state.movies[$0] }) {
+          db.delete(movie.backingObject())
+        }
+        return doSendFetchMovies()
 
       case .deleteSwiped(let movie):
         db.delete(movie.backingObject())

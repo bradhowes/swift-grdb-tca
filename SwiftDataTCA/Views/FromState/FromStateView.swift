@@ -37,6 +37,7 @@ struct FromStateView: View {
 }
 
 private struct MovieListView: View {
+  @Environment(\.editMode) private var editMode
   @Bindable var store: StoreOf<FromStateFeature>
 
   init(store: Bindable<StoreOf<FromStateFeature>>) {
@@ -45,16 +46,20 @@ private struct MovieListView: View {
 
   var body: some View {
     ScrollViewReader { proxy in
-      List(store.movies, id: \.modelId) { movie in
-        MovieListRow(store: $store, movie: movie)
-          .swipeActions(allowsFullSwipe: false) {
-            Utils.deleteSwipeAction(movie) {
-              store.send(.deleteSwiped(movie), animation: .snappy)
+      List {
+        ForEach(store.movies, id: \.modelId) { movie in
+          MovieListRow(store: $store, movie: movie)
+            .swipeActions(allowsFullSwipe: false) {
+              if case .inactive = (editMode?.wrappedValue ?? .inactive) {
+                Utils.deleteSwipeAction(movie) {
+                  store.send(.deleteSwiped(movie), animation: .snappy)
+                }
+                Utils.favoriteSwipeAction(movie) {
+                  store.send(.favoriteSwiped(movie), animation: .bouncy)
+                }
+              }
             }
-            Utils.favoriteSwipeAction(movie) {
-              store.send(.favoriteSwiped(movie), animation: .bouncy)
-            }
-          }
+        }
       }
       .onChange(of: store.scrollTo) { _, movie in
         if let movie {
@@ -67,6 +72,7 @@ private struct MovieListView: View {
 }
 
 private struct MovieListRow: View {
+  @Environment(\.editMode) private var editMode
   @Bindable var store: StoreOf<FromStateFeature>
   let movie: Movie
 
@@ -78,12 +84,12 @@ private struct MovieListRow: View {
   var body: some View {
     if store.useLinks {
       RootFeature.link(movie)
-        .fadeIn(enabled: store.highlight == movie, duration: 2.0) {
+        .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
           store.send(.clearHighlight)
         }
     } else {
       detailButton
-        .fadeIn(enabled: store.highlight == movie, duration: 2.0) {
+        .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
           store.send(.clearHighlight)
         }
     }
@@ -91,7 +97,9 @@ private struct MovieListRow: View {
 
   private var detailButton: some View {
     Button {
-      _ = store.send(.detailButtonTapped(movie))
+      if case .inactive = (editMode?.wrappedValue ?? .inactive) {
+        _ = store.send(.detailButtonTapped(movie))
+      }
     } label: {
       Utils.MovieView(movie: movie, showChevron: true)
     }

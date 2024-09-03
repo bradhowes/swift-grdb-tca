@@ -80,12 +80,12 @@ private struct MovieListRow: View {
   var body: some View {
     if store.useLinks {
       RootFeature.link(movie)
-        .fadeIn(enabled: store.highlight == movie, duration: 2.0) {
+        .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
           store.send(.clearHighlight)
         }
     } else {
       detailButton(movie)
-        .fadeIn(enabled: store.highlight == movie, duration: 2.0) {
+        .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
           store.send(.clearHighlight)
         }
     }
