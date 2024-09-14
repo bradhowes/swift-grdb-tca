@@ -97,7 +97,7 @@ enum SchemaV6: VersionedSchema {
       return movie
     }
 
-    func hash(into hasher: inout Hasher) { 
+    func hash(into hasher: inout Hasher) {
       hasher.combine(modelId)
       hasher.combine(favorite)
     }

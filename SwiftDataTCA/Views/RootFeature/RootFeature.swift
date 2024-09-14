@@ -43,8 +43,10 @@ struct RootFeature {
       case .tabChanged(let tab):
         state.activeTab = tab
         return .none
+
       case .fromState:
         return .none
+
       case .fromQuery:
         return .none
       }

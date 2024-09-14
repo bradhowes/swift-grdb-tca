@@ -5,12 +5,12 @@ import SwiftUI
 struct RootFeatureView: View {
   @Bindable var store: StoreOf<RootFeature> = Store(initialState: .init()) { RootFeature() }
 
-  init() {
 #if os(iOS)
+  init() {
     UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
       .lineBreakMode = .byTruncatingMiddle
-#endif
   }
+#endif
 
   var body: some View {
     TabView(selection: $store.activeTab.sending(\.tabChanged)) {
