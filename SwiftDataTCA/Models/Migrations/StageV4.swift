@@ -13,7 +13,7 @@ enum StageV4 {
   }
 }
 
-private let migrationFile = FileManager.default.temporaryDirectory.appendingPathComponent("migrationV3.json")
+private let migrationFile = FileManager.default.temporaryDirectory.appendingPathComponent("migrationV4.json")
 
 /**
  Create a JSON representation of the known movies, save to disk, and then remove all movies.
@@ -26,9 +26,11 @@ private func exportV3(context: ModelContext) throws {
   let movies = try context.fetch(FetchDescriptor<SchemaV3._Movie>())
   let data = try JSONEncoder().encode(movies)
   try data.write(to: migrationFile, options: .atomic)
+
   for movie in movies {
     context.delete(movie)
   }
+
   try context.save()
 }
 
@@ -39,10 +41,9 @@ private func exportV3(context: ModelContext) throws {
  */
 private func importV4(context: ModelContext) throws {
   @Dependency(\.uuid) var uuid
-  let moviesV3 = try JSONDecoder().decode([SchemaV3._Movie].self, from: Data(contentsOf: migrationFile))
+  let movies = try JSONDecoder().decode([MovieImport].self, from: Data(contentsOf: migrationFile))
   try? FileManager.default.removeItem(at: migrationFile)
-
-  for old in moviesV3 {
+  for old in movies {
     let movie = SchemaV4._Movie(id: old.id, title: old.title, favorite: old.favorite)
     context.insert(movie)
     let actors = old.cast.map { SchemaV4.fetchOrMakeActor(context, name: $0) }
@@ -54,18 +55,9 @@ private func importV4(context: ModelContext) throws {
   try context.save()
 }
 
-extension SchemaV3._Movie: Encodable, Decodable {
+extension SchemaV3._Movie: Encodable {
   enum CodingKeysV3: CodingKey {
     case id, title, cast, favorite
-  }
-
-  convenience init(from decoder: any Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeysV3.self)
-    let id = try container.decode(UUID.self, forKey: .id)
-    let title = try container.decode(String.self, forKey: .title)
-    let cast = try container.decode(Array<String>.self, forKey: .cast)
-    let favorite = try container.decode(Bool.self, forKey: .favorite)
-    self.init(id: id, title: title, cast: cast, favorite: favorite)
   }
 
   func encode(to encoder: Encoder) throws {
@@ -74,5 +66,20 @@ extension SchemaV3._Movie: Encodable, Decodable {
     try container.encode(self.title, forKey: .title)
     try container.encode(self.cast, forKey: .cast)
     try container.encode(self.favorite, forKey: .favorite)
+  }
+}
+
+private struct MovieImport: Decodable {
+  let id: UUID
+  let title: String
+  let cast: [String]
+  let favorite: Bool
+
+  init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: SchemaV3._Movie.CodingKeysV3.self)
+    self.id = try container.decode(UUID.self, forKey: .id)
+    self.title = try container.decode(String.self, forKey: .title)
+    self.cast = try container.decode(Array<String>.self, forKey: .cast)
+    self.favorite = try container.decode(Bool.self, forKey: .favorite)
   }
 }

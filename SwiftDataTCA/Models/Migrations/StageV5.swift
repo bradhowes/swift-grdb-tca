@@ -44,8 +44,8 @@ private func exportV4(context: ModelContext) throws {
  - parameter context: the V5 context to use
  */
 private func importV5(context: ModelContext) throws {
-  let url = FileManager.default.temporaryDirectory.appendingPathComponent("migrationV5.json")
-  let movies = try JSONDecoder().decode([MovieImport].self, from: Data(contentsOf: url))
+  let movies = try JSONDecoder().decode([MovieImport].self, from: Data(contentsOf: migrationFile))
+  try? FileManager.default.removeItem(at: migrationFile)
   for old in movies {
     let movie = SchemaV5._Movie(title: old.title, favorite: old.favorite)
     context.insert(movie)

@@ -47,7 +47,7 @@ private struct MovieListView: View {
   var body: some View {
     ScrollViewReader { proxy in
       List {
-        ForEach(store.movies, id: \.modelId) { movie in
+        ForEach(store.movies, id: \.self) { movie in
           MovieListRow(store: $store, movie: movie)
             .swipeActions(allowsFullSwipe: false) {
               if case .inactive = (editMode?.wrappedValue ?? .inactive) {

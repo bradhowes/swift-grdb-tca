@@ -104,8 +104,7 @@ final class SchemaV3Tests: XCTestCase {
       $0.uuid = .incrementing
     } operation: {
       // Migrate to V3
-      return try! ModelContainer(for: schemaV3, migrationPlan: MockMigrationPlan.self,
-                                 configurations: configV3)
+      return try! .init(for: schemaV3, migrationPlan: MockMigrationPlan.self, configurations: configV3)
     }
 
     let contextV3 = ModelContext(containerV3)

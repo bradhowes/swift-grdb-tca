@@ -21,17 +21,31 @@ struct RootFeature {
   @ObservableState
   struct State: Equatable {
     var activeTab: Tab = .fromStateFeature
+    var fromState = FromStateFeature.State()
+    var fromQuery = FromQueryFeature.State()
   }
 
   enum Action: Sendable {
     case tabChanged(Tab)
+    case fromState(FromStateFeature.Action)
+    case fromQuery(FromQueryFeature.Action)
   }
 
   var body: some ReducerOf<Self> {
+    Scope(state: \.fromState, action: \.fromState) {
+      FromStateFeature()
+    }
+    Scope(state: \.fromQuery, action: \.fromQuery) {
+      FromQueryFeature()
+    }
     Reduce { state, action in
       switch action {
       case .tabChanged(let tab):
         state.activeTab = tab
+        return .none
+      case .fromState:
+        return .none
+      case .fromQuery:
         return .none
       }
     }

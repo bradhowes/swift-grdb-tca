@@ -47,7 +47,7 @@ private struct MovieListView: View {
 
   var body: some View {
     ScrollViewReader { proxy in
-      List(movies, id: \.modelId) { movie in
+      List(movies, id: \.self) { movie in
         MovieListRow(store: $store, movie: movie)
           .swipeActions(allowsFullSwipe: false) {
             Utils.deleteSwipeAction(movie) {

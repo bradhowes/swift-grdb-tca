@@ -97,7 +97,10 @@ enum SchemaV6: VersionedSchema {
       return movie
     }
 
-    func hash(into hasher: inout Hasher) { hasher.combine(modelId) }
+    func hash(into hasher: inout Hasher) { 
+      hasher.combine(modelId)
+      hasher.combine(favorite)
+    }
 
     static func == (lhs: Self, rhs: Self) -> Bool { lhs.modelId == rhs.modelId && lhs.favorite == rhs.favorite }
   }

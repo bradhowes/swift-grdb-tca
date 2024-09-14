@@ -24,7 +24,7 @@ private struct MoviesListView: View {
   let send: ((ActorMoviesFeature.Action) -> StoreTask)?
 
   var body: some View {
-    List(store.movies, id: \.modelId) { movie in
+    List(store.movies, id: \.self) { movie in
       withSwipeActions(movie: movie) {
         if let send {
           Button {

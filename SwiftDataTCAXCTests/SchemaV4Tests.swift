@@ -85,8 +85,7 @@ final class SchemaV4Tests: XCTestCase {
       $0.uuid = .incrementing
     } operation: {
       // Migrate to V4
-      return try! ModelContainer(for: schemaV4, migrationPlan: MockMigrationPlan.self,
-                                 configurations: configV4)
+      return try! .init(for: schemaV4, migrationPlan: MockMigrationPlan.self, configurations: configV4)
     }
 
     let contextV4 = ModelContext(containerV4)
@@ -120,6 +119,6 @@ final class SchemaV4Tests: XCTestCase {
 }
 
 private enum MockMigrationPlan: SchemaMigrationPlan {
-  static var schemas: [any VersionedSchema.Type] { [ SchemaV4.self, ] }
+  static var schemas: [any VersionedSchema.Type] { [ SchemaV3.self, SchemaV4.self, ] }
   static var stages: [MigrationStage] { [ StageV4.stage ] }
 }
