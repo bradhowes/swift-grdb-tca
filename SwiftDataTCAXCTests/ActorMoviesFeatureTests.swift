@@ -96,10 +96,3 @@ final class ActorMoviesFeatureTests: XCTestCase {
     }
   }
 }
-
-private struct TestApp: App {
-  var body: some Scene {
-    WindowGroup {
-    }
-  }
-}
