@@ -88,8 +88,8 @@ final class FromQueryFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func skip_testFavoriteSwiped() async throws {
-    var (movieObjs, movies) = try await generateMocks(count: 4)
+  func testFavoriteSwiped() async throws {
+    let (movieObjs, movies) = try await generateMocks(count: 4)
 
     XCTAssertFalse(movies[0].favorite)
 
@@ -129,6 +129,44 @@ final class FromQueryFeatureTests: XCTestCase {
     await store.send(.path(.popFrom(id: 2))) { _ = $0.path.popLast() }
     await store.send(.path(.popFrom(id: 1))) { _ = $0.path.popLast() }
     await store.send(.path(.popFrom(id: 0))) { _ = $0.path.popLast() }
+  }
+
+  @MainActor
+  func testSearching() async throws {
+    let (_, _) = try await generateMocks(count: 4)
+
+    await store.send(.searchButtonTapped(true)) {
+      $0.isSearchFieldPresented = true
+    }
+
+    await store.send(.searchTextChanged("zzz")) {
+      $0.searchText = "zzz"
+    }
+
+    await store.send(.searchTextChanged("zzz")) // No change
+
+    await store.send(.searchTextChanged("the")) {
+      $0.searchText = "the"
+    }
+
+    await store.send(.searchTextChanged("the s")) {
+      $0.searchText = "the s"
+    }
+
+    await store.send(.searchButtonTapped(false)) {
+      $0.isSearchFieldPresented = false
+    }
+  }
+
+  @MainActor
+  func testTitleSorting() async throws {
+    await store.send(.titleSortChanged(.reverse)) {
+      $0.titleSort = .reverse
+    }
+
+    await store.send(.titleSortChanged(.none)) {
+      $0.titleSort = .none
+    }
   }
 
   @MainActor
