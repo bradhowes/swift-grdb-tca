@@ -8,18 +8,17 @@ import XCTest
 @testable import SwiftDataTCA
 
 final class FromQueryFeatureTests: XCTestCase {
-  
+  typealias Movies = (Array<SchemaV6.MovieModel>, Array<SchemaV6.Movie>)
+
   var store: TestStore<FromQueryFeature.State, FromQueryFeature.Action>!
   var context: ModelContext { store.dependencies.modelContextProvider }
 
   override func setUpWithError() throws {
     store = try withDependencies {
-      $0.modelContextProvider = try makeTestContext()
+      $0.modelContextProvider = try makeTestContext(mockCount: 4)
       $0.continuousClock = ImmediateClock()
     } operation: {
-      TestStore(initialState: FromQueryFeature.State()) {
-        FromQueryFeature()
-      }
+      TestStore(initialState: FromQueryFeature.State()) { FromQueryFeature() }
     }
   }
   
@@ -28,21 +27,19 @@ final class FromQueryFeatureTests: XCTestCase {
   }
   
   @MainActor
-  private func generateMocks(count: Int = 4) async throws -> (Array<SchemaV6.MovieModel>, Array<SchemaV6.Movie>) {
-    try Support.generateMocks(context: context, count: 4)
+  private func fetch() async throws -> Movies {
     let movieObjs = (try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: "")))
-    let movies = movieObjs.map { $0.valueType }
+    let movies = movieObjs.map(\.valueType)
     return (movieObjs, movies)
   }
 
   @MainActor
   func testAddButtonTapped() async throws {
-    store.exhaustivity = .on
     await store.send(.addButtonTapped)
-    let movies = try! context.fetch(ActiveSchema.movieFetchDescriptor())
+    let movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
 
     await store.receive(\.scrollTo) {
-      $0.scrollTo = movies[0].valueType
+      $0.scrollTo = movies[1].valueType
     }
 
     // UI should send this after handling non-nil scrollTo
@@ -52,7 +49,7 @@ final class FromQueryFeatureTests: XCTestCase {
     }
 
     await store.receive(\.highlight) {
-      $0.highlight = movies[0].valueType
+      $0.highlight = movies[1].valueType
     }
 
     // UI should send this after handling non-nil highlight
@@ -70,7 +67,7 @@ final class FromQueryFeatureTests: XCTestCase {
 
   @MainActor
   func testDeleteSwiped() async throws {
-    var (movieObjs, movies) = try await generateMocks(count: 4)
+    var (movieObjs, movies) = try await fetch()
 
     await store.send(.deleteSwiped(movies[0]))
 
@@ -80,7 +77,7 @@ final class FromQueryFeatureTests: XCTestCase {
 
   @MainActor
   func testDetailButtonTapped() async throws {
-    let (_, movies) = try await generateMocks(count: 4)
+    let (_, movies) = try await fetch()
 
     await store.send(.detailButtonTapped(movies[0])) {
       $0.path.append(.showMovieActors(.init(movie: movies[0])))
@@ -88,20 +85,18 @@ final class FromQueryFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func BAD_testFavoriteSwiped() async throws {
-    let (movieObjs, movies) = try await generateMocks(count: 4)
-
-    XCTAssertFalse(movies[0].favorite)
-
+  func testFavoriteSwiped() async throws {
+    var (movieObjs, movies) = try await fetch()
     await store.send(.favoriteSwiped(movies[0]))
+    await store.receive(\.toggleFavoriteState)
 
-    // movieObjs = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
-    // XCTAssertTrue(movieObjs[0].favorite)
+    movieObjs = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
+    XCTAssertTrue(movieObjs[0].favorite)
   }
 
   @MainActor
   func testMonitorPathChange() async throws {
-    let (movieObjs, movies) = try await generateMocks(count: 4)
+    let (movieObjs, movies) = try await fetch()
 
     await store.send(.detailButtonTapped(movies[0])) {
       $0.path.append(.showMovieActors(.init(movie: movies[0])))
@@ -133,7 +128,7 @@ final class FromQueryFeatureTests: XCTestCase {
 
   @MainActor
   func testSearching() async throws {
-    let (_, _) = try await generateMocks(count: 4)
+    let (_, _) = try await fetch()
 
     await store.send(.searchButtonTapped(true)) {
       $0.isSearchFieldPresented = true

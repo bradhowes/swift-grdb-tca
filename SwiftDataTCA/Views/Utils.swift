@@ -141,6 +141,7 @@ enum Utils {
   static func beginFavoriteChange<Action: Sendable>(_ action: Action) -> Effect<Action> {
     @Dependency(\.continuousClock) var clock
     return .run { send in
+      // Wait until swiped row is restored
       try await clock.sleep(for: .milliseconds(700))
       await send(action, animation: .default)
     }

@@ -53,14 +53,10 @@ enum SchemaV6: VersionedSchema {
     }
 
     @discardableResult
-    private func backingObject(performing: ((ActorModel) -> Void)? = nil) -> ActorModel {
+    private func backingObject() -> ActorModel {
       @Dependency(\.modelContextProvider) var context
       guard let actor = context.model(for: self.modelId) as? ActorModel else {
         fatalError("Faied to resolve \(self.name) usiing \(self.modelId)")
-      }
-      if let performing {
-        performing(actor)
-        try? context.save()
       }
       return actor
     }

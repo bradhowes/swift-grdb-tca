@@ -21,15 +21,31 @@ final class MovieActorsFeatureTests: XCTestCase {
     } operation: {
       @Dependency(\.modelContextProvider) var context
       let movies = try context.fetch(FetchDescriptor<MovieModel>())
-      let store = TestStore(initialState: MovieActorsFeature.State(movie: movies[0].valueType)) {
-        MovieActorsFeature()
-      }
-      return store
+      return TestStore(initialState: MovieActorsFeature.State(movie: movies[0].valueType)) { MovieActorsFeature() }
     }
   }
 
   override func tearDownWithError() throws {
     context.container.deleteAllData()
+  }
+
+  @MainActor
+  func testDetailButtonTapped() async throws {
+    await store.send(.detailButtonTapped(store.state.actors[0]))
+  }
+
+  @MainActor
+  func testFavoriteTapped() async throws {
+    XCTAssertTrue(store.state.movie.favorite)
+    await store.send(.favoriteTapped) {
+      $0.movie = $0.movie.toggleFavorite()
+    }
+    XCTAssertFalse(store.state.movie.favorite)
+    await store.send(.favoriteTapped) {
+      $0.movie = $0.movie.toggleFavorite()
+      $0.animateButton = true
+    }
+    XCTAssertTrue(store.state.movie.favorite)
   }
 
   @MainActor
@@ -63,21 +79,12 @@ final class MovieActorsFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func testFavoriteTapped() async throws {
-    XCTAssertTrue(store.state.movie.favorite)
-    await store.send(.favoriteTapped) {
-      $0.movie = $0.movie.toggleFavorite()
-    }
-    XCTAssertFalse(store.state.movie.favorite)
-    await store.send(.favoriteTapped) {
-      $0.movie = $0.movie.toggleFavorite()
-      $0.animateButton = true
-    }
-    XCTAssertTrue(store.state.movie.favorite)
+  func testRefresh() async throws {
+    await store.send(.refresh)
   }
 
   @MainActor
-  func __NO__testPreviewRender() throws {
+  func testPreviewRender() throws {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
     } operation: {

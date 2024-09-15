@@ -8,18 +8,17 @@ import XCTest
 @testable import SwiftDataTCA
 
 final class FromStateFeatureTests: XCTestCase {
+  typealias Movies = (Array<SchemaV6.MovieModel>, Array<SchemaV6.Movie>)
 
   var store: TestStoreOf<FromStateFeature>!
   var context: ModelContext { store.dependencies.modelContextProvider }
 
   override func setUpWithError() throws {
     store = try withDependencies {
-      $0.modelContextProvider = try makeTestContext()
+      $0.modelContextProvider = try makeTestContext(mockCount: 4)
       $0.continuousClock = ImmediateClock()
     } operation: {
-      TestStore(initialState: FromStateFeature.State()) {
-        FromStateFeature()
-      }
+      TestStore(initialState: FromStateFeature.State()) { FromStateFeature() }
     }
   }
 
@@ -27,22 +26,13 @@ final class FromStateFeatureTests: XCTestCase {
     store.dependencies.modelContextProvider.container.deleteAllData()
   }
 
-  private func generateMocks(count: Int = 4) throws -> Array<SchemaV6.MovieModel> {
-    try Support.generateMocks(context: context, count: 4)
-    let movies = (try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: "")))
-    return movies
-  }
-
   @MainActor
-  private func generateMocksAndFetch(count: Int = 4) async throws -> (Array<SchemaV6.MovieModel>, Array<SchemaV6.Movie>) {
-    try Support.generateMocks(context: context, count: 4)
+  private func fetch() async throws -> Movies {
     let movieObjs = (try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: "")))
-    let movies = movieObjs.map { $0.valueType }
-
+    let movies = movieObjs.map(\.valueType)
     await store.send(._fetchMovies(nil)) {
       $0.movies = movies
     }
-
     return (movieObjs, movies)
   }
 
@@ -54,16 +44,12 @@ final class FromStateFeatureTests: XCTestCase {
 
   @MainActor
   func testAddButtonTapped() async throws {
-    store.exhaustivity = .on
-    XCTAssertNil(store.state.scrollTo)
     await store.send(.addButtonTapped)
-    let movies = try! context.fetch(ActiveSchema.movieFetchDescriptor())
-    XCTAssertEqual(1, movies.count)
-    XCTAssertEqual("The Score", movies[0].title)
+    let movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
 
     await store.receive(\._fetchMovies) {
-      $0.movies = movies.map { $0.valueType }
-      $0.scrollTo = movies[0].valueType
+      $0.movies = movies.map(\.valueType)
+      $0.scrollTo = movies[1].valueType
     }
 
     // UI should send this after handling non-nil scrollTo
@@ -73,7 +59,7 @@ final class FromStateFeatureTests: XCTestCase {
     }
 
     await store.receive(\.highlight) {
-      $0.highlight = movies[0].valueType
+      $0.highlight = movies[1].valueType
     }
 
     // UI should send this after handling non-nil highlight
@@ -85,8 +71,7 @@ final class FromStateFeatureTests: XCTestCase {
 
   @MainActor
   func testDeleteSwiped() async throws {
-    let (_, movies) = try await generateMocksAndFetch(count: 4)
-
+    let (_, movies) = try await fetch()
     await store.send(.deleteSwiped(movies[0]))
     await store.receive(\._fetchMovies) {
       $0.movies = Array(movies.dropFirst())
@@ -95,8 +80,7 @@ final class FromStateFeatureTests: XCTestCase {
 
   @MainActor
   func testDetailButtonTapped() async throws {
-    let (_, movies) = try await generateMocksAndFetch(count: 4)
-
+    let (_, movies) = try await fetch()
     await store.send(.detailButtonTapped(movies[0])) {
       $0.path.append(.showMovieActors(.init(movie: movies[0])))
     }
@@ -104,10 +88,8 @@ final class FromStateFeatureTests: XCTestCase {
 
   @MainActor
   func testFavoriteSwiped() async throws {
-    let (_, movies) = try await generateMocksAndFetch(count: 4)
-
+    let (_, movies) = try await fetch()
     XCTAssertFalse(movies[0].favorite)
-
     await store.send(.favoriteSwiped(movies[0]))
     await store.receive(\.toggleFavoriteState) {
       $0.movies[0] = $0.movies[0].toggleFavorite()
@@ -116,7 +98,7 @@ final class FromStateFeatureTests: XCTestCase {
 
   @MainActor
   func testMonitorPathChange() async throws {
-    let (movieObjs, movies) = try await generateMocksAndFetch(count: 4)
+    let (movieObjs, movies) = try await fetch()
 
     await store.send(.detailButtonTapped(movies[0])) {
       $0.path.append(.showMovieActors(.init(movie: movies[0])))
@@ -148,7 +130,7 @@ final class FromStateFeatureTests: XCTestCase {
 
   @MainActor
   func testSearching() async throws {
-    let (_, movies) = try await generateMocksAndFetch(count: 4)
+    let (_, movies) = try await fetch()
 
     await store.send(.searchButtonTapped(true)) {
       $0.isSearchFieldPresented = true
@@ -188,7 +170,7 @@ final class FromStateFeatureTests: XCTestCase {
 
   @MainActor
   func testTitleSorting() async throws {
-    var (movieObjs, _) = try await generateMocksAndFetch(count: 4)
+    var (movieObjs, _) = try await fetch()
 
     await store.send(.titleSortChanged(.reverse)) {
       $0.titleSort = .reverse

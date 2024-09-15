@@ -18,7 +18,7 @@ coverage: test
 	$(XCCOV) $(PWD)/.DerivedData-iOS/Logs/Test/*.xcresult > coverage.txt
 	cat coverage.txt
 
-test: build
+test: # build
 	xcodebuild $(PROJ) $(OUT) test-without-building $(DEST) $(TEST)
 
 build: clean

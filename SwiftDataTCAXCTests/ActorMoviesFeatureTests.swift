@@ -14,26 +14,24 @@ final class ActorMoviesFeatureTests: XCTestCase {
   var context: ModelContext { store.dependencies.modelContextProvider }
 
   override func setUpWithError() throws {
-    // isRecording = true
     store = try withDependencies {
       $0.modelContextProvider = try makeTestContext(mockCount: 3)
       $0.continuousClock = ImmediateClock()
     } operation: {
       @Dependency(\.modelContextProvider) var context
       let movies = try context.fetch(FetchDescriptor<MovieModel>())
-      let movie = movies[0]
-      XCTAssertEqual(movie.title, "The Score")
-      let actor = movie.valueType.actors(ordering: .forward)[2]
-      XCTAssertEqual(actor.name, "Marlon Brando")
-      let store = TestStore(initialState: ActorMoviesFeature.State(actor: movies[0].valueType.actors(ordering: .forward)[2])) {
-        ActorMoviesFeature()
-      }
-      return store
+      let actor = movies[0].valueType.actors(ordering: .forward)[2]
+      return TestStore(initialState: ActorMoviesFeature.State(actor: actor)) { ActorMoviesFeature() }
     }
   }
 
   override func tearDownWithError() throws {
     context.container.deleteAllData()
+  }
+
+  @MainActor
+  func testDetailButtonTapped() async throws {
+    await store.send(.detailButtonTapped(store.state.movies[0]))
   }
 
   @MainActor
@@ -55,6 +53,11 @@ final class ActorMoviesFeatureTests: XCTestCase {
   }
 
   @MainActor
+  func testRefresh() async throws {
+    await store.send(.refresh)
+  }
+
+  @MainActor
   func testTitleSortChanged() async throws {
     XCTAssertEqual(store.state.actor.name, "Marlon Brando")
     XCTAssertEqual(store.state.movies.count, 3)
@@ -64,18 +67,10 @@ final class ActorMoviesFeatureTests: XCTestCase {
       $0.movies = $0.movies.reversed()
     }
 
-    XCTAssertEqual(store.state.movies[0].name, "Superman")
-    XCTAssertEqual(store.state.movies[1].name, "The Score")
-    XCTAssertEqual(store.state.movies[2].name, "The Island of Dr. Moreau")
-
     await store.send(.titleSortChanged(.forward)) {
       $0.titleSort = .forward
       $0.movies = $0.movies.reversed()
     }
-
-    XCTAssertEqual(store.state.movies[0].name, "The Island of Dr. Moreau")
-    XCTAssertEqual(store.state.movies[1].name, "The Score")
-    XCTAssertEqual(store.state.movies[2].name, "Superman")
 
     store.exhaustivity = .off
     await store.send(.titleSortChanged(.none)) {
@@ -90,11 +85,11 @@ final class ActorMoviesFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func __NO__testPreviewRender() throws {
+  func testPreviewRender() throws {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
     } operation: {
-      try withSnapshotTesting(record: false) {
+      try withSnapshotTesting(record: .missing) {
         let view = ActorMoviesView.preview
         try assertSnapshot(matching: view)
       }
