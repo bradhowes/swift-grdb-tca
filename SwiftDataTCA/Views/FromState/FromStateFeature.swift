@@ -26,7 +26,6 @@ struct FromStateFeature {
     case addButtonTapped
     case clearHighlight
     case clearScrollTo
-    case delete(IndexSet)
     case deleteSwiped(Movie)
     case detailButtonTapped(Movie)
     case favoriteSwiped(Movie)
@@ -65,12 +64,6 @@ struct FromStateFeature {
         return .run { @MainActor send in
           send(.highlight(movie), animation: .default)
         }
-
-      case .delete(let offsets):
-        for movie in offsets.map({ state.movies[$0] }) {
-          db.delete(movie.backingObject())
-        }
-        return doSendFetchMovies()
 
       case .deleteSwiped(let movie):
         db.delete(movie.backingObject())
@@ -153,7 +146,8 @@ extension FromStateFeature {
       // If we will have popped off all of the detail views, we must refresh our Movies in case it was changed in one
       // of the detail views.
     case .popFrom:
-      if state.path.count == 1 {
+      let count = state.path.count
+      if count == 1 {
         return fetchMovies(nil, state: &state)
       }
 
