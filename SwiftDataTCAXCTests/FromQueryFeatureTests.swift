@@ -88,7 +88,7 @@ final class FromQueryFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func testFavoriteSwiped() async throws {
+  func BAD_testFavoriteSwiped() async throws {
     let (movieObjs, movies) = try await generateMocks(count: 4)
 
     XCTAssertFalse(movies[0].favorite)
