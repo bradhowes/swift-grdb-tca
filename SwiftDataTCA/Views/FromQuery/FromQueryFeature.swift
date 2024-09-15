@@ -38,6 +38,7 @@ struct FromQueryFeature {
   }
 
   @Dependency(\.database) var db
+  @Dependency(\.modelContextProvider) var modelContext
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
@@ -79,6 +80,10 @@ struct FromQueryFeature {
       case .path(let pathAction):
         return monitorPathChange(pathAction, state: &state)
 
+      case .scrollTo(let movie):
+        state.scrollTo = movie
+        return .none
+
       case .searchButtonTapped(let enabled):
         state.isSearchFieldPresented = enabled
         return .none
@@ -87,10 +92,6 @@ struct FromQueryFeature {
         if query != state.searchText {
           state.searchText = query
         }
-        return .none
-
-      case .scrollTo(let movie):
-        state.scrollTo = movie
         return .none
 
       case .titleSortChanged(let newSort):

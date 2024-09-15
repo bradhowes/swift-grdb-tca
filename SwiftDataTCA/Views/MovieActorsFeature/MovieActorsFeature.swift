@@ -5,7 +5,6 @@ import SwiftUI
 
 @Reducer
 struct MovieActorsFeature {
-
   @ObservableState
   struct State: Equatable {
     var movie: Movie
@@ -16,12 +15,15 @@ struct MovieActorsFeature {
 
     init(movie: Movie, useLinks: Bool = false, nameSort: SortOrder? = .forward) {
       print("MovieActorsFeature.init - \(movie.name)")
+      @Dependency(\.modelContextProvider) var modelContext
       self.movie = movie
       self.useLinks = useLinks
       self.nameSort = nameSort
       self.actors = movie.actors(ordering: nameSort)
     }
   }
+
+  @Dependency(\.modelContextProvider) var modelContext
 
   enum Action: Sendable {
     case detailButtonTapped(Actor)
