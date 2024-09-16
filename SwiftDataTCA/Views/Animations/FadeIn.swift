@@ -34,8 +34,12 @@ extension View {
   }
 }
 
-private struct DemoView: View {
-  @State private var isFavorite = false
+struct FadeInDemoView: View {
+  @State private var isFavorite: Bool
+
+  init(isFavorite: Bool = false) {
+    self.isFavorite = isFavorite
+  }
 
   var body: some View {
     VStack(spacing: 60) {
@@ -61,5 +65,5 @@ private struct DemoView: View {
 }
 
 #Preview {
-  DemoView()
+  FadeInDemoView()
 }

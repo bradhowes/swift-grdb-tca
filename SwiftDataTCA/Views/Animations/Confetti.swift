@@ -76,8 +76,12 @@ extension AnyTransition {
   }
 }
 
-private struct ConfettiDemoView: View {
-  @State private var isFavorite = false
+struct ConfettiDemoView: View {
+  @State private var isFavorite: Bool
+
+  init(isFavorite: Bool = false) {
+    self.isFavorite = isFavorite
+  }
 
   var body: some View {
     VStack(spacing: 60) {
