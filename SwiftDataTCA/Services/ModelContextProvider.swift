@@ -78,7 +78,16 @@ internal func makeInMemoryContainer() -> ModelContainer {
   }
 }
 
-@MainActor private let liveContext: (() -> ModelContext) = { liveContainer.mainContext }
+@MainActor private let liveContext: (() -> ModelContext) = {
+  if ProcessInfo.processInfo.arguments.contains("UITEST") {
+    do {
+      return try makeMockContext(mockCount: 2)
+    } catch {
+      fatalError("Failed to generate mocks in previw context")
+    }
+  }
+  return liveContainer.mainContext
+}
 
 @MainActor private let previewContext: (() -> ModelContext) = {
   do {

@@ -34,6 +34,19 @@
             default = "YES">
          </TestPlanReference>
       </TestPlans>
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BD1676B02C98DC64004AA2D2"
+               BuildableName = "SwiftDataTCAUITests.xctest"
+               BlueprintName = "SwiftDataTCAUITests"
+               ReferencedContainer = "container:SwiftDataTCA.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"

@@ -22,7 +22,6 @@
   },
   "testTargets" : [
     {
-      "parallelizable" : false,
       "target" : {
         "containerPath" : "container:SwiftDataTCA.xcodeproj",
         "identifier" : "BD7338092C4118CA001D0E04",
@@ -30,11 +29,17 @@
       }
     },
     {
-      "parallelizable" : false,
       "target" : {
         "containerPath" : "container:SwiftDataTCA.xcodeproj",
         "identifier" : "BD0DC1DB2C41779D00821D09",
         "name" : "SwiftDataTCAXCTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:SwiftDataTCA.xcodeproj",
+        "identifier" : "BD1676B02C98DC64004AA2D2",
+        "name" : "SwiftDataTCAUITests"
       }
     }
   ],
