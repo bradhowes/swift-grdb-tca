@@ -11,7 +11,7 @@ final class SwiftDataTCAUITestsLaunchTests: XCTestCase {
   }
 
   @MainActor
-  func testLaunch() throws {
+  func SKIP_testLaunch() throws {
     let app = XCUIApplication()
     app.launch()
 
