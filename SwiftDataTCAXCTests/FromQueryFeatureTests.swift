@@ -165,14 +165,27 @@ final class FromQueryFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func testPreviewRender() throws {
+  func testPreviewRenderWithButtons() throws {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
     } operation: {
-      try withSnapshotTesting(record: .missing) {
-        let view = FromQueryView.preview
+      try withSnapshotTesting(record: .failed) {
+        let view = FromQueryView.previewWithButtons
         try assertSnapshot(matching: view)
       }
     }
   }
+
+  @MainActor
+  func testPreviewRenderWithLinks() throws {
+    try withDependencies {
+      $0.modelContextProvider = ModelContextKey.previewValue
+    } operation: {
+      try withSnapshotTesting(record: .failed) {
+        let view = FromQueryView.previewWithLinks
+        try assertSnapshot(matching: view)
+      }
+    }
+  }
+
 }

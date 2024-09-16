@@ -61,5 +61,5 @@ extension ActorMoviesFeature {
 }
 
 #Preview {
-  ActorMoviesView.preview
+  ActorMoviesView.previewWithoutLinks
 }

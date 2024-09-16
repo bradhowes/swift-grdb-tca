@@ -57,18 +57,20 @@ extension MoviesListView {
 }
 
 extension ActorMoviesView {
-  static var preview: some View {
+  static var previewWithoutLinks: some View {
     @Dependency(\.modelContextProvider) var context
     let actorModel = ActiveSchema.fetchOrMakeActor(context, name: "Marlon Brando")
     let movies = Support.sortedMovies(for: actorModel, order: .forward)
     movies[0].favorite = true
     return NavigationView {
-      ActorMoviesView(store: Store(initialState: .init(actor: actorModel.valueType)) { ActorMoviesFeature() })
-        .modelContext(context)
+      ActorMoviesView(store: Store(initialState: .init(actor: actorModel.valueType, useLinks: false)) {
+        ActorMoviesFeature()
+      })
+      .modelContext(context)
     }
   }
 }
 
 #Preview {
-  ActorMoviesView.preview
+  ActorMoviesView.previewWithoutLinks
 }

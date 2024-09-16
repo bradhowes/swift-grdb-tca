@@ -82,7 +82,7 @@ internal func makeInMemoryContainer() -> ModelContainer {
 
 @MainActor private let previewContext: (() -> ModelContext) = {
   do {
-    return try makeMockContext(mockCount: 4)
+    return try makeMockContext(mockCount: 32)
   } catch {
     fatalError("Failed to generate mocks in previw context")
   }

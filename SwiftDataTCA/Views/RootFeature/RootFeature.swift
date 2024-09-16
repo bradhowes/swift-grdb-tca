@@ -32,12 +32,8 @@ struct RootFeature {
   }
 
   var body: some ReducerOf<Self> {
-    Scope(state: \.fromState, action: \.fromState) {
-      FromStateFeature()
-    }
-    Scope(state: \.fromQuery, action: \.fromQuery) {
-      FromQueryFeature()
-    }
+    Scope(state: \.fromState, action: \.fromState) { FromStateFeature() }
+    Scope(state: \.fromQuery, action: \.fromQuery) { FromQueryFeature() }
     Reduce { state, action in
       switch action {
       case .tabChanged(let tab):

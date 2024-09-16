@@ -60,8 +60,10 @@ private struct MovieListView: View {
       }
       .onChange(of: store.scrollTo) { _, movie in
         if let movie {
-          proxy.scrollTo(movie.modelId)
-          store.send(.clearScrollTo)
+          withAnimation {
+            proxy.scrollTo(movie)
+            store.send(.clearScrollTo)
+          }
         }
       }
     }
@@ -101,13 +103,23 @@ private struct MovieListRow: View {
 }
 
 extension FromQueryView {
-  static var preview: some View {
+  static var previewWithLinks: some View {
     @Dependency(\.modelContextProvider) var context
-    return FromQueryView(store: Store(initialState: .init()) { FromQueryFeature() })
+    return FromQueryView(store: Store(initialState: .init(useLinks: true)) { FromQueryFeature() })
+      .modelContext(context)
+  }
+
+  static var previewWithButtons: some View {
+    @Dependency(\.modelContextProvider) var context
+    return FromQueryView(store: Store(initialState: .init(useLinks: false)) { FromQueryFeature() })
       .modelContext(context)
   }
 }
 
 #Preview {
-  FromQueryView.preview
+  FromQueryView.previewWithLinks
+}
+
+#Preview {
+  FromQueryView.previewWithButtons
 }

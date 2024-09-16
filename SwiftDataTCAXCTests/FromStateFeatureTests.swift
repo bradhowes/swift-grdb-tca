@@ -192,12 +192,24 @@ final class FromStateFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func testPreviewRender() throws {
+  func testPreviewRenderWithButtons() throws {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
     } operation: {
-      try withSnapshotTesting(record: .missing) {
-        let view = FromStateView.preview
+      try withSnapshotTesting(record: .failed) {
+        let view = FromStateView.previewWithButtons
+        try assertSnapshot(matching: view)
+      }
+    }
+  }
+
+  @MainActor
+  func testPreviewRenderWithLinks() throws {
+    try withDependencies {
+      $0.modelContextProvider = ModelContextKey.previewValue
+    } operation: {
+      try withSnapshotTesting(record: .failed) {
+        let view = FromStateView.previewWithLinks
         try assertSnapshot(matching: view)
       }
     }
@@ -208,7 +220,7 @@ final class FromStateFeatureTests: XCTestCase {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
     } operation: {
-      try withSnapshotTesting(record: .missing) {
+      try withSnapshotTesting(record: .failed) {
         let view = RootFeatureView.preview
         try assertSnapshot(matching: view)
       }

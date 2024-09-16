@@ -9,7 +9,7 @@ struct FromStateFeature {
 
   @ObservableState
   struct State: Equatable {
-    let useLinks = false
+    let useLinks: Bool
     var path = StackState<Path.State>()
     var movies: [Movie] = []
     var titleSort: SortOrder? = .forward
@@ -19,6 +19,10 @@ struct FromStateFeature {
     var highlight: Movie?
     var fetchDescriptor: FetchDescriptor<MovieModel> {
       ActiveSchema.movieFetchDescriptor(titleSort: self.titleSort, search: searchText)
+    }
+
+    init(useLinks: Bool = false) {
+      self.useLinks = useLinks
     }
   }
 
@@ -159,5 +163,9 @@ extension FromStateFeature {
 }
 
 #Preview {
-  FromStateView.preview
+  FromStateView.previewWithLinks
+}
+
+#Preview {
+  FromStateView.previewWithButtons
 }
