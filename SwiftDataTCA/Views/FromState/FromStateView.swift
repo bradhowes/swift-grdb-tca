@@ -37,7 +37,6 @@ struct FromStateView: View {
 }
 
 private struct MovieListView: View {
-  @Environment(\.editMode) private var editMode
   @Bindable var store: StoreOf<FromStateFeature>
 
   init(store: Bindable<StoreOf<FromStateFeature>>) {
@@ -50,13 +49,11 @@ private struct MovieListView: View {
         ForEach(store.movies, id: \.self) { movie in
           MovieListRow(store: $store, movie: movie)
             .swipeActions(allowsFullSwipe: false) {
-              if case .inactive = (editMode?.wrappedValue ?? .inactive) {
-                Utils.deleteSwipeAction(movie) {
-                  store.send(.deleteSwiped(movie), animation: .snappy)
-                }
-                Utils.favoriteSwipeAction(movie) {
-                  store.send(.favoriteSwiped(movie), animation: .bouncy)
-                }
+              Utils.deleteSwipeAction(movie) {
+                store.send(.deleteSwiped(movie), animation: .snappy)
+              }
+              Utils.favoriteSwipeAction(movie) {
+                store.send(.favoriteSwiped(movie), animation: .bouncy)
               }
             }
         }
@@ -74,7 +71,6 @@ private struct MovieListView: View {
 }
 
 private struct MovieListRow: View {
-  @Environment(\.editMode) private var editMode
   @Bindable var store: StoreOf<FromStateFeature>
   let movie: Movie
 
@@ -86,11 +82,13 @@ private struct MovieListRow: View {
   var body: some View {
     if store.useLinks {
       RootFeature.link(movie)
+        .accessibilityLabel(movie.favorite ? "favorited" : "")
         .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
           store.send(.clearHighlight)
         }
     } else {
       detailButton
+        .accessibilityLabel(movie.favorite ? "favorited" : "")
         .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
           store.send(.clearHighlight)
         }
@@ -99,9 +97,7 @@ private struct MovieListRow: View {
 
   private var detailButton: some View {
     Button {
-      if case .inactive = (editMode?.wrappedValue ?? .inactive) {
-        _ = store.send(.detailButtonTapped(movie))
-      }
+      _ = store.send(.detailButtonTapped(movie))
     } label: {
       Utils.MovieView(movie: movie, showChevron: true)
     }

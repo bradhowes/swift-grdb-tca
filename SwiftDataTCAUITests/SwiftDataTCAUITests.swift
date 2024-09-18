@@ -11,7 +11,14 @@ final class SwiftDataTCAUITests: XCTestCase {
   }
 
   @MainActor
-  func SKIP_testExample() throws {
+  func testFromState() throws {
+    let app = XCUIApplication()
+    app.launchArguments = ["UITEST"]
+    app.launch()
+  }
+
+  @MainActor
+  func testNameOrdering() throws {
     let app = XCUIApplication()
     app.launchArguments = ["UITEST"]
     app.launch()
@@ -19,22 +26,27 @@ final class SwiftDataTCAUITests: XCTestCase {
     app.navigationBars["FromState"].children(matching: .button).element.tap()
 
     let collectionViewsQuery = app.collectionViews
-    collectionViewsQuery.buttons["The Score, Angela Bassett, Edward Norton, Marlon Brando, Paul Soles, and Robert De Niro"].tap()
-    collectionViewsQuery.buttons["Edward Norton, The Score"].tap()
-    app.navigationBars["Edward Norton"].buttons["The Score"].tap()
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
+    print(collectionViewsQuery.staticTexts.debugDescription)
 
-    let theScoreNavigationBar = app.navigationBars["The Score"]
+    collectionViewsQuery.staticTexts["The Island of Dr. Moreau"].tap()
 
-    theScoreNavigationBar.buttons["Favorite"].tap()
-    theScoreNavigationBar.buttons["Favorite"].tap()
+    let navBar = app.navigationBars["The Island of Dr. Moreau"]
+    let button = navBar.children(matching: .other).element(boundBy: 0).children(matching: .other).element.children(matching: .button).element
+    button.tap()
+    collectionViewsQuery.buttons["Down"].tap()
+    XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Val Kilmer")
+    button.tap()
+    collectionViewsQuery.buttons["Up"].tap()
+    XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Daniel Rigney")
+    button.tap()
+    collectionViewsQuery.buttons["alternatingcurrent"].tap()
 
-    theScoreNavigationBar.buttons["FromState"].tap()
+    navBar.buttons["Favorite"].tap()
+
+    navBar.buttons["FromState"].tap()
   }
 
-  @MainActor
-  func testExample2() throws {
-
-  }
 //  @MainActor
 //  func testLaunchPerformance() throws {
 //    if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
@@ -43,6 +55,7 @@ final class SwiftDataTCAUITests: XCTestCase {
 //        XCUIApplication().launch()
 //      }
 //    }
-//  }
-}
+//  }'
 
+
+}
