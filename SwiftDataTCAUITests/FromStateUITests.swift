@@ -53,6 +53,7 @@ final class FromStateUITests: XCTestCase {
     navBar.buttons["favorite movie"].tap()
     backButton.tap()
 
+    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 1.0))
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
     XCTAssertEqual(firstMovie.label, "Favorited " + firstMovieTitle)
   }
