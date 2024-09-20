@@ -1,7 +1,7 @@
 PROJ = -project SwiftDataTCA.xcodeproj -skipPackagePluginValidation -skipMacroValidation -enableCodeCoverage YES
 OUT = -derivedDataPath "$(PWD)/.DerivedData-iOS"
 DEST = -scheme SwiftDataTCA -destination "platform=iOS Simulator,name=iPad mini (6th generation)"
-QUIET = -quiet
+QUIET = -quiet -skipMacroValidation
 TEST = -testPlan SwiftDataTCA -only-test-configuration Sanitizing
 XCCOV = xcrun xccov view --report --only-targets
 
@@ -19,13 +19,13 @@ coverage: test
 	cat coverage.txt
 
 test: build
-	xcodebuild $(PROJ) $(OUT) test-without-building $(DEST) $(TEST)
+	xcodebuild $(QUIET) $(PROJ) $(OUT) test-without-building $(DEST) $(TEST)
 
 build: clean
 	xcodebuild $(QUIET) $(PROJ) $(OUT) build-for-testing $(DEST)
 
 clean:
-	xcodebuild clean ${DEST}
+	xcodebuild $(QUIET) clean ${DEST}
 	rm -rf "$(PWD)/.DerivedData-iOS"
 
 .PHONY: build test coverage clean
