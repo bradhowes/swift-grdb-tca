@@ -60,11 +60,24 @@ The SwiftUI previews operate pretty much like in the simulator or on a physical 
 
 ## SwiftData Use
 
-For the most part, SwiftData functionality is not found in the features. Instead, they use value types derived from 
-the model reference types via their `valueType` attrribute. The value types have the `persistentModelID` attribute of 
+For the most part, SwiftData functionality is not found in the features. Instead, they use value types in the latest 
+schema (v6) derived from the model reference types via their `valueType` attrribute. 
+The value types have the `persistentModelID` attribute of 
 the model that they are based on. The value types do not contain relationships like their
 model counterparts. Instead they provide functions that return the relations as a collection of value types that are
 ordered in a desired way.
+
+The `Database` struct prvides an abstraction the the features use to interact with the SwiftData backend. It currently
+offers 4 functions:
+
+- fetchMovies -- return the collection of movies for a given SwiftData `FetchDescriptor`
+- add -- create a new movie and add it to the database
+- delete -- delete an existing movie
+- save -- save to the database any changes that have been made to existing models
+
+Per TCA guidance, there are live, test, and preview instances of this `Database` instance depending on the runtime 
+environment. Since the differences are found in the underlying model context (which is also a dependency), the live
+and test instances are basically the same, but with different `ModelContainer` and `ModelContext` instances.
 
 ## Schemas
 
