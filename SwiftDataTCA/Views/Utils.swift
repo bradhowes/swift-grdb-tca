@@ -61,6 +61,7 @@ enum Utils {
     private var movieEntry: some View {
       VStack(alignment: .leading) {
         movieName
+          .accessibilityValue(movie.favorite ? "favorited" : "")
         actorsList
       }
     }

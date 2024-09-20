@@ -88,7 +88,7 @@ final class MovieActorsFeatureTests: XCTestCase {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
     } operation: {
-      try withSnapshotTesting(record: .failed) {
+      try withSnapshotTesting(record: .missing) {
         let view = MovieActorsView.preview
         try assertSnapshot(matching: view)
       }

@@ -24,17 +24,17 @@ struct SchemaV3Tests {
   }
 
   @Test func migrationV2V3() async throws {
-    let url = FileManager.default.temporaryDirectory.appending(component: "Model3.sqlite")
-    try? FileManager.default.removeItem(at: url)
-
-    let schemaV2 = Schema(versionedSchema: SchemaV2.self)
-    let configV2 = ModelConfiguration("V2", schema: schemaV2, url: url)
-    let containerV2 = try! ModelContainer(for: schemaV2, migrationPlan: nil, configurations: configV2)
-
     withDependencies {
       $0.uuid = .incrementing
     } operation: {
       @Dependency(\.uuid) var uuid
+
+      let url = FileManager.default.temporaryDirectory.appending(component: "Model3.sqlite")
+      try? FileManager.default.removeItem(at: url)
+
+      let schemaV2 = Schema(versionedSchema: SchemaV2.self)
+      let configV2 = ModelConfiguration("V2", schema: schemaV2, url: url)
+      let containerV2 = try! ModelContainer(for: schemaV2, migrationPlan: nil, configurations: configV2)
 
       let contextV2 = ModelContext(containerV2)
       contextV2.insert(SchemaV2._Movie(id: uuid(), title: "El Mariachi", cast: ["Roberto"]))
@@ -45,6 +45,7 @@ struct SchemaV3Tests {
       contextV2.insert(SchemaV2._Movie(id: uuid(), title: "A Time To Die", cast: ["Ralph", "Mary"]))
       contextV2.insert(SchemaV2._Movie(id: uuid(), title: "Los Hermanos", cast: ["Harrison"]))
       contextV2.insert(SchemaV2._Movie(id: uuid(), title: "Les Enfants", cast: ["Zoe"]))
+
       try! contextV2.save()
       let moviesV2 = try! contextV2.fetch(FetchDescriptor<SchemaV2._Movie>(sortBy: [.init(\.title, order: .forward)]))
       #expect(moviesV2[0].title == "A Time To Die")

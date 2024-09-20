@@ -82,13 +82,11 @@ private struct MovieListRow: View {
   var body: some View {
     if store.useLinks {
       RootFeature.link(movie)
-        .accessibilityLabel(movie.favorite ? "favorited" : "")
         .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
           store.send(.clearHighlight)
         }
     } else {
       detailButton
-        .accessibilityLabel(movie.favorite ? "favorited" : "")
         .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
           store.send(.clearHighlight)
         }

@@ -9,7 +9,7 @@ import XCTest
 
 final class FromQueryFeatureTests: XCTestCase {
   typealias Movies = (Array<SchemaV6.MovieModel>, Array<SchemaV6.Movie>)
-
+  let recording: SnapshotTestingConfiguration.Record = .missing
   var store: TestStore<FromQueryFeature.State, FromQueryFeature.Action>!
   var context: ModelContext { store.dependencies.modelContextProvider }
 
@@ -169,7 +169,7 @@ final class FromQueryFeatureTests: XCTestCase {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
     } operation: {
-      try withSnapshotTesting(record: .failed) {
+      try withSnapshotTesting(record: recording) {
         let view = FromQueryView.previewWithButtons
         try assertSnapshot(matching: view)
       }
@@ -181,7 +181,7 @@ final class FromQueryFeatureTests: XCTestCase {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
     } operation: {
-      try withSnapshotTesting(record: .failed) {
+      try withSnapshotTesting(record: recording) {
         let view = FromQueryView.previewWithLinks
         try assertSnapshot(matching: view)
       }

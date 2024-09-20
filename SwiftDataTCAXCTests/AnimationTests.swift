@@ -10,9 +10,11 @@ import XCTest
 
 final class AnimationTests: XCTestCase {
 
+  let recording: SnapshotTestingConfiguration.Record = .missing
+
   @MainActor
   func testFlashDemoPreviewFalse() throws {
-    try withSnapshotTesting(record: .failed) {
+    try withSnapshotTesting(record: recording) {
       let view = FlashDemoView(isFavorite: false)
       try assertSnapshot(matching: view)
     }
@@ -20,7 +22,7 @@ final class AnimationTests: XCTestCase {
 
   @MainActor
   func testFlashDemoPreviewTrue() throws {
-    try withSnapshotTesting(record: .failed) {
+    try withSnapshotTesting(record: recording) {
       let view = FlashDemoView(isFavorite: true)
       try assertSnapshot(matching: view)
     }
@@ -28,7 +30,7 @@ final class AnimationTests: XCTestCase {
 
   @MainActor
   func testFadeInDemoPreviewFalse() throws {
-    try withSnapshotTesting(record: .failed) {
+    try withSnapshotTesting(record: recording) {
       let view = FadeInDemoView(isFavorite: false)
       try assertSnapshot(matching: view)
     }
@@ -36,7 +38,7 @@ final class AnimationTests: XCTestCase {
 
   @MainActor
   func testFadeInDemoPreviewTrue() throws {
-    try withSnapshotTesting(record: .failed) {
+    try withSnapshotTesting(record: recording) {
       let view = FadeInDemoView(isFavorite: true)
       try assertSnapshot(matching: view)
     }
@@ -44,7 +46,7 @@ final class AnimationTests: XCTestCase {
 
   @MainActor
   func testConfettiDemoPreviewFalse() throws {
-    try withSnapshotTesting(record: .failed) {
+    try withSnapshotTesting(record: recording) {
       let view = ConfettiDemoView(isFavorite: false)
       try assertSnapshot(matching: view)
     }
@@ -52,7 +54,7 @@ final class AnimationTests: XCTestCase {
 
   @MainActor
   func testConfettiDemoPreviewTrue() throws {
-    try withSnapshotTesting(record: .failed) {
+    try withSnapshotTesting(record: recording) {
       let view = ConfettiDemoView(isFavorite: true)
       try assertSnapshot(matching: view)
     }
