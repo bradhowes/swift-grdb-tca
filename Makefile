@@ -19,7 +19,7 @@ coverage: test
 	cat coverage.txt
 
 test: build
-	xcodebuild $(QUIET) $(PROJ) $(OUT) test-without-building $(DEST) $(TEST)
+	xcodebuild -skipMacroValidation $(PROJ) $(OUT) test-without-building $(DEST) $(TEST)
 
 build: clean
 	xcodebuild $(QUIET) $(PROJ) $(OUT) build-for-testing $(DEST)
