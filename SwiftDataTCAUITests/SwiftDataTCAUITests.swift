@@ -11,67 +11,166 @@ final class SwiftDataTCAUITests: XCTestCase {
   }
 
   @MainActor
-  func testFromState() throws {
-    let app = XCUIApplication()
-    app.launchArguments = ["UITEST"]
-    app.launch()
-  }
-
-  @MainActor
-  func testNameOrdering() throws {
+  func testActorNameOrdering() throws {
     let app = XCUIApplication()
     app.launchArguments = ["UITEST"]
     app.launch()
 
-    app.navigationBars["FromState"].children(matching: .button).element.tap()
+    let buttons = app.navigationBars["FromState"].children(matching: .button)
+    print(buttons.debugDescription)
+
+    buttons["add"].tap()
 
     let collectionViewsQuery = app.collectionViews
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
     print(collectionViewsQuery.staticTexts.debugDescription)
 
-    collectionViewsQuery.staticTexts["The Island of Dr. Moreau"].tap()
+    let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
+    let firstMovieTitle = "The Island of Dr. Moreau"
+    XCTAssertEqual(firstMovie.label, firstMovieTitle)
+    firstMovie.tap()
 
-    let navBar = app.navigationBars["The Island of Dr. Moreau"]
-    let button = navBar.children(matching: .other).element(boundBy: 0).children(matching: .other).element.children(matching: .button).element
-    button.tap()
-    collectionViewsQuery.buttons["Down"].tap()
+    let navBar = app.navigationBars[firstMovieTitle]
+    let backButton = navBar.buttons["FromState"]
+    XCTAssertTrue(backButton.waitForExistence(timeout: 1.0))
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
+
+    let titleSortMenu = navBar.children(matching: .other).element(boundBy: 0).children(matching: .other).element.children(matching: .button).element
+    titleSortMenu.tap()
+    collectionViewsQuery.buttons["arrow.down"].tap()
+
     XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Val Kilmer")
-    button.tap()
-    collectionViewsQuery.buttons["Up"].tap()
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
+
+    titleSortMenu.tap()
+    collectionViewsQuery.buttons["arrow.up"].tap()
     XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Daniel Rigney")
-    button.tap()
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
+
+    titleSortMenu.tap()
     collectionViewsQuery.buttons["alternatingcurrent"].tap()
+    // Cannot test specific entities due to randomly ordered contents
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
 
-    navBar.buttons["Favorite"].tap()
+    navBar.buttons["favorite movie"].tap()
+    backButton.tap()
 
-    navBar.buttons["FromState"].tap()
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
+    XCTAssertEqual(firstMovie.label, "Favorited " + firstMovieTitle)
   }
 
-//  @MainActor
-//  func testLaunchPerformance() throws {
-//    if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-//      // This measures how long it takes to launch your application.
-//      measure(metrics: [XCTApplicationLaunchMetric()]) {
-//        XCUIApplication().launch()
-//      }
-//    }
-//  }'
+  @MainActor
+  func testMovieNameOrdering() throws {
+    let app = XCUIApplication()
+    app.launchArguments = ["UITEST"]
+    app.launch()
+    let navBar = app.navigationBars["FromState"]
 
+    let buttons = navBar.children(matching: .button)
+    buttons["add"].tap()
 
-}
+    let collectionViewsQuery = app.collectionViews
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6) // 3 movies, each with title and actor labels
 
-extension XCTestCase {
+    let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
+    let lastMovie = collectionViewsQuery.staticTexts.element(boundBy: 4)
+    let firstMovieTitle = "The Island of Dr. Moreau"
+    let lastMovieTitle = "Superman"
+    XCTAssertEqual(firstMovie.label, firstMovieTitle)
+    XCTAssertEqual(lastMovie.label, lastMovieTitle)
+
+    let titleSortMenu = navBar.children(matching: .other).element(boundBy: 0).children(matching: .other).element.children(matching: .button).element
+    titleSortMenu.tap()
+    collectionViewsQuery.buttons["arrow.down"].tap()
+
+    XCTAssertEqual(firstMovie.label, lastMovieTitle)
+    XCTAssertEqual(lastMovie.label, firstMovieTitle)
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
+
+    titleSortMenu.tap()
+    collectionViewsQuery.buttons["arrow.up"].tap()
+    XCTAssertEqual(firstMovie.label, firstMovieTitle)
+    XCTAssertEqual(lastMovie.label, lastMovieTitle)
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
+
+    titleSortMenu.tap()
+    collectionViewsQuery.buttons["alternatingcurrent"].tap()
+    // Cannot test specific entities due to randomly ordered contents
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
+  }
 
   @MainActor
-  func wait(for duration: TimeInterval) {
-    let waitExpectation = expectation(description: "Waiting")
+  func testFavoriteSwiping() throws {
+    let app = XCUIApplication()
+    app.launchArguments = ["UITEST"]
+    app.launch()
 
-    let when = DispatchTime.now() + duration
-    DispatchQueue.main.asyncAfter(deadline: when) {
-      waitExpectation.fulfill()
-    }
+    let collectionViewsQuery = app.collectionViews
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 4) // 2 movies, each with title and actor labels
 
-    // We use a buffer here to avoid flakiness with Timer on CI
-    waitForExpectations(timeout: duration + 0.5)
+    let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
+    let firstMovieTitle = "Favorited The Score"
+    XCTAssertEqual(firstMovie.label, firstMovieTitle)
+
+    firstMovie.gentleSwipeLeft()
+    var button = collectionViewsQuery.buttons["unfavorite movie"]
+    button.tap()
+    XCTAssertEqual(firstMovie.label, "The Score")
+
+    let secondMovie = collectionViewsQuery.staticTexts.element(boundBy: 2)
+    let secondMovieTitle = "Superman"
+    XCTAssertEqual(secondMovie.label, secondMovieTitle)
+
+    secondMovie.gentleSwipeLeft()
+    button = collectionViewsQuery.buttons["favorite movie"]
+    button.tap()
+    XCTAssertEqual(secondMovie.label, "Favorited Superman")
+
+    // print(collectionViewsQuery.descendants(matching: .button).debugDescription)
+  }
+
+  @MainActor
+  func testDeleteSwiping() throws {
+    let app = XCUIApplication()
+    app.launchArguments = ["UITEST"]
+    app.launch()
+
+    let collectionViewsQuery = app.collectionViews
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 4) // 2 movies, each with title and actor labels
+
+    let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
+    let firstMovieTitle = "Favorited The Score"
+    XCTAssertEqual(firstMovie.label, firstMovieTitle)
+
+    firstMovie.gentleSwipeLeft()
+    let button = collectionViewsQuery.buttons["Delete"]
+    button.tap()
+    XCTAssertEqual(firstMovie.label, "Superman")
+  }
+
+  @MainActor
+  func testFastSwipingDoesNothingSpecial() throws {
+    let app = XCUIApplication()
+    app.launchArguments = ["UITEST"]
+    app.launch()
+
+    let collectionViewsQuery = app.collectionViews
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 4) // 2 movies, each with title and actor labels
+
+    let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
+    let firstMovieTitle = "Favorited The Score"
+    XCTAssertEqual(firstMovie.label, firstMovieTitle)
+
+    firstMovie.swipeLeft(velocity: .fast)
+    XCTAssertTrue(collectionViewsQuery.buttons["Delete"].exists)
+  }
+}
+
+extension XCUIElement {
+
+  func gentleSwipeLeft() {
+    let startPoint = self.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+    let endPoint = self.coordinate(withNormalizedOffset: CGVector(dx: 0.0, dy: 0.5))
+    startPoint.press(forDuration: 0.2, thenDragTo: endPoint)
   }
 }

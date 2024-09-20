@@ -24,10 +24,10 @@ enum Utils {
 #endif
 
   static func pickerView(title: String, binding: Binding<SortOrder?>) -> some View {
-    Picker("", systemImage: "arrow.up.arrow.down", selection: binding) {
-      Label("", systemImage: "arrow.up").tag(SortOrder?.some(.forward))
-      Label("", systemImage: "arrow.down").tag(SortOrder?.some(.reverse))
-      Label("", systemImage: "alternatingcurrent").tag(SortOrder?.none)
+    Picker(title, systemImage: "arrow.up.arrow.down", selection: binding) {
+      Label("Alphabetical", systemImage: "arrow.up").tag(SortOrder?.some(.forward))
+      Label("Reverse alphabetical", systemImage: "arrow.down").tag(SortOrder?.some(.reverse))
+      Label("Unordered", systemImage: "alternatingcurrent").tag(SortOrder?.none)
     }.pickerStyle(.automatic)
   }
 
@@ -61,7 +61,7 @@ enum Utils {
     private var movieEntry: some View {
       VStack(alignment: .leading) {
         movieName
-          .accessibilityValue(movie.favorite ? "favorited" : "")
+          .accessibilityLabel((movie.favorite ? "Favorited " : "") + movie.name)
         actorsList
       }
     }
@@ -133,10 +133,17 @@ enum Utils {
   }
 
   static func favoriteSwipeAction(_ movie: Movie, action: @escaping () -> Void) -> some View {
-    Button(action: action) {
-      Label("Favorite", systemImage: "star")
+    if movie.favorite {
+      Button(action: action) {
+        Label("unfavorite movie", systemImage: "star.fill")
+      }
+      .tint(.blue)
+    } else {
+      Button(action: action) {
+        Label("favorite movie", systemImage: "star")
+      }
+      .tint(.blue)
     }
-    .tint(.blue)
   }
 
   static func beginFavoriteChange<Action: Sendable>(_ action: Action) -> Effect<Action> {

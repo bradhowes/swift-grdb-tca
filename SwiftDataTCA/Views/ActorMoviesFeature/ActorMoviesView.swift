@@ -12,7 +12,7 @@ struct ActorMoviesView: View {
       .toolbar(.hidden, for: .tabBar)
       .toolbar {
         ToolbarItemGroup(placement: .automatic) {
-          Utils.pickerView(title: "Title", binding: $store.titleSort.sending(\.titleSortChanged).animation())
+          Utils.pickerView(title: "title ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
         }
       }
       .labelsHidden()

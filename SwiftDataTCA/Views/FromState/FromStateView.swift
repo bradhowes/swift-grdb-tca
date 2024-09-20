@@ -18,8 +18,8 @@ struct FromStateView: View {
         .toolbar {
           if !store.isSearchFieldPresented {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-              Button("", systemImage: "plus") { store.send(.addButtonTapped) }
-              Utils.pickerView(title: "Title", binding: $store.titleSort.sending(\.titleSortChanged).animation())
+              Button("add", systemImage: "plus") { store.send(.addButtonTapped) }
+              Utils.pickerView(title: "title ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
             }
           }
         }
