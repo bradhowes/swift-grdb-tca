@@ -5,9 +5,9 @@ import SwiftUI
 
 struct ActorMoviesView: View {
   @Bindable var store: StoreOf<ActorMoviesFeature>
-
+  @Dependency(\.viewLinkType) var viewLinkType
   var body: some View {
-    MoviesListView(store: store, send: store.useLinks ? nil : store.send)
+    MoviesListView(store: store, send: viewLinkType == .navLink ? nil : store.send)
       .navigationTitle(store.actor.name)
       .toolbar(.hidden, for: .tabBar)
       .toolbar {
@@ -57,13 +57,13 @@ extension MoviesListView {
 }
 
 extension ActorMoviesView {
-  static var previewWithoutLinks: some View {
+  static var preview: some View {
     @Dependency(\.modelContextProvider) var context
     let actorModel = ActiveSchema.fetchOrMakeActor(context, name: "Marlon Brando")
     let movies = Support.sortedMovies(for: actorModel, order: .forward)
     movies[0].favorite = true
     return NavigationView {
-      ActorMoviesView(store: Store(initialState: .init(actor: actorModel.valueType, useLinks: false)) {
+      ActorMoviesView(store: Store(initialState: .init(actor: actorModel.valueType)) {
         ActorMoviesFeature()
       })
       .modelContext(context)
@@ -72,5 +72,5 @@ extension ActorMoviesView {
 }
 
 #Preview {
-  ActorMoviesView.previewWithoutLinks
+  ActorMoviesView.preview
 }

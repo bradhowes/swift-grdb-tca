@@ -8,16 +8,14 @@ struct MovieActorsFeature {
   @ObservableState
   struct State: Equatable {
     var movie: Movie
-    let useLinks: Bool
     var nameSort: SortOrder? = .forward
     var actors: [Actor]
     var animateButton = false
 
-    init(movie: Movie, useLinks: Bool = false, nameSort: SortOrder? = .forward) {
+    init(movie: Movie, nameSort: SortOrder? = .forward) {
       print("MovieActorsFeature.init - \(movie.name)")
       @Dependency(\.modelContextProvider) var modelContext
       self.movie = movie
-      self.useLinks = useLinks
       self.nameSort = nameSort
       self.actors = movie.actors(ordering: nameSort)
     }

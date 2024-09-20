@@ -16,8 +16,6 @@ typealias Movie = ActiveSchema.Movie
 struct ModelContextProvider {
   /// The context to use for SwiftData operations
   let context: ModelContext
-  /// The container associated with the context
-  var container: ModelContainer { context.container }
 }
 
 extension DependencyValues {
@@ -40,17 +38,15 @@ extension ModelContextKey: TestDependencyKey {
 
 /// Create a ModelContainer to be used in a live environment.
 func makeLiveContainer(dbFile: URL) -> ModelContainer {
-  do {
-    let schema = Schema(versionedSchema: ActiveSchema.self)
-    let config = ModelConfiguration(schema: schema, url: dbFile, cloudKitDatabase: .none)
-    return try ModelContainer(for: schema, migrationPlan: MigrationPlan.self, configurations: config)
-  } catch {
-    fatalError("Failed to create live container.")
-  }
+  let schema = Schema(versionedSchema: ActiveSchema.self)
+  let config = ModelConfiguration(schema: schema, url: dbFile, cloudKitDatabase: .none)
+  // swiftlint:disable force_try
+  return try! ModelContainer(for: schema, migrationPlan: MigrationPlan.self, configurations: config)
+  // swiftlint:enable force_try
 }
 
 private let liveContainer: ModelContainer = makeLiveContainer(
-  dbFile: URL.applicationSupportDirectory.appending(path: "Modelv5.sqlite")
+  dbFile: URL.applicationSupportDirectory.appending(path: "Models.sqlite")
 )
 
 internal func makeTestContext(mockCount: Int = 0) throws -> ModelContext {
@@ -58,43 +54,37 @@ internal func makeTestContext(mockCount: Int = 0) throws -> ModelContext {
 }
 
 internal func makeMockContext(mockCount: Int) throws -> ModelContext {
-  let context = ModelContext(makeInMemoryContainer())
+  let context = try ModelContext(makeInMemoryContainer())
   try Support.generateMocks(context: context, count: mockCount)
   return context
 }
 
-internal func makeInMemoryContainer() -> ModelContainer {
-  do {
-    let schema = Schema(versionedSchema: ActiveSchema.self)
-    let config = ModelConfiguration(
-      schema: schema,
-      isStoredInMemoryOnly: true,
-      groupContainer: .none,
-      cloudKitDatabase: .none
-    )
-    return try ModelContainer(for: schema, migrationPlan: nil, configurations: config)
-  } catch {
-    fatalError("Failed to create in-memory container.")
-  }
+internal func makeInMemoryContainer() throws -> ModelContainer {
+  let schema = Schema(versionedSchema: ActiveSchema.self)
+  let config = ModelConfiguration(
+    schema: schema,
+    isStoredInMemoryOnly: true,
+    groupContainer: .none,
+    cloudKitDatabase: .none
+  )
+  return try ModelContainer(for: schema, migrationPlan: nil, configurations: config)
 }
 
-@MainActor private let liveContext: (() -> ModelContext) = {
+@MainActor internal let liveContext: (() -> ModelContext) = {
   if ProcessInfo.processInfo.arguments.contains("UITEST") {
-    do {
-      return try makeMockContext(mockCount: 2)
-    } catch {
-      fatalError("Failed to generate mocks in previw context")
-    }
+    return makeContext(mockCount: 2)
   }
   return liveContainer.mainContext
 }
 
 @MainActor private let previewContext: (() -> ModelContext) = {
-  do {
-    return try makeMockContext(mockCount: 32)
-  } catch {
-    fatalError("Failed to generate mocks in previw context")
-  }
+  makeContext(mockCount: 32)
+}
+
+@MainActor private func makeContext(mockCount: Int) -> ModelContext {
+  // swiftlint:disable force_try
+  try! makeMockContext(mockCount: mockCount)
+  // swiftlint:enable force_try
 }
 
 #if hasFeature(RetroactiveAttribute)

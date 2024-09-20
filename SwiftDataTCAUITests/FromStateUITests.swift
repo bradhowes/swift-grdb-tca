@@ -1,27 +1,25 @@
 
 import XCTest
 
-final class SwiftDataTCAUITests: XCTestCase {
+@MainActor
+final class FromStateUITests: XCTestCase {
+  let navBarName = "FromState"
+  var app: XCUIApplication!
+  var collectionViewsQuery: XCUIElementQuery { app.collectionViews }
 
-  override func setUpWithError() throws {
+  override func setUp() async throws {
     continueAfterFailure = false
-  }
-
-  override func tearDownWithError() throws {
-  }
-
-  @MainActor
-  func testActorNameOrdering() throws {
-    let app = XCUIApplication()
+    app = XCUIApplication()
     app.launchArguments = ["UITEST"]
     app.launch()
+    app.buttons[navBarName].tap()
+    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 1.0))
+  }
 
-    let buttons = app.navigationBars["FromState"].children(matching: .button)
-    print(buttons.debugDescription)
+  func testActorNameOrdering() throws {
+    let add = app.navigationBars[navBarName].buttons["add"]
+    add.tap()
 
-    buttons["add"].tap()
-
-    let collectionViewsQuery = app.collectionViews
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
     print(collectionViewsQuery.staticTexts.debugDescription)
 
@@ -31,7 +29,7 @@ final class SwiftDataTCAUITests: XCTestCase {
     firstMovie.tap()
 
     let navBar = app.navigationBars[firstMovieTitle]
-    let backButton = navBar.buttons["FromState"]
+    let backButton = navBar.buttons[navBarName]
     XCTAssertTrue(backButton.waitForExistence(timeout: 1.0))
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
 
@@ -59,17 +57,11 @@ final class SwiftDataTCAUITests: XCTestCase {
     XCTAssertEqual(firstMovie.label, "Favorited " + firstMovieTitle)
   }
 
-  @MainActor
   func testMovieNameOrdering() throws {
-    let app = XCUIApplication()
-    app.launchArguments = ["UITEST"]
-    app.launch()
-    let navBar = app.navigationBars["FromState"]
+    let navBar = app.navigationBars[navBarName]
+    let add = navBar.buttons["add"]
+    add.tap()
 
-    let buttons = navBar.children(matching: .button)
-    buttons["add"].tap()
-
-    let collectionViewsQuery = app.collectionViews
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6) // 3 movies, each with title and actor labels
 
     let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
@@ -99,13 +91,7 @@ final class SwiftDataTCAUITests: XCTestCase {
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
   }
 
-  @MainActor
   func testFavoriteSwiping() throws {
-    let app = XCUIApplication()
-    app.launchArguments = ["UITEST"]
-    app.launch()
-
-    let collectionViewsQuery = app.collectionViews
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 4) // 2 movies, each with title and actor labels
 
     let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
@@ -129,13 +115,7 @@ final class SwiftDataTCAUITests: XCTestCase {
     // print(collectionViewsQuery.descendants(matching: .button).debugDescription)
   }
 
-  @MainActor
   func testDeleteSwiping() throws {
-    let app = XCUIApplication()
-    app.launchArguments = ["UITEST"]
-    app.launch()
-
-    let collectionViewsQuery = app.collectionViews
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 4) // 2 movies, each with title and actor labels
 
     let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
@@ -148,13 +128,7 @@ final class SwiftDataTCAUITests: XCTestCase {
     XCTAssertEqual(firstMovie.label, "Superman")
   }
 
-  @MainActor
   func testFastSwipingDoesNothingSpecial() throws {
-    let app = XCUIApplication()
-    app.launchArguments = ["UITEST"]
-    app.launch()
-
-    let collectionViewsQuery = app.collectionViews
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 4) // 2 movies, each with title and actor labels
 
     let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
@@ -164,13 +138,29 @@ final class SwiftDataTCAUITests: XCTestCase {
     firstMovie.swipeLeft(velocity: .fast)
     XCTAssertTrue(collectionViewsQuery.buttons["Delete"].exists)
   }
-}
 
-extension XCUIElement {
+  func testDrillDown() throws {
+    let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
+    let firstMovieTitle = "The Score"
+    XCTAssertEqual(firstMovie.label, "Favorited " + firstMovieTitle)
 
-  func gentleSwipeLeft() {
-    let startPoint = self.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-    let endPoint = self.coordinate(withNormalizedOffset: CGVector(dx: 0.0, dy: 0.5))
-    startPoint.press(forDuration: 0.2, thenDragTo: endPoint)
+    // Show actors in movie
+    firstMovie.tap()
+
+    let actorsNavBar = app.navigationBars[firstMovieTitle]
+    let actorsBackButton = actorsNavBar.buttons[navBarName]
+    XCTAssertTrue(actorsBackButton.waitForExistence(timeout: 1.0))
+
+    let firstActor = collectionViewsQuery.cells.element(boundBy: 0).staticTexts.element(boundBy: 0)
+    let firstActorName = "Angela Bassett"
+    XCTAssertEqual(firstActor.label, firstActorName)
+
+    // Show movies of first actor
+    firstActor.tap()
+    let moviesNavBar = app.navigationBars[firstActorName]
+    let moviesBackButton = moviesNavBar.buttons[firstMovieTitle]
+    XCTAssertTrue(moviesBackButton.waitForExistence(timeout: 1.0))
+
+    XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Favorited " + firstMovieTitle)
   }
 }

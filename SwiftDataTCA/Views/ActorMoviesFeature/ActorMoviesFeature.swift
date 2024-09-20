@@ -9,15 +9,13 @@ struct ActorMoviesFeature {
   @ObservableState
   struct State: Equatable {
     let actor: Actor
-    let useLinks: Bool
     var titleSort: SortOrder?
     var movies: [Movie]
     var selectedMovie: Movie?
 
-    init(actor: Actor, useLinks: Bool = false, titleSort: SortOrder? = .forward) {
+    init(actor: Actor, titleSort: SortOrder? = .forward) {
       print("ActorMoviesFeature.init - \(actor.name)")
       self.actor = actor
-      self.useLinks = useLinks
       self.titleSort = titleSort
       self.movies = actor.movies(ordering: titleSort)
     }
@@ -61,5 +59,5 @@ extension ActorMoviesFeature {
 }
 
 #Preview {
-  ActorMoviesView.previewWithoutLinks
+  ActorMoviesView.preview
 }

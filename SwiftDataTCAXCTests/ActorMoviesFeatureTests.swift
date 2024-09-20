@@ -85,12 +85,13 @@ final class ActorMoviesFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func testPreviewWithoutLinksRender() throws {
+  func testPreviewRender() throws {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
+      $0.viewLinkType = LinkKind.button
     } operation: {
       try withSnapshotTesting(record: .missing) {
-        let view = ActorMoviesView.previewWithoutLinks
+        let view = ActorMoviesView.preview
         try assertSnapshot(matching: view)
       }
     }

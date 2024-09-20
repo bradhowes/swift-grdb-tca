@@ -5,9 +5,10 @@ import SwiftUI
 
 struct MovieActorsView: View {
   @Bindable var store: StoreOf<MovieActorsFeature>
+  @Dependency(\.viewLinkType) var viewLinkType
 
   var body: some View {
-    ActorsListView(actors: store.actors, send: store.send)
+    ActorsListView(actors: store.actors, send: viewLinkType == .navLink ? nil : store.send)
       .navigationTitle(store.movie.name)
       .toolbar(.hidden, for: .tabBar)
       .toolbar {
