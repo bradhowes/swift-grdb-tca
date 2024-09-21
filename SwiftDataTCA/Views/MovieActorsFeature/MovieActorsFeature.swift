@@ -13,7 +13,6 @@ struct MovieActorsFeature {
     var animateButton = false
 
     init(movie: Movie, nameSort: SortOrder? = .forward) {
-      print("MovieActorsFeature.init - \(movie.name)")
       @Dependency(\.modelContextProvider) var modelContext
       self.movie = movie
       self.nameSort = nameSort
@@ -45,20 +44,17 @@ struct MovieActorsFeature {
 extension MovieActorsFeature {
 
   private func refresh(state: inout State) -> Effect<Action> {
-    print("MovieActorFeature.refreshState - \(state.movie.name)")
     state.movie = state.movie.backingObject().valueType
     return .none
   }
 
   private func setTitleSort(_ newSort: SortOrder?, state: inout State) -> Effect<Action> {
-    print("MovieActorFeature.setTitleSort - \(String(describing: newSort))")
     state.nameSort = newSort
     state.actors = state.movie.actors(ordering: newSort)
     return .none
   }
 
   func toggleFavoriteState(state: inout State) -> Effect<Action> {
-    print("MovieActorFeature.favoriteTapped - \(state.movie.name)")
     state.movie = state.movie.toggleFavorite()
     state.animateButton = state.movie.favorite
     return .none

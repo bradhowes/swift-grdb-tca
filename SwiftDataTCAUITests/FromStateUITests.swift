@@ -21,7 +21,7 @@ final class FromStateUITests: XCTestCase {
     add.tap()
 
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
-    print(collectionViewsQuery.staticTexts.debugDescription)
+    //print(collectionViewsQuery.staticTexts.debugDescription)
 
     let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
     let firstMovieTitle = "The Island of Dr. Moreau"

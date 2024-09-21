@@ -134,7 +134,6 @@ extension FromStateFeature {
   }
 
   private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
-    print("monitorPathChange - \(String(describing: pathAction))")
     switch pathAction {
 
       // Detect when the MovieActorsFeature list button is tapped, and show a new ActorMoviesView for the actor that was

@@ -50,9 +50,7 @@ struct FadeInDemoView: View {
           if isFavorite {
             Image(systemName: "star.fill")
               .foregroundStyle(Utils.favoriteColor)
-              .fadeIn(enabled: true, duration: 1.5) {
-                print("done")
-              }
+              .fadeIn(enabled: true, duration: 1.5)
           } else {
             Image(systemName: "star")
               .foregroundStyle(.gray)

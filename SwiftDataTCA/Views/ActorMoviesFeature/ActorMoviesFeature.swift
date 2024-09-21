@@ -14,7 +14,6 @@ struct ActorMoviesFeature {
     var selectedMovie: Movie?
 
     init(actor: Actor, titleSort: SortOrder? = .forward) {
-      print("ActorMoviesFeature.init - \(actor.name)")
       self.actor = actor
       self.titleSort = titleSort
       self.movies = actor.movies(ordering: titleSort)

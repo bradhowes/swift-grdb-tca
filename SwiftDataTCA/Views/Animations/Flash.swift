@@ -62,9 +62,7 @@ struct FlashDemoView: View {
           if isFavorite {
             Image(systemName: "star.fill")
               .foregroundStyle(Utils.favoriteColor)
-              .flash(enabled: true, duration: 0.1) {
-                print("done")
-              }
+              .flash(enabled: true, duration: 0.1)
           } else {
             Image(systemName: "star")
               .foregroundStyle(.gray)
