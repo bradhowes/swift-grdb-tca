@@ -21,7 +21,6 @@ final class FromStateUITests: XCTestCase {
     add.tap()
 
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
-    //print(collectionViewsQuery.staticTexts.debugDescription)
 
     let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
     let firstMovieTitle = "The Island of Dr. Moreau"
@@ -37,19 +36,19 @@ final class FromStateUITests: XCTestCase {
       .children(matching: .other).element(boundBy: 0)
       .children(matching: .other).element
       .children(matching: .button).element
-    titleSortMenu.tap()
-    collectionViewsQuery.buttons["arrow.down"].tap()
+
+    app.tapMenuItem(menu: titleSortMenu, button: "arrow.down")
 
     XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Val Kilmer")
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
 
-    titleSortMenu.tap()
-    collectionViewsQuery.buttons["arrow.up"].tap()
+    app.tapMenuItem(menu: titleSortMenu, button: "arrow.up")
+
     XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Daniel Rigney")
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
 
-    titleSortMenu.tap()
-    collectionViewsQuery.buttons["alternatingcurrent"].tap()
+    app.tapMenuItem(menu: titleSortMenu, button: "alternatingcurrent")
+
     // Cannot test specific entities due to randomly ordered contents
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
 
@@ -79,21 +78,20 @@ final class FromStateUITests: XCTestCase {
       .children(matching: .other).element(boundBy: 0)
       .children(matching: .other).element
       .children(matching: .button).element
-    titleSortMenu.tap()
-    collectionViewsQuery.buttons["arrow.down"].tap()
+
+    app.tapMenuItem(menu: titleSortMenu, button: "arrow.down")
 
     XCTAssertEqual(firstMovie.label, lastMovieTitle)
     XCTAssertEqual(lastMovie.label, firstMovieTitle)
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
 
-    titleSortMenu.tap()
-    collectionViewsQuery.buttons["arrow.up"].tap()
+    app.tapMenuItem(menu: titleSortMenu, button: "arrow.up")
+
     XCTAssertEqual(firstMovie.label, firstMovieTitle)
     XCTAssertEqual(lastMovie.label, lastMovieTitle)
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
 
-    titleSortMenu.tap()
-    collectionViewsQuery.buttons["alternatingcurrent"].tap()
+    app.tapMenuItem(menu: titleSortMenu, button: "alternatingcurrent")
     // Cannot test specific entities due to randomly ordered contents
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
   }

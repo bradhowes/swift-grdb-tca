@@ -47,7 +47,7 @@ private struct MovieListView: View {
 
   var body: some View {
     ScrollViewReader { proxy in
-      List(movies, id: \.self) { movie in
+      List(movies, id: \.id) { movie in
         MovieListRow(store: $store, movie: movie)
           .swipeActions(allowsFullSwipe: false) {
             Utils.deleteSwipeAction(movie) {
@@ -61,7 +61,7 @@ private struct MovieListView: View {
       .onChange(of: store.scrollTo) { _, movie in
         if let movie {
           withAnimation {
-            proxy.scrollTo(movie)
+            proxy.scrollTo(movie.id)
             store.send(.clearScrollTo)
           }
         }

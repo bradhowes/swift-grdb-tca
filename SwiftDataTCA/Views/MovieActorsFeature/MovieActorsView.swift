@@ -43,7 +43,7 @@ private struct ActorsListView: View {
   let send: ((MovieActorsFeature.Action) -> StoreTask)?
 
   var body: some View {
-    List(actors, id: \.self) { actor in
+    List(actors, id: \.id) { actor in
       if let send {
         Button {
           _ = send(.detailButtonTapped(actor))

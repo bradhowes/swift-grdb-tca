@@ -43,7 +43,7 @@ enum SchemaV6: VersionedSchema {
     var valueType: Movie { .init(modelId: persistentModelID, name: title, favorite: favorite) }
   }
 
-  struct Actor: Hashable {
+  struct Actor {
     let modelId: PersistentIdentifier
     let name: String
 
@@ -60,13 +60,9 @@ enum SchemaV6: VersionedSchema {
       }
       return actor
     }
-
-    func hash(into hasher: inout Hasher) { hasher.combine(modelId) }
-
-    static func == (lhs: Self, rhs: Self) -> Bool { lhs.modelId == rhs.modelId }
   }
 
-  struct Movie: Hashable {
+  struct Movie {
     let modelId: PersistentIdentifier
     let name: String
     let favorite: Bool
@@ -92,14 +88,26 @@ enum SchemaV6: VersionedSchema {
       }
       return movie
     }
-
-    func hash(into hasher: inout Hasher) {
-      hasher.combine(modelId)
-      hasher.combine(favorite)
-    }
-
-    static func == (lhs: Self, rhs: Self) -> Bool { lhs.modelId == rhs.modelId && lhs.favorite == rhs.favorite }
   }
+}
+
+extension SchemaV6.Actor: Equatable {
+  static func == (lhs: Self, rhs: Self) -> Bool { lhs.modelId == rhs.modelId }
+}
+
+extension SchemaV6.Actor: Identifiable {
+  public var id: PersistentIdentifier { modelId }
+}
+
+extension SchemaV6.Movie: Equatable {
+  static func == (lhs: Self, rhs: Self) -> Bool { lhs.modelId == rhs.modelId && lhs.favorite == rhs.favorite }
+}
+
+extension SchemaV6.Movie: Identifiable {
+  public var id: PersistentIdentifier { modelId }
+}
+
+extension SchemaV6 {
 
   @discardableResult
   static func makeMock(context: ModelContext, entry: (title: String, cast: [String])) -> MovieModel {

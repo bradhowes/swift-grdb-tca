@@ -8,3 +8,13 @@ extension XCUIElement {
     startPoint.press(forDuration: 0.2, thenDragTo: endPoint)
   }
 }
+
+extension XCUIApplication {
+
+  func tapMenuItem(menu: XCUIElement, button: String) {
+    XCTAssertTrue(menu.waitForExistence(timeout: 1.0))
+    menu.tap()
+    XCTAssertTrue(self.collectionViews.buttons[button].waitForExistence(timeout: 1.0))
+    self.collectionViews.buttons[button].tap()
+  }
+}
