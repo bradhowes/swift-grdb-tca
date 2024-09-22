@@ -21,7 +21,7 @@ struct FromQueryView: View {
           if !store.isSearchFieldPresented {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
               Button("add", systemImage: "plus") { store.send(.addButtonTapped) }
-              Utils.pickerView(title: "title ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
+              Utils.pickerView(title: "movie ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
             }
           }
         }

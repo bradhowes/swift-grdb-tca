@@ -1,5 +1,8 @@
+import Dependencies
 import Foundation
 import SwiftData
+
+@testable import SwiftDataTCA
 
 enum TestingSupport {
 
@@ -33,5 +36,20 @@ enum TestingSupport {
    */
   static func cleanup(_ context: ModelContext) {
     context.container.deleteAllData()
+  }
+
+  static func withNewContext(
+    _ verseionedSchema: any VersionedSchema.Type,
+    migrationPlan: (any SchemaMigrationPlan.Type)? = nil,
+    storage: URL? = nil,
+    block: (ModelContext) -> Void
+  ) {
+    let context = makeContext(verseionedSchema, migrationPlan: migrationPlan, storage: storage)
+    defer { if storage == nil { cleanup(context) } }
+    withDependencies {
+      $0.modelContextProvider = context
+    } operation: {
+      block(context)
+    }
   }
 }

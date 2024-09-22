@@ -17,17 +17,17 @@ struct SchemaV1Tests {
     withDependencies {
       $0.uuid = .incrementing
     } operation: {
-      let context = TestingSupport.makeContext(ActiveSchema.self)
-      defer { TestingSupport.cleanup(context) }
-      @Dependency(\.uuid) var uuid
+      TestingSupport.withNewContext(ActiveSchema.self) { context in
+        @Dependency(\.uuid) var uuid
 
-      let m = ActiveSchema._Movie(id: uuid(), title: "The Way We Were", cast: ["Barbara Streisand", "Robert Redford"])
-      context.insert(m)
-      try! context.save()
+        let m = ActiveSchema._Movie(id: uuid(), title: "The Way We Were", cast: ["Barbara Streisand", "Robert Redford"])
+        context.insert(m)
+        try! context.save()
 
-      #expect(m.id == UUID(0))
-      #expect(m.title == "The Way We Were")
-      #expect(m.cast.count == 2)
+        #expect(m.id == UUID(0))
+        #expect(m.title == "The Way We Were")
+        #expect(m.cast.count == 2)
+      }
     }
   }
 }

@@ -12,6 +12,7 @@ extension XCUIElement {
 extension XCUIApplication {
 
   func tapMenuItem(menu: XCUIElement, button: String) {
+    print(menu.debugDescription)
     XCTAssertTrue(menu.waitForExistence(timeout: 1.0))
     menu.tap()
     XCTAssertTrue(self.collectionViews.buttons[button].waitForExistence(timeout: 1.0))

@@ -33,11 +33,7 @@ final class FromQueryUITests: XCTestCase {
     XCTAssertTrue(backButton.waitForExistence(timeout: 1.0))
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
 
-    let titleSortMenu = navBar
-      .children(matching: .other).element(boundBy: 0)
-      .children(matching: .other).element
-      .children(matching: .button).element
-
+    let titleSortMenu = navBar.buttons["actor ordering, actor ordering, choose actor ordering"]
     app.tapMenuItem(menu: titleSortMenu, button: "arrow.down")
 
     XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Val Kilmer")
@@ -73,10 +69,7 @@ final class FromQueryUITests: XCTestCase {
     XCTAssertEqual(firstMovie.label, firstMovieTitle)
     XCTAssertEqual(lastMovie.label, lastMovieTitle)
 
-    let titleSortMenu = navBar
-      .children(matching: .other).element(boundBy: 0)
-      .children(matching: .other).element
-      .children(matching: .button).element
+    let titleSortMenu = navBar.buttons["movie ordering, movie ordering, choose movie ordering"]
 
     app.tapMenuItem(menu: titleSortMenu, button: "arrow.down")
 

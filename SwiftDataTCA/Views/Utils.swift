@@ -25,10 +25,17 @@ enum Utils {
 
   static func pickerView(title: String, binding: Binding<SortOrder?>) -> some View {
     Picker(title, systemImage: "arrow.up.arrow.down", selection: binding) {
-      Label("Alphabetical", systemImage: "arrow.up").tag(SortOrder?.some(.forward))
-      Label("Reverse alphabetical", systemImage: "arrow.down").tag(SortOrder?.some(.reverse))
-      Label("Unordered", systemImage: "alternatingcurrent").tag(SortOrder?.none)
+      Label("Alphabetical", systemImage: "arrow.up")
+        .accessibilityLabel("alphabetical \(title)")
+        .tag(SortOrder?.some(.forward))
+      Label("Reverse alphabetical", systemImage: "arrow.down")
+        .accessibilityLabel("reverse alphabetical \(title)")
+        .tag(SortOrder?.some(.reverse))
+      Label("Unordered", systemImage: "alternatingcurrent")
+        .accessibilityLabel("random \(title)")
+        .tag(SortOrder?.none)
     }.pickerStyle(.automatic)
+      .accessibilityLabel("choose \(title)")
   }
 
   struct MovieView: View {

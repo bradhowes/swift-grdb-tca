@@ -13,13 +13,13 @@ typealias Movie = ActiveSchema.Movie
 /**
  Wrapper around a `ModelContext` value that can be used for a dependency.
  */
-struct ModelContextProvider {
+public struct ModelContextProvider {
   /// The context to use for SwiftData operations
-  let context: ModelContext
+  public let context: ModelContext
 }
 
 extension DependencyValues {
-  var modelContextProvider: ModelContext {
+  public var modelContextProvider: ModelContext {
     get { self[ModelContextKey.self] }
     set { self[ModelContextKey.self] = newValue }
   }
