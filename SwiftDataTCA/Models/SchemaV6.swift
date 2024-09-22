@@ -149,20 +149,6 @@ extension SchemaV6 {
    is undetermined.
 
    - parameter titleSort: the direction of the ordering -- alphabetical or reveresed alphabetical
-   - parameter searchString: if not empty, only return `_Movie` entities whose `title` contains the search string
-   - returns: new `FetchDescriptor`
-   */
-  @inlinable
-  static func movieFetchDescriptor() -> FetchDescriptor<MovieModel> {
-    FetchDescriptor<MovieModel>()
-  }
-
-  /**
-   Obtain a `FetchDescriptor` that will return an ordered (optional) and possibly filtered set of known `_Movie`
-   entities. Ordering is done on the `_Movie.title` attribute when `titleSort` is not nil. Otherwise, ordering
-   is undetermined.
-
-   - parameter titleSort: the direction of the ordering -- alphabetical or reveresed alphabetical
    - parameter search: if not empty, only return `_Movie` entities whose `title` contains the search string
    - returns: new `FetchDescriptor`
    */

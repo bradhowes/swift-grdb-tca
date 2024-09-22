@@ -8,23 +8,22 @@ import Testing
 @testable import SwiftDataTCA
 
 struct SchemaV4Tests {
+  typealias ActiveSchema = SchemaV4
 
   /// NOTE to self: do not use `await container.mainContext` in tests
   /// NOTE to self: do not run Swift Data tests in parallel
 
   @Test func creatingV4Database() async throws {
-    let schema = Schema(versionedSchema: SchemaV4.self)
-    let config = ModelConfiguration("V4", schema: schema, isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: schema, configurations: config)
-    let context = ModelContext(container)
+    let context = TestingSupport.makeContext(ActiveSchema.self)
+    defer { TestingSupport.cleanup(context) }
 
     withDependencies {
       $0.uuid = .incrementing
     } operation: {
       @Dependency(\.uuid) var uuid
-      SchemaV4.makeMock(context: context, entry: ("A Second Movie", ["Actor 1", "Actor 2", "Actor 3"]))
-      SchemaV4.makeMock(context: context, entry: ("The First Movie", ["Actor 1", "Actor 4"]))
-      SchemaV4.makeMock(context: context, entry: ("El Third Movie", ["Actor 2"]))
+      ActiveSchema.makeMock(context: context, entry: ("A Second Movie", ["Actor 1", "Actor 2", "Actor 3"]))
+      ActiveSchema.makeMock(context: context, entry: ("The First Movie", ["Actor 1", "Actor 4"]))
+      ActiveSchema.makeMock(context: context, entry: ("El Third Movie", ["Actor 2"]))
     }
     try! context.save()
   }
@@ -33,19 +32,16 @@ struct SchemaV4Tests {
     withDependencies {
       $0.uuid = .incrementing
     } operation: {
-      let schema = Schema(versionedSchema: SchemaV4.self)
-      let config = ModelConfiguration("fetchingV4", schema: schema, isStoredInMemoryOnly: true)
-      let container = try! ModelContainer(for: schema, configurations: config)
-      let context = ModelContext(container)
+      let context = TestingSupport.makeContext(ActiveSchema.self)
+      defer { TestingSupport.cleanup(context) }
 
-      // @Dependency(\.uuid) var uuid
-      SchemaV4.makeMock(context: context, entry: ("A Second Movie", ["Actor 1", "Actor 2", "Actor 3"]))
-      SchemaV4.makeMock(context: context, entry: ("The First Movie", ["Actor 1", "Actor 4"]))
-      SchemaV4.makeMock(context: context, entry: ("El Third Movie", ["Actor 2"]))
+      ActiveSchema.makeMock(context: context, entry: ("A Second Movie", ["Actor 1", "Actor 2", "Actor 3"]))
+      ActiveSchema.makeMock(context: context, entry: ("The First Movie", ["Actor 1", "Actor 4"]))
+      ActiveSchema.makeMock(context: context, entry: ("El Third Movie", ["Actor 2"]))
 
       try! context.save()
 
-      var movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, search: ""))
+      var movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
 
       #expect(movies.count == 3)
       #expect(movies[0].title == "The First Movie")
@@ -56,20 +52,20 @@ struct SchemaV4Tests {
       #expect(movies[1].actors.count == 3)
       #expect(movies[2].actors.count == 1)
 
-      movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .reverse, search: ""))
+      movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .reverse, search: ""))
 
       #expect(movies.count == 3)
       #expect(movies[2].title == "The First Movie")
       #expect(movies[1].title == "A Second Movie")
       #expect(movies[0].title == "El Third Movie")
 
-      movies = try! context.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, search: "th"))
+      movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: "th"))
 
       #expect(movies.count == 2)
       #expect(movies[0].title == "The First Movie")
       #expect(movies[1].title == "El Third Movie")
 
-      let actors = try! context.fetch(FetchDescriptor<SchemaV4._Actor>(sortBy: [.init(\.name, order: .forward)]))
+      let actors = try! context.fetch(FetchDescriptor<ActiveSchema._Actor>(sortBy: [.init(\.name, order: .forward)]))
 
       #expect(actors.count == 4)
       #expect(actors[0].name == "Actor 1")
@@ -83,58 +79,58 @@ struct SchemaV4Tests {
   }
   
   @Test func migrationV3V4() async throws {
+    typealias OldSchema = SchemaV3
+
+    let url = FileManager.default.temporaryDirectory.appending(component: "Model4.sqlite")
+    try? FileManager.default.removeItem(at: url)
+    let oldContext = TestingSupport.makeContext(OldSchema.self, storage: url)
+    defer { TestingSupport.cleanup(oldContext) }
+
     withDependencies {
       $0.uuid = .incrementing
     } operation: {
-      
-      let url = FileManager.default.temporaryDirectory.appending(component: "Model4.sqlite")
-      try? FileManager.default.removeItem(at: url)
-      
-      let schemaV3 = Schema(versionedSchema: SchemaV3.self)
-      let configV3 = ModelConfiguration(schema: schemaV3, url: url)
-      let containerV3 = try! ModelContainer(for: schemaV3, migrationPlan: nil, configurations: configV3)
-      
       @Dependency(\.uuid) var uuid
-      let contextV3 = ModelContext(containerV3)
-      SchemaV3.makeMock(context: contextV3, entry: (title: "El Mariachi", cast: ["Foo Bar"]))
-      SchemaV3.makeMock(context: contextV3, entry: (title: "The Way We Were", cast: ["Babs Strei", "Bob Woodward"]))
-      SchemaV3.makeMock(context: contextV3, entry: (title: "Le Monde", cast: ["Zoe"]))
-      SchemaV3.makeMock(context: contextV3, entry: (title: "Les Enfants", cast: ["Zoe"]))
-      try! contextV3.save()
-      let moviesV3 = try! contextV3.fetch(SchemaV3.movieFetchDescriptor(titleSort: .forward, uuidSort: .none, search: ""))
+      OldSchema.makeMock(context: oldContext, entry: (title: "El Mariachi", cast: ["Foo Bar"]))
+      OldSchema.makeMock(context: oldContext, entry: (title: "The Way We Were", cast: ["Babs Strei", "Bob Woodward"]))
+      OldSchema.makeMock(context: oldContext, entry: (title: "Le Monde", cast: ["Zoe"]))
+      OldSchema.makeMock(context: oldContext, entry: (title: "Les Enfants", cast: ["Zoe"]))
+      try! oldContext.save()
+      let moviesV3 = try! oldContext.fetch(OldSchema.movieFetchDescriptor(titleSort: .forward, uuidSort: .none, search: ""))
       #expect(moviesV3[0].title == "Les Enfants")
       #expect(moviesV3[1].title == "El Mariachi")
       #expect(moviesV3[2].title == "Le Monde")
       #expect(moviesV3[3].title == "The Way We Were")
-      
-      // Migrate to V4
-      let schemaV4 = Schema(versionedSchema: SchemaV4.self)
-      let configV4 = ModelConfiguration(schema: schemaV4, url: url)
-      let containerV4 = try! ModelContainer(for: schemaV4, migrationPlan: MockMigrationPlan.self,
-                                            configurations: configV4)
-      
-      let contextV4 = ModelContext(containerV4)
-      let moviesV4 = try! contextV4.fetch(SchemaV4.movieFetchDescriptor(titleSort: .forward, search: ""))
-      
-      #expect(moviesV4.count == moviesV3.count)
+    }
+
+    // Migrate to V4
+    withDependencies {
+      $0.uuid = .incrementing
+    } operation: {
+      let newContext = TestingSupport.makeContext(ActiveSchema.self, migrationPlan: MockMigrationPlan.self, storage: url)
+      defer { TestingSupport.cleanup(newContext) }
+
+      @Dependency(\.uuid) var uuid
+      let moviesV4 = try! newContext.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
+
+      #expect(moviesV4.count == 4)
       #expect(moviesV4[0].title == "Les Enfants")
       #expect(moviesV4[0].actors.count == 1)
       #expect(moviesV4[0].actors[0].name == "Zoe")
-      
+
       #expect(moviesV4[1].title == "El Mariachi")
       #expect(moviesV4[1].actors.count == 1)
       #expect(moviesV4[1].actors[0].name == "Foo Bar")
-      
+
       #expect(moviesV4[2].title == "Le Monde")
       #expect(moviesV4[2].actors.count == 1)
       #expect(moviesV4[2].actors[0].name == "Zoe")
-      
+
       #expect(moviesV4[3].title == "The Way We Were")
       #expect(moviesV4[3].actors.count == 2)
       #expect(moviesV4[3].actors[0].name == "Babs Strei" || moviesV4[3].actors[0].name == "Bob Woodward")
-      
-      let actors = try! contextV4.fetch(FetchDescriptor<SchemaV4._Actor>(sortBy: [.init(\.name, order: .forward)]))
-      
+
+      let actors = try! newContext.fetch(FetchDescriptor<ActiveSchema._Actor>(sortBy: [.init(\.name, order: .forward)]))
+
       #expect(actors.count == 4)
       #expect(actors[0].name == "Babs Strei")
       #expect(actors[0].movies.count == 1)

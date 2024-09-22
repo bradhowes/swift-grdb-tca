@@ -9,17 +9,15 @@ import Testing
 @testable import SwiftDataTCA
 
 struct SchemaV6Tests {
+  typealias ActiveSchema = SchemaV6
 
   /// NOTE to self: do not use `await container.mainContext` in tests
   /// NOTE to self: do not run Swift Data tests in parallel
 
   @Test("Creating DB")
   func creatingDatabase() async throws {
-    typealias ActiveSchema = SchemaV6
-    let schema = Schema(versionedSchema: ActiveSchema.self)
-    let config = ModelConfiguration("V55555", schema: schema, isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: schema, configurations: config)
-    let context = ModelContext(container)
+    let context = TestingSupport.makeContext(ActiveSchema.self)
+    defer { TestingSupport.cleanup(context) }
 
     withDependencies {
       $0.uuid = .incrementing
@@ -56,18 +54,15 @@ struct SchemaV6Tests {
   @Test("Migrating from V5 to V6")
   func migrationV5V6() async throws {
     typealias OldSchema = SchemaV5
-    typealias NewSchema = SchemaV6
 
     let url = FileManager.default.temporaryDirectory.appending(component: "Model6.sqlite")
     try? FileManager.default.removeItem(at: url)
-
-    let oldSchema = Schema(versionedSchema: OldSchema.self)
-    let oldConfig = ModelConfiguration(schema: oldSchema, url: url)
-    let oldContainer = try! ModelContainer(for: oldSchema, migrationPlan: nil, configurations: oldConfig)
-    let oldContext = ModelContext(oldContainer)
+    let oldContext = TestingSupport.makeContext(OldSchema.self, storage: url)
+    defer { TestingSupport.cleanup(oldContext) }
 
     withDependencies {
       $0.uuid = .incrementing
+      $0.modelContextProvider = oldContext
     } operation: {
       OldSchema.makeMock(context: oldContext, entry: ("A Second Movie", ["Actor 1", "Actor 4"]))
       OldSchema.makeMock(context: oldContext, entry: ("The First Movie", ["Actor 2", "Actor 1", "Actor 3"]))
@@ -81,35 +76,32 @@ struct SchemaV6Tests {
     #expect(oldMovies[2].title == "El Third Movie")
 
     // Migrate to V6
-    let newSchema = Schema(versionedSchema: NewSchema.self)
-    let newConfig = ModelConfiguration(schema: newSchema, url: url)
-    let newContainer = try! ModelContainer(for: newSchema, migrationPlan: MockMigrationPlan.self,
-                                          configurations: newConfig)
+    let newContext = TestingSupport.makeContext(ActiveSchema.self, migrationPlan: MockMigrationPlan.self, storage: url)
+    defer { TestingSupport.cleanup(newContext) }
 
-    let newContext = ModelContext(newContainer)
-    let newMovies = try! newContext.fetch(NewSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
+    withDependencies {
+      $0.modelContextProvider = newContext
+    } operation: {
+      let newMovies = try! newContext.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
 
-    #expect(newMovies.count == oldMovies.count)
-    #expect(newMovies[0].title == "The First Movie")
-    #expect(newMovies[0].actors.count == 3)
+      #expect(newMovies.count == oldMovies.count)
+      #expect(newMovies[0].title == "The First Movie")
+      #expect(newMovies[0].actors.count == 3)
 
-    #expect(newMovies[1].title == "A Second Movie")
-    #expect(newMovies[1].actors.count == 2)
-    #expect(newMovies[1].actors[0].name == "Actor 1" || newMovies[1].actors[0].name == "Actor 4")
+      #expect(newMovies[1].title == "A Second Movie")
+      #expect(newMovies[1].actors.count == 2)
+      #expect(newMovies[1].actors[0].name == "Actor 1" || newMovies[1].actors[0].name == "Actor 4")
 
-    #expect(newMovies[2].title == "El Third Movie")
-    #expect(newMovies[2].actors.count == 1)
-    #expect(newMovies[2].actors[0].name == "Actor 2")
+      #expect(newMovies[2].title == "El Third Movie")
+      #expect(newMovies[2].actors.count == 1)
+      #expect(newMovies[2].actors[0].name == "Actor 2")
+    }
   }
 
   @Test("Struct generation")
   func structGeneration() async throws {
-    typealias ActiveSchema = SchemaV6
-
-    let schema = Schema(versionedSchema: ActiveSchema.self)
-    let config = ModelConfiguration("V6", schema: schema, isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: schema, configurations: config)
-    let context = ModelContext(container)
+    let context = TestingSupport.makeContext(ActiveSchema.self)
+    defer { TestingSupport.cleanup(context) }
 
     let _ = withDependencies {
       $0.modelContextProvider = context
@@ -137,7 +129,7 @@ struct SchemaV6Tests {
       #expect(ma[1].modelId == actors[1].persistentModelID)
       #expect(ma[2].name == "Actor 3")
       #expect(ma[2].modelId == actors[2].persistentModelID)
-      
+
       let m1 = movies[1].valueType
       #expect(m1.name == "A Second Movie")
       #expect(m1.modelId == movies[1].persistentModelID)
@@ -166,6 +158,47 @@ struct SchemaV6Tests {
       #expect(am[0].modelId == movies[0].persistentModelID)
       #expect(am[1].name == "A Second Movie")
       #expect(am[1].modelId == movies[1].persistentModelID)
+    }
+  }
+
+  @Test("Deleting Movie removes it from Actor relationship")
+  func deleting() async throws {
+    let context = TestingSupport.makeContext(ActiveSchema.self)
+    defer { TestingSupport.cleanup(context) }
+    let _ = withDependencies {
+      $0.modelContextProvider = context
+    } operation: {
+      @Dependency(\.database) var db
+      ActiveSchema.makeMock(context: context, entry: ("A Second Movie", ["Actor 4", "Actor 1"]))
+      ActiveSchema.makeMock(context: context, entry: ("The First Movie", ["Actor 2", "Actor 1", "Actor 3"]))
+      ActiveSchema.makeMock(context: context, entry: ("El Third Movie", ["Actor 2"]))
+      try! context.save()
+
+      var movies = db.fetchMovies(ActiveSchema.movieFetchDescriptor())
+      #expect(movies.count == 3)
+      #expect(movies[0].title == "The First Movie")
+      #expect(movies[0].actors.count == 3)
+
+      var actors = Support.sortedActors(for: movies[0], order: .forward)
+      #expect(actors.count == 3)
+      #expect(actors[1].name == "Actor 2")
+
+      movies = Support.sortedMovies(for: actors[1], order: .forward)
+      #expect(movies[0].title == "The First Movie")
+
+      // Delete "The First Movie"
+      db.delete(movies[0])
+      movies = db.fetchMovies(ActiveSchema.movieFetchDescriptor())
+
+      #expect(movies.count == 2)
+      #expect(movies[1].title == "El Third Movie")
+      #expect(movies[1].actors.count == 1)
+
+      // Confirm that Actor 2 no longer holds a relation to "The First Movie"
+      actors = Support.sortedActors(for: movies[1], order: .forward)
+      #expect(actors.count == 1)
+      movies = Support.sortedMovies(for: actors[0], order: .forward)
+      #expect(movies.count == 1)
     }
   }
 }
