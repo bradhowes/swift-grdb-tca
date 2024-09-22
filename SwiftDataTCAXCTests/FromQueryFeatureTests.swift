@@ -18,7 +18,7 @@ final class FromQueryFeatureTests: XCTestCase {
       $0.modelContextProvider = try makeTestContext(mockCount: 4)
       $0.continuousClock = ImmediateClock()
     } operation: {
-      TestStore(initialState: FromQueryFeature.State()) { FromQueryFeature() }
+      TestStore(initialState: FromQueryFeature.State(useLinks: false)) { FromQueryFeature() }
     }
   }
   

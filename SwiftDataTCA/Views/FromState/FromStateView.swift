@@ -47,7 +47,7 @@ private struct MovieListView: View {
     ScrollViewReader { proxy in
       List {
         ForEach(store.movies, id: \.id) { movie in
-          MovieListRow(store: $store, movie: movie)
+          MovieListRow(store: store, movie: movie)
             .swipeActions(allowsFullSwipe: false) {
               Utils.deleteSwipeAction(movie) {
                 store.send(.deleteSwiped(movie), animation: .snappy)
@@ -71,11 +71,11 @@ private struct MovieListView: View {
 }
 
 private struct MovieListRow: View {
-  @Bindable var store: StoreOf<FromStateFeature>
+  var store: StoreOf<FromStateFeature>
   let movie: Movie
 
-  init(store: Bindable<StoreOf<FromStateFeature>>, movie: Movie) {
-    self._store = store
+  init(store: StoreOf<FromStateFeature>, movie: Movie) {
+    self.store = store
     self.movie = movie
   }
 
@@ -105,13 +105,16 @@ private struct MovieListRow: View {
 extension FromStateView {
   static var previewWithLinks: some View {
     @Dependency(\.modelContextProvider) var context
-    return FromStateView(store: Store(initialState: .init(useLinks: true)) { FromStateFeature() })
+    let view = FromStateView(store: Store(initialState: .init(useLinks: true)) { FromStateFeature() })
       .modelContext(context)
+    return view
   }
+
   static var previewWithButtons: some View {
     @Dependency(\.modelContextProvider) var context
-    return FromStateView(store: Store(initialState: .init(useLinks: false)) { FromStateFeature() })
+    let view = FromStateView(store: Store(initialState: .init(useLinks: false)) { FromStateFeature() })
       .modelContext(context)
+    return view
   }
 }
 

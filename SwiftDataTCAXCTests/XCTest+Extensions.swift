@@ -4,6 +4,8 @@ import SwiftData
 import SwiftUI
 import XCTest
 
+@testable import SwiftDataTCA
+
 extension XCTest {
 
   @inlinable

@@ -20,7 +20,7 @@ struct FromQueryFeature {
       ActiveSchema.movieFetchDescriptor(titleSort: titleSort, search: searchText)
     }
 
-    init(useLinks: Bool = true) {
+    init(useLinks: Bool) {
       self.useLinks = useLinks
     }
   }

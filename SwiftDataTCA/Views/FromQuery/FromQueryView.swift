@@ -48,7 +48,7 @@ private struct MovieListView: View {
   var body: some View {
     ScrollViewReader { proxy in
       List(movies, id: \.id) { movie in
-        MovieListRow(store: $store, movie: movie)
+        MovieListRow(store: store, movie: movie)
           .swipeActions(allowsFullSwipe: false) {
             Utils.deleteSwipeAction(movie) {
               store.send(.deleteSwiped(movie), animation: .snappy)
@@ -71,11 +71,11 @@ private struct MovieListView: View {
 }
 
 private struct MovieListRow: View {
-  @Bindable var store: StoreOf<FromQueryFeature>
+  var store: StoreOf<FromQueryFeature>
   let movie: Movie
 
-  init(store: Bindable<StoreOf<FromQueryFeature>>, movie: Movie) {
-    self._store = store
+  init(store: StoreOf<FromQueryFeature>, movie: Movie) {
+    self.store = store
     self.movie = movie
   }
 
