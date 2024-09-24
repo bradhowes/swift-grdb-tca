@@ -4,10 +4,12 @@ import SwiftData
 import SwiftUI
 
 struct ActorMoviesView: View {
-  @Bindable var store: StoreOf<ActorMoviesFeature>
   @Dependency(\.viewLinkType) var viewLinkType
+  @Bindable var store: StoreOf<ActorMoviesFeature>
+  var send: ((ActorMoviesFeature.Action) -> StoreTask)? { viewLinkType == .navLink ? store.send : nil }
+
   var body: some View {
-    MoviesListView(store: store, send: viewLinkType == .navLink ? nil : store.send)
+    MoviesListView(store: store, send: send)
       .navigationTitle(store.actor.name)
       .toolbar(.hidden, for: .tabBar)
       .toolbar {

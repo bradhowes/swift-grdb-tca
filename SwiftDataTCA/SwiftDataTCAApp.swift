@@ -28,7 +28,11 @@ enum AppTrampoline {
     if isTest || NSClassFromString("XCTestCase") != nil {
       TestApp.main()
     } else {
-      SwiftDataTCAApp.main()
+      withDependencies {
+        $0.viewLinkType = ProcessInfo.processInfo.arguments.contains("NAVLINKS") ? .navLink : .button
+      } operation: {
+        SwiftDataTCAApp.main()
+      }
     }
   }
 }

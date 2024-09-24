@@ -18,7 +18,7 @@ final class FromStateFeatureTests: XCTestCase {
       $0.modelContextProvider = try makeTestContext(mockCount: 4)
       $0.continuousClock = ImmediateClock()
     } operation: {
-      TestStore(initialState: FromStateFeature.State(useLinks: false)) { FromStateFeature() }
+      TestStore(initialState: FromStateFeature.State()) { FromStateFeature() }
     }
   }
 
@@ -28,10 +28,10 @@ final class FromStateFeatureTests: XCTestCase {
 
   @MainActor
   private func fetch() async throws -> Movies {
-    let movieObjs = (try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: "")))
+    let movieObjs = try context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
     let movies = movieObjs.map(\.valueType)
-    await store.send(._fetchMovies(nil)) {
-      $0.movies = movies
+    await store.send(.onAppear) {
+      $0.movies = .init(uncheckedUniqueElements: movies)
     }
     return (movieObjs, movies)
   }
@@ -44,22 +44,22 @@ final class FromStateFeatureTests: XCTestCase {
 
   @MainActor
   func testAddButtonTapped() async throws {
-    await store.send(.addButtonTapped)
-    let movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
+    let (_, _) = try await fetch()
 
-    await store.receive(\._fetchMovies) {
-      $0.movies = movies.map(\.valueType)
-      $0.scrollTo = movies[1].valueType
-    }
+    store.exhaustivity = .off
+    await store.send(.addButtonTapped)
+    store.exhaustivity = .off
 
     // UI should send this after handling non-nil scrollTo
+
+    let movie = store.state.scrollTo
 
     await store.send(.clearScrollTo) {
       $0.scrollTo = nil
     }
 
     await store.receive(\.highlight) {
-      $0.highlight = movies[1].valueType
+      $0.highlight = movie
     }
 
     // UI should send this after handling non-nil highlight
@@ -71,11 +71,42 @@ final class FromStateFeatureTests: XCTestCase {
 
   @MainActor
   func testDeleteSwiped() async throws {
-    let (_, movies) = try await fetch()
-    await store.send(.deleteSwiped(movies[0]))
-    await store.receive(\._fetchMovies) {
-      $0.movies = Array(movies.dropFirst())
+    let (_, _) = try await fetch()
+
+    XCTAssertEqual(store.state.movies.count, 4)
+
+    var movie = store.state.movies.randomElement()
+    await store.send(.deleteSwiped(movie!)) {
+      $0.movies = .init(uncheckedUniqueElements: $0.movies.filter { $0 != movie })
     }
+    XCTAssertEqual(store.state.movies.count, 3)
+
+    movie = store.state.movies.randomElement()
+    await store.send(.deleteSwiped(movie!)) {
+      $0.movies = .init(uncheckedUniqueElements: $0.movies.filter { $0 != movie })
+    }
+    XCTAssertEqual(store.state.movies.count, 2)
+
+    movie = store.state.movies.randomElement()
+    await store.send(.deleteSwiped(movie!)) {
+      $0.movies = .init(uncheckedUniqueElements: $0.movies.filter { $0 != movie })
+    }
+    XCTAssertEqual(store.state.movies.count, 1)
+
+    movie = store.state.movies.randomElement()
+    await store.send(.deleteSwiped(movie!)) {
+      $0.movies = .init(uncheckedUniqueElements: $0.movies.filter { $0 != movie })
+    }
+    XCTAssertTrue(store.state.movies.isEmpty)
+
+    store.exhaustivity = .off(showSkippedAssertions: false)
+    await store.send(.addButtonTapped)
+    store.exhaustivity = .on
+
+    let movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward, search: ""))
+    XCTAssertEqual(movies.count, 1)
+    XCTAssertEqual(movies[0].actors.count, 5)
+    XCTAssertEqual(movies[0].actors[0].movies[0], movies[0])
   }
 
   @MainActor
@@ -138,56 +169,46 @@ final class FromStateFeatureTests: XCTestCase {
 
     await store.send(.searchTextChanged("zzz")) {
       $0.searchText = "zzz"
-    }
-
-    await store.receive(\._fetchMovies) {
-      $0.movies = []
+      $0.movies = .init()
     }
 
     await store.send(.searchTextChanged("zzz")) // No change
 
-
     await store.send(.searchTextChanged("the")) {
       $0.searchText = "the"
-    }
-
-    await store.receive(\._fetchMovies) {
-      $0.movies = [movies[1], movies[2]]
+      $0.movies = .init(uncheckedUniqueElements: [movies[1], movies[2]])
     }
 
     await store.send(.searchTextChanged("the s")) {
       $0.searchText = "the s"
-    }
-
-    await store.receive(\._fetchMovies) {
-      $0.movies = [movies[2]]
+      $0.movies = .init(uncheckedUniqueElements: [movies[2]])
     }
 
     await store.send(.searchButtonTapped(false)) {
       $0.isSearchFieldPresented = false
+      $0.searchText = ""
+      $0.movies = .init(uncheckedUniqueElements: movies)
     }
   }
 
   @MainActor
   func testTitleSorting() async throws {
-    var (movieObjs, _) = try await fetch()
+    var (_, movies) = try await fetch()
 
     await store.send(.titleSortChanged(.reverse)) {
       $0.titleSort = .reverse
+      $0.movies = .init(uncheckedUniqueElements: movies.reversed())
     }
 
-    movieObjs = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .reverse, search: ""))
-    await store.receive(\._fetchMovies) {
-      $0.movies = movieObjs.map { $0.valueType }
-    }
-
+    store.exhaustivity = .off
     await store.send(.titleSortChanged(.none)) {
       $0.titleSort = .none
     }
+    store.exhaustivity = .on
 
-    movieObjs = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .none, search: ""))
-    await store.receive(\._fetchMovies) {
-      $0.movies = movieObjs.map { $0.valueType }
+    await store.send(.titleSortChanged(.forward)) {
+      $0.titleSort = .forward
+      $0.movies = .init(uncheckedUniqueElements: movies)
     }
   }
 
@@ -195,6 +216,7 @@ final class FromStateFeatureTests: XCTestCase {
   func testPreviewRenderWithButtons() throws {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
+      $0.viewLinkType = .button
     } operation: {
       try withSnapshotTesting(record: recording) {
         let view = FromStateView.previewWithButtons
@@ -207,6 +229,7 @@ final class FromStateFeatureTests: XCTestCase {
   func testPreviewRenderWithLinks() throws {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
+      $0.viewLinkType = .navLink
     } operation: {
       try withSnapshotTesting(record: recording) {
         let view = FromStateView.previewWithLinks

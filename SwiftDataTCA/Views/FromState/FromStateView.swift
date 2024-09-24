@@ -8,7 +8,7 @@ struct FromStateView: View {
 
   var body: some View {
     NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-      MovieListView(store: $store)
+      MovieListView(store: store)
         .navigationTitle("FromState")
         .searchable(
           text: $store.searchText.sending(\.searchTextChanged),
@@ -24,23 +24,23 @@ struct FromStateView: View {
           }
         }
         .labelsHidden()
+        .onAppear {
+          store.send(.onAppear)
+        }
     } destination: { store in
       switch store.case {
       case let .showMovieActors(store): MovieActorsView(store: store)
       case let .showActorMovies(store): ActorMoviesView(store: store)
       }
     }
-    .onAppear {
-      store.send(.onAppear)
-    }
   }
 }
 
 private struct MovieListView: View {
-  @Bindable var store: StoreOf<FromStateFeature>
+  var store: StoreOf<FromStateFeature>
 
-  init(store: Bindable<StoreOf<FromStateFeature>>) {
-    self._store = store
+  init(store: StoreOf<FromStateFeature>) {
+    self.store = store
   }
 
   var body: some View {
@@ -62,8 +62,8 @@ private struct MovieListView: View {
         if let movie {
           withAnimation {
             proxy.scrollTo(movie.id)
-            store.send(.clearScrollTo)
           }
+          store.send(.clearScrollTo)
         }
       }
     }
@@ -77,10 +77,12 @@ private struct MovieListRow: View {
   init(store: StoreOf<FromStateFeature>, movie: Movie) {
     self.store = store
     self.movie = movie
+    print("\(movie.name)")
   }
 
   var body: some View {
-    if store.useLinks {
+    @Dependency(\.viewLinkType) var viewLinkType
+    if viewLinkType == .navLink {
       RootFeature.link(movie)
         .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
           store.send(.clearHighlight)
@@ -105,16 +107,16 @@ private struct MovieListRow: View {
 extension FromStateView {
   static var previewWithLinks: some View {
     @Dependency(\.modelContextProvider) var context
-    let view = FromStateView(store: Store(initialState: .init(useLinks: true)) { FromStateFeature() })
+    let store = Store(initialState: .init()) { FromStateFeature() }
+    return FromStateView(store: store)
       .modelContext(context)
-    return view
   }
 
   static var previewWithButtons: some View {
     @Dependency(\.modelContextProvider) var context
-    let view = FromStateView(store: Store(initialState: .init(useLinks: false)) { FromStateFeature() })
+    let store = Store(initialState: .init()) { FromStateFeature() }
+    return FromStateView(store: store)
       .modelContext(context)
-    return view
   }
 }
 

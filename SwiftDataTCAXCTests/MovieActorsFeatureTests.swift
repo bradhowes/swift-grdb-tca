@@ -55,12 +55,12 @@ final class MovieActorsFeatureTests: XCTestCase {
 
     await store.send(.nameSortChanged(.reverse)) {
       $0.nameSort = .reverse
-      $0.actors = $0.actors.reversed()
+      $0.actors = IdentifiedArrayOf<Actor>(uncheckedUniqueElements: $0.actors.elements.reversed())
     }
 
     await store.send(.nameSortChanged(.forward)) {
       $0.nameSort = .forward
-      $0.actors = $0.actors.reversed()
+      $0.actors = IdentifiedArrayOf<Actor>(uncheckedUniqueElements: $0.actors.elements.reversed())
     }
 
     store.exhaustivity = .off

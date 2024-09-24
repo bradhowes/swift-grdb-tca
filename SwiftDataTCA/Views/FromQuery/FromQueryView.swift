@@ -1,6 +1,5 @@
 import ComposableArchitecture
 import Dependencies
-import Foundation
 import SwiftData
 import SwiftUI
 
@@ -9,7 +8,7 @@ struct FromQueryView: View {
 
   var body: some View {
     NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-      MovieListView(store: $store)
+      MovieListView(store: store)
         .navigationTitle("FromQuery")
         .searchable(
           text: $store.searchText.sending(\.searchTextChanged),
@@ -36,12 +35,12 @@ struct FromQueryView: View {
 }
 
 private struct MovieListView: View {
-  @Bindable var store: StoreOf<FromQueryFeature>
+  var store: StoreOf<FromQueryFeature>
   @Query var moviesQuery: [MovieModel]
   var movies: [Movie] { moviesQuery.map(\.valueType) }
 
-  init(store: Bindable<StoreOf<FromQueryFeature>>) {
-    self._store = store
+  init(store: StoreOf<FromQueryFeature>) {
+    self.store = store
     self._moviesQuery = Query(self.store.fetchDescriptor, animation: .default)
   }
 
@@ -62,8 +61,8 @@ private struct MovieListView: View {
         if let movie {
           withAnimation {
             proxy.scrollTo(movie.id)
-            store.send(.clearScrollTo)
           }
+          store.send(.clearScrollTo)
         }
       }
     }
@@ -73,6 +72,7 @@ private struct MovieListView: View {
 private struct MovieListRow: View {
   var store: StoreOf<FromQueryFeature>
   let movie: Movie
+  @Dependency(\.viewLinkType) var viewLinkType
 
   init(store: StoreOf<FromQueryFeature>, movie: Movie) {
     self.store = store
@@ -80,7 +80,7 @@ private struct MovieListRow: View {
   }
 
   var body: some View {
-    if store.useLinks {
+    if viewLinkType == .navLink {
       RootFeature.link(movie)
         .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
           store.send(.clearHighlight)
@@ -105,13 +105,13 @@ private struct MovieListRow: View {
 extension FromQueryView {
   static var previewWithLinks: some View {
     @Dependency(\.modelContextProvider) var context
-    return FromQueryView(store: Store(initialState: .init(useLinks: true)) { FromQueryFeature() })
+    return FromQueryView(store: Store(initialState: .init()) { FromQueryFeature() })
       .modelContext(context)
   }
 
   static var previewWithButtons: some View {
     @Dependency(\.modelContextProvider) var context
-    return FromQueryView(store: Store(initialState: .init(useLinks: false)) { FromQueryFeature() })
+    return FromQueryView(store: Store(initialState: .init()) { FromQueryFeature() })
       .modelContext(context)
   }
 }

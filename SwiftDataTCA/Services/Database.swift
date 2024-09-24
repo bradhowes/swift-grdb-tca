@@ -27,8 +27,11 @@ private func doAdd() -> MovieModel {
 @Sendable
 private func doDelete(_ model: MovieModel) {
   @Dependency(\.modelContextProvider) var context
-  context.delete(model)
-  try? context.save()
+  do {
+    try ActiveSchema.deleteMovie(context, movie: model)
+  } catch {
+    fatalError("Encountered failure while deleting movieModel - \(error)")
+  }
 }
 
 @Sendable

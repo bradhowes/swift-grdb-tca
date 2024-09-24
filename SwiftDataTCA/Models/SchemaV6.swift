@@ -1,5 +1,6 @@
 import Dependencies
 import Foundation
+import IdentifiedCollections
 import SwiftData
 
 /// Schema v6 - rename models and operate with structs in views
@@ -47,9 +48,9 @@ enum SchemaV6: VersionedSchema {
     let modelId: PersistentIdentifier
     let name: String
 
-    func movies(ordering: SortOrder?) -> [Movie] {
+    func movies(ordering: SortOrder?) -> IdentifiedArrayOf<Movie> {
       @Dependency(\.modelContextProvider) var context
-      return Support.sortedMovies(for: backingObject(), order: ordering).map(\.valueType)
+      return .init(uncheckedUniqueElements: Support.sortedMovies(for: backingObject(), order: ordering).map(\.valueType))
     }
 
     @discardableResult
@@ -72,8 +73,8 @@ enum SchemaV6: VersionedSchema {
       return .init(modelId: modelId, name: name, favorite: !favorite)
     }
 
-    func actors(ordering: SortOrder?) -> [Actor] {
-      Support.sortedActors(for: backingObject(), order: ordering).map(\.valueType)
+    func actors(ordering: SortOrder?) -> IdentifiedArrayOf<Actor> {
+      .init(uncheckedUniqueElements: Support.sortedActors(for: backingObject(), order: ordering).map(\.valueType))
     }
 
     @discardableResult
@@ -91,20 +92,20 @@ enum SchemaV6: VersionedSchema {
   }
 }
 
-extension SchemaV6.Actor: Equatable {
-  static func == (lhs: Self, rhs: Self) -> Bool { lhs.modelId == rhs.modelId }
-}
-
 extension SchemaV6.Actor: Identifiable {
   public var id: PersistentIdentifier { modelId }
 }
 
-extension SchemaV6.Movie: Equatable {
-  static func == (lhs: Self, rhs: Self) -> Bool { lhs.modelId == rhs.modelId && lhs.favorite == rhs.favorite }
+extension SchemaV6.Actor: Equatable {
+  static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }
 }
 
 extension SchemaV6.Movie: Identifiable {
   public var id: PersistentIdentifier { modelId }
+}
+
+extension SchemaV6.Movie: Equatable {
+  static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id && lhs.favorite == rhs.favorite }
 }
 
 extension SchemaV6 {
@@ -126,14 +127,20 @@ extension SchemaV6 {
   }
 
   static func fetchOrMakeActor(_ context: ModelContext, name: String) -> ActorModel {
+    print("fetchOrMakeActor - \(name)")
     let predicate = #Predicate<ActorModel> { $0.name == name }
     let fetchDescriptor = FetchDescriptor<ActorModel>(predicate: predicate)
-    if let actors = (try? context.fetch(fetchDescriptor)), !actors.isEmpty {
+
+    let actors = try? context.fetch(fetchDescriptor)
+    if let actors, !actors.isEmpty {
+      print("fetchOrMakeActor - usiing existing actor")
       return actors[0]
     }
 
+    print("fetchOrMakeActor - creating new actor")
     let actor = ActorModel(name: name)
     context.insert(actor)
+    try? context.save()
 
     return actor
   }
@@ -160,6 +167,24 @@ extension SchemaV6 {
     var fetchDescriptor = FetchDescriptor(predicate: searchPredicate(search), sortBy: sortBy)
     fetchDescriptor.relationshipKeyPathsForPrefetching = [\.actors]
     return fetchDescriptor
+  }
+
+  static func deleteMovie(_ context: ModelContext, movie: MovieModel) throws {
+    print("deleteMovie - \(movie.title)")
+    let actors = movie.actors
+    movie.actors = []
+    for actor in actors {
+      print("removing movie from actor \(actor.name)")
+      actor.movies = actor.movies.filter { $0 != movie }
+      if actor.movies.isEmpty {
+        print("actor has no movies - deleting")
+        context.delete(actor)
+      }
+    }
+
+    context.delete(movie)
+
+    try context.save()
   }
 }
 

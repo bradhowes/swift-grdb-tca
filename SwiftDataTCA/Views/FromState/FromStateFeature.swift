@@ -9,9 +9,8 @@ struct FromStateFeature {
 
   @ObservableState
   struct State: Equatable {
-    let useLinks: Bool
     var path = StackState<Path.State>()
-    var movies: [Movie] = []
+    var movies: IdentifiedArrayOf<Movie> = []
     var titleSort: SortOrder? = .forward
     var isSearchFieldPresented = false
     var searchText: String = ""
@@ -19,10 +18,6 @@ struct FromStateFeature {
     var highlight: Movie?
     var fetchDescriptor: FetchDescriptor<MovieModel> {
       ActiveSchema.movieFetchDescriptor(titleSort: self.titleSort, search: searchText)
-    }
-
-    init(useLinks: Bool) {
-      self.useLinks = useLinks
     }
   }
 
@@ -53,7 +48,7 @@ struct FromStateFeature {
 
       case .addButtonTapped:
         let movieModel = db.add()
-        return doSendFetchMovies(movieModel.valueType)
+        return fetchMovies(movieModel.valueType, state: &state)
 
       case .clearHighlight:
         state.highlight = nil
@@ -70,8 +65,9 @@ struct FromStateFeature {
         }
 
       case .deleteSwiped(let movie):
+        state.movies = state.movies.filter { $0.id != movie.id }
         db.delete(movie.backingObject())
-        return doSendFetchMovies()
+        return .none
 
       case .detailButtonTapped(let movie):
         state.path.append(RootFeature.showMovieActors(movie))
@@ -85,25 +81,28 @@ struct FromStateFeature {
         return .none
 
       case .onAppear:
-        return doSendFetchMovies()
+        return fetchMovies(nil, state: &state)
 
       case .path(let pathAction):
         return monitorPathChange(pathAction, state: &state)
 
       case .searchButtonTapped(let enabled):
         state.isSearchFieldPresented = enabled
-        return .none
+        if !enabled {
+          state.searchText = ""
+        }
+        return fetchMovies(nil, state: &state)
 
       case .searchTextChanged(let query):
         if query != state.searchText {
           state.searchText = query
-          return doSendFetchMovies()
+          return fetchMovies(nil, state: &state)
         }
         return .none
 
       case .titleSortChanged(let newSort):
         state.titleSort = newSort
-        return doSendFetchMovies()
+        return fetchMovies(nil, state: &state)
 
       case .toggleFavoriteState(let movie):
         return Utils.toggleFavoriteState(movie, movies: &state.movies)
@@ -126,7 +125,7 @@ extension FromStateFeature {
 
   private func fetchMovies(_ movie: Movie?, state: inout State) -> Effect<Action> {
     @Dependency(\.database) var db
-    state.movies = db.fetchMovies(state.fetchDescriptor).map(\.valueType)
+    state.movies = .init(uncheckedUniqueElements: db.fetchMovies(state.fetchDescriptor).map(\.valueType))
     if let movie {
       state.scrollTo = movie
     }

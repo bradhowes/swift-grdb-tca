@@ -29,6 +29,8 @@ final class FromQueryUITests: XCTestCase {
     firstMovie.tap()
 
     let navBar = app.navigationBars[firstMovieTitle]
+    XCTAssertTrue(navBar.waitForExistence(timeout: 1.0))
+
     let backButton = navBar.buttons[navBarName]
     XCTAssertTrue(backButton.waitForExistence(timeout: 1.0))
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)

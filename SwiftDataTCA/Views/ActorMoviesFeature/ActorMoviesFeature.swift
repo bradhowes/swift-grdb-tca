@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import Foundation
+import IdentifiedCollections
 import SwiftData
 import SwiftUI
 
@@ -10,7 +11,7 @@ struct ActorMoviesFeature {
   struct State: Equatable {
     let actor: Actor
     var titleSort: SortOrder?
-    var movies: [Movie]
+    var movies: IdentifiedArrayOf<Movie>
     var selectedMovie: Movie?
 
     init(actor: Actor, titleSort: SortOrder? = .forward) {

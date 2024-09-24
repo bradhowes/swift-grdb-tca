@@ -9,7 +9,7 @@ struct MovieActorsFeature {
   struct State: Equatable {
     var movie: Movie
     var nameSort: SortOrder? = .forward
-    var actors: [Actor]
+    var actors: IdentifiedArrayOf<Actor>
     var animateButton = false
 
     init(movie: Movie, nameSort: SortOrder? = .forward) {

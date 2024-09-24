@@ -70,6 +70,7 @@
 		BDF299C52C4A69AC00D7EB85 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BDF299C42C4A69AC00D7EB85 /* Debug.xcconfig */; };
 		BDF299C62C4A69AC00D7EB85 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BDF299C42C4A69AC00D7EB85 /* Debug.xcconfig */; };
 		BDF299C72C4A69AC00D7EB85 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BDF299C42C4A69AC00D7EB85 /* Debug.xcconfig */; };
+		BDF59DD02CA1E18E00DC7D00 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,11 +113,6 @@
 		BD0DC1DE2C41779D00821D09 /* FromStateFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromStateFeatureTests.swift; sourceTree = "<group>"; };
 		BD13EDFA2C7B98AA000F68B4 /* RootFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootFeature.swift; sourceTree = "<group>"; };
 		BD13EDFB2C7B98AA000F68B4 /* RootFeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootFeatureView.swift; sourceTree = "<group>"; };
-		BD13EDFF2C7BD610000F68B4 /* testPreviewRender.testPreviewRender-iOS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "testPreviewRender.testPreviewRender-iOS.png"; sourceTree = "<group>"; };
-		BD13EE002C7BD630000F68B4 /* testPreviewRender.testPreviewRender-iOS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "testPreviewRender.testPreviewRender-iOS.png"; sourceTree = "<group>"; };
-		BD13EE012C7BD64A000F68B4 /* testPreviewRender.testPreviewRender-iOS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "testPreviewRender.testPreviewRender-iOS.png"; sourceTree = "<group>"; };
-		BD13EE022C7BD64A000F68B4 /* testRootContentViewRender.testRootContentViewRender-iOS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "testRootContentViewRender.testRootContentViewRender-iOS.png"; sourceTree = "<group>"; };
-		BD13EE032C7BD654000F68B4 /* testPreviewRender.testPreviewRender-iOS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "testPreviewRender.testPreviewRender-iOS.png"; sourceTree = "<group>"; };
 		BD1676AA2C98CF13004AA2D2 /* AnimationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationTests.swift; sourceTree = "<group>"; };
 		BD1676B12C98DC64004AA2D2 /* SwiftDataTCAUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftDataTCAUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD1676B32C98DC64004AA2D2 /* FromQueryUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromQueryUITests.swift; sourceTree = "<group>"; };
@@ -180,6 +176,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				23A64E9D2ACC5DFE005B6344 /* ComposableArchitecture in Frameworks */,
+				BDF59DD02CA1E18E00DC7D00 /* IdentifiedCollections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,7 +299,6 @@
 		BD0DC1DD2C41779D00821D09 /* SwiftDataTCAXCTests */ = {
 			isa = PBXGroup;
 			children = (
-				BD81CD0E2C71D41E0095164F /* __Snapshots__ */,
 				BDA1820B2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift */,
 				BD1676AA2C98CF13004AA2D2 /* AnimationTests.swift */,
 				BDA1820D2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift */,
@@ -411,50 +407,6 @@
 			path = SwiftDataTCATests;
 			sourceTree = "<group>";
 		};
-		BD81CD062C71D41E0095164F /* ActorMoviesFeatureTests */ = {
-			isa = PBXGroup;
-			children = (
-				BD13EDFF2C7BD610000F68B4 /* testPreviewRender.testPreviewRender-iOS.png */,
-			);
-			path = ActorMoviesFeatureTests;
-			sourceTree = "<group>";
-		};
-		BD81CD092C71D41E0095164F /* FromQueryFeatureTests */ = {
-			isa = PBXGroup;
-			children = (
-				BD13EE002C7BD630000F68B4 /* testPreviewRender.testPreviewRender-iOS.png */,
-			);
-			path = FromQueryFeatureTests;
-			sourceTree = "<group>";
-		};
-		BD81CD0B2C71D41E0095164F /* FromStateFeatureTests */ = {
-			isa = PBXGroup;
-			children = (
-				BD13EE012C7BD64A000F68B4 /* testPreviewRender.testPreviewRender-iOS.png */,
-				BD13EE022C7BD64A000F68B4 /* testRootContentViewRender.testRootContentViewRender-iOS.png */,
-			);
-			path = FromStateFeatureTests;
-			sourceTree = "<group>";
-		};
-		BD81CD0D2C71D41E0095164F /* MovieActorsFeatureTests */ = {
-			isa = PBXGroup;
-			children = (
-				BD13EE032C7BD654000F68B4 /* testPreviewRender.testPreviewRender-iOS.png */,
-			);
-			path = MovieActorsFeatureTests;
-			sourceTree = "<group>";
-		};
-		BD81CD0E2C71D41E0095164F /* __Snapshots__ */ = {
-			isa = PBXGroup;
-			children = (
-				BD81CD062C71D41E0095164F /* ActorMoviesFeatureTests */,
-				BD81CD092C71D41E0095164F /* FromQueryFeatureTests */,
-				BD81CD0B2C71D41E0095164F /* FromStateFeatureTests */,
-				BD81CD0D2C71D41E0095164F /* MovieActorsFeatureTests */,
-			);
-			path = __Snapshots__;
-			sourceTree = "<group>";
-		};
 		BD8F4DB12C46C7D4004ACF0B /* ActorMoviesFeature */ = {
 			isa = PBXGroup;
 			children = (
@@ -492,6 +444,7 @@
 			name = SwiftDataTCA;
 			packageProductDependencies = (
 				23A64E9C2ACC5DFE005B6344 /* ComposableArchitecture */,
+				BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */,
 			);
 			productName = SwiftDataTCA;
 			productReference = 23A64E862ACC5312005B6344 /* SwiftDataTCA.app */;
@@ -596,6 +549,7 @@
 				23A64E9B2ACC5DFE005B6344 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				BD2182882C4D357700FCB16E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				BD1DE7C72C9635F100F3E85F /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+				BDF59DCE2CA1E18E00DC7D00 /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
 			);
 			productRefGroup = 23A64E872ACC5312005B6344 /* Products */;
 			projectDirPath = "";
@@ -1170,6 +1124,14 @@
 				minimumVersion = 1.17.4;
 			};
 		};
+		BDF59DCE2CA1E18E00DC7D00 /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-identified-collections";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1187,6 +1149,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BD2182882C4D357700FCB16E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
+		};
+		BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BDF59DCE2CA1E18E00DC7D00 /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
+			productName = IdentifiedCollections;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

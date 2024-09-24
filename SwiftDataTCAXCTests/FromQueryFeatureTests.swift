@@ -18,7 +18,7 @@ final class FromQueryFeatureTests: XCTestCase {
       $0.modelContextProvider = try makeTestContext(mockCount: 4)
       $0.continuousClock = ImmediateClock()
     } operation: {
-      TestStore(initialState: FromQueryFeature.State(useLinks: false)) { FromQueryFeature() }
+      TestStore(initialState: FromQueryFeature.State()) { FromQueryFeature() }
     }
   }
   
@@ -168,6 +168,7 @@ final class FromQueryFeatureTests: XCTestCase {
   func testPreviewRenderWithButtons() throws {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
+      $0.viewLinkType = .button
     } operation: {
       try withSnapshotTesting(record: recording) {
         let view = FromQueryView.previewWithButtons
@@ -180,6 +181,7 @@ final class FromQueryFeatureTests: XCTestCase {
   func testPreviewRenderWithLinks() throws {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
+      $0.viewLinkType = .navLink
     } operation: {
       try withSnapshotTesting(record: recording) {
         let view = FromQueryView.previewWithLinks

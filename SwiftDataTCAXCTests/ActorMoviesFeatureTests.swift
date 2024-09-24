@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import Dependencies
 import Foundation
+import IdentifiedCollections
 import SnapshotTesting
 import SwiftData
 import SwiftUI
@@ -64,12 +65,12 @@ final class ActorMoviesFeatureTests: XCTestCase {
 
     await store.send(.titleSortChanged(.reverse)) {
       $0.titleSort = .reverse
-      $0.movies = $0.movies.reversed()
+      $0.movies = IdentifiedArrayOf<Movie>(uncheckedUniqueElements: $0.movies.elements.reversed())
     }
 
     await store.send(.titleSortChanged(.forward)) {
       $0.titleSort = .forward
-      $0.movies = $0.movies.reversed()
+      $0.movies = IdentifiedArrayOf<Movie>(uncheckedUniqueElements: $0.movies.elements.reversed())
     }
 
     store.exhaustivity = .off
@@ -88,7 +89,6 @@ final class ActorMoviesFeatureTests: XCTestCase {
   func testPreviewRender() throws {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
-      $0.viewLinkType = LinkKind.button
     } operation: {
       try withSnapshotTesting(record: .missing) {
         let view = ActorMoviesView.preview

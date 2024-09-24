@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import IdentifiedCollections
 import SwiftData
 import SwiftUI
 
@@ -168,7 +169,7 @@ enum Utils {
     }
   }
 
-  static func toggleFavoriteState<Action>(_ movie: Movie, movies: inout [Movie]) -> Effect<Action> {
+  static func toggleFavoriteState<Action>(_ movie: Movie, movies: inout IdentifiedArrayOf<Movie>) -> Effect<Action> {
     let changed = movie.toggleFavorite()
     for (index, movie) in movies.enumerated() where movie.modelId == changed.modelId {
       movies[index] = changed

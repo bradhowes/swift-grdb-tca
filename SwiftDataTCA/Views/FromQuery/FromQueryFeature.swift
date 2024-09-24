@@ -9,7 +9,6 @@ struct FromQueryFeature {
 
   @ObservableState
   struct State: Equatable {
-    let useLinks: Bool
     var path = StackState<Path.State>()
     var titleSort: SortOrder? = .forward
     var isSearchFieldPresented = false
@@ -18,10 +17,6 @@ struct FromQueryFeature {
     var highlight: Movie?
     var fetchDescriptor: FetchDescriptor<MovieModel> {
       ActiveSchema.movieFetchDescriptor(titleSort: titleSort, search: searchText)
-    }
-
-    init(useLinks: Bool) {
-      self.useLinks = useLinks
     }
   }
 

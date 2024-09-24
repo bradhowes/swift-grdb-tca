@@ -8,7 +8,7 @@ struct MovieActorsView: View {
   @Dependency(\.viewLinkType) var viewLinkType
 
   var body: some View {
-    ActorsListView(actors: store.actors, send: viewLinkType == .navLink ? nil : store.send)
+    ActorsListView(actors: store.actors, send: viewLinkType == .button ? store.send : nil)
       .navigationTitle(store.movie.name)
       .toolbar(.hidden, for: .tabBar)
       .toolbar {
@@ -39,7 +39,7 @@ struct MovieActorsView: View {
 }
 
 private struct ActorsListView: View {
-  var actors: [Actor]
+  var actors: IdentifiedArrayOf<Actor>
   let send: ((MovieActorsFeature.Action) -> StoreTask)?
 
   var body: some View {

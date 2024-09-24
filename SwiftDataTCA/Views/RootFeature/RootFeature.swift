@@ -21,8 +21,8 @@ struct RootFeature {
   @ObservableState
   struct State: Equatable {
     var activeTab: Tab = .fromStateFeature
-    var fromState = FromStateFeature.State(useLinks: false)
-    var fromQuery = FromQueryFeature.State(useLinks: true)
+    var fromState: FromStateFeature.State = .init()
+    var fromQuery: FromQueryFeature.State = .init()
   }
 
   enum Action: Sendable {
