@@ -48,11 +48,11 @@ private struct ActorsListView: View {
         Button {
           _ = send(.detailButtonTapped(actor))
         } label: {
-          Utils.ActorView(actor: actor, showChevron: true)
+          Utils.ActorView(name: actor.name, movieTitles: Utils.movieTitlesList(for: actor), showChevron: true)
         }
       } else {
         NavigationLink(state: RootFeature.showActorMovies(actor)) {
-          Utils.ActorView(actor: actor, showChevron: false)
+          Utils.ActorView(name: actor.name, movieTitles: Utils.movieTitlesList(for: actor), showChevron: false)
         }
       }
     }

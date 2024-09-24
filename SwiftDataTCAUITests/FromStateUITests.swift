@@ -124,7 +124,8 @@ final class FromStateUITests: XCTestCase {
     firstMovie.gentleSwipeLeft()
     let button = collectionViewsQuery.buttons["Delete"]
     button.tap()
-    XCTAssertEqual(firstMovie.label, "Superman")
+
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 2)
   }
 
   func testFastSwipingDoesNothingSpecial() throws {

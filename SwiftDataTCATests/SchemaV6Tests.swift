@@ -155,11 +155,11 @@ struct SchemaV6Tests {
       #expect(movies[0].title == "The First Movie")
       #expect(movies[0].actors.count == 3)
 
-      var actors = Support.sortedActors(for: movies[0], order: .forward)
+      var actors = movies[0].sortedActors(order: .forward)
       #expect(actors.count == 3)
       #expect(actors[1].name == "Actor 2")
 
-      movies = Support.sortedMovies(for: actors[1], order: .forward)
+      movies = actors[0].sortedMovies(order: .forward)
       #expect(movies[0].title == "The First Movie")
 
       // Delete "The First Movie"
@@ -171,9 +171,9 @@ struct SchemaV6Tests {
       #expect(movies[1].actors.count == 1)
 
       // Confirm that Actor 2 no longer holds a relation to "The First Movie"
-      actors = Support.sortedActors(for: movies[1], order: .forward)
+      actors = movies[1].sortedActors(order: .forward)
       #expect(actors.count == 1)
-      movies = Support.sortedMovies(for: actors[0], order: .forward)
+      movies = actors[0].sortedMovies(order: .forward)
       #expect(movies.count == 1)
     }
   }

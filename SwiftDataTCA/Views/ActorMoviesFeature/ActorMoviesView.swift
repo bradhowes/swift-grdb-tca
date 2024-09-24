@@ -32,11 +32,21 @@ private struct MoviesListView: View {
           Button {
             _ = send(.detailButtonTapped(movie))
           } label: {
-            Utils.MovieView(movie: movie, showChevron: true)
+            Utils.MovieView(
+              name: movie.name,
+              favorite: movie.favorite,
+              actorNames: Utils.actorNamesList(for: movie),
+              showChevron: true
+            )
           }
         } else {
           NavigationLink(state: RootFeature.showMovieActors(movie)) {
-            Utils.MovieView(movie: movie, showChevron: false)
+            Utils.MovieView(
+              name: movie.name,
+              favorite: movie.favorite,
+              actorNames: Utils.actorNamesList(for: movie),
+              showChevron: false
+            )
           }
         }
       }
@@ -62,7 +72,7 @@ extension ActorMoviesView {
   static var preview: some View {
     @Dependency(\.modelContextProvider) var context
     let actorModel = ActiveSchema.fetchOrMakeActor(context, name: "Marlon Brando")
-    let movies = Support.sortedMovies(for: actorModel, order: .forward)
+    let movies = actorModel.sortedMovies(order: .forward)
     movies[0].favorite = true
     return NavigationView {
       ActorMoviesView(store: Store(initialState: .init(actor: actorModel.valueType)) {

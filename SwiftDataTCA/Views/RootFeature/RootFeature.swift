@@ -55,7 +55,12 @@ extension RootFeature {
   @MainActor
   static func link(_ movie: Movie) -> some View {
     NavigationLink(state: RootFeature.showMovieActors(movie)) {
-      Utils.MovieView(movie: movie, showChevron: false)
+      Utils.MovieView(
+        name: movie.name,
+        favorite: movie.favorite,
+        actorNames: Utils.actorNamesList(for: movie),
+        showChevron: false
+      )
     }
   }
 

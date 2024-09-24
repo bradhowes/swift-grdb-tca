@@ -40,13 +40,16 @@ enum Utils {
   }
 
   struct MovieView: View {
-    let movie: Movie
+    let name: String
+    let favorite: Bool
+    let actorNames: String
     let showChevron: Bool
-    var titleColor: Color { movie.favorite ? favoriteColor : Utils.titleColor }
-    var actorNames: String { movie.actors(ordering: .forward).map(\.name).formatted(.list(type: .and)) }
+    var titleColor: Color { favorite ? favoriteColor : Utils.titleColor }
 
-    init(movie: Movie, showChevron: Bool) {
-      self.movie = movie
+    init(name: String, favorite: Bool, actorNames: String, showChevron: Bool) {
+      self.name = name
+      self.favorite = favorite
+      self.actorNames = actorNames
       self.showChevron = showChevron
     }
 
@@ -69,13 +72,13 @@ enum Utils {
     private var movieEntry: some View {
       VStack(alignment: .leading) {
         movieName
-          .accessibilityLabel((movie.favorite ? "Favorited " : "") + movie.name)
+          .accessibilityLabel((favorite ? "Favorited " : "") + name)
         actorsList
       }
     }
 
     private var movieName: some View {
-      Text(movie.name)
+      Text(name)
         .font(.headline)
         .foregroundStyle(titleColor)
         .animation(.easeInOut)
@@ -89,12 +92,13 @@ enum Utils {
   }
 
   struct ActorView: View {
-    let actor: Actor
+    let name: String
+    let movieTitles: String
     let showChevron: Bool
-    var movieTitles: String { actor.movies(ordering: .forward).map(\.name).formatted(.list(type: .and)) }
 
-    init(actor: Actor, showChevron: Bool) {
-      self.actor = actor
+    init(name: String, movieTitles: String, showChevron: Bool) {
+      self.name = name
+      self.movieTitles = movieTitles
       self.showChevron = showChevron
     }
 
@@ -122,7 +126,7 @@ enum Utils {
     }
 
     var actorName: some View {
-      Text(actor.name)
+      Text(name)
         .font(.headline)
         .foregroundStyle(Utils.titleColor)
     }
@@ -152,6 +156,14 @@ enum Utils {
       }
       .tint(.blue)
     }
+  }
+
+  static func actorNamesList(for movie: Movie) -> String {
+    movie.actors(ordering: .forward).map(\.name).formatted(.list(type: .and))
+  }
+
+  static func movieTitlesList(for actor: Actor) -> String {
+    actor.movies(ordering: .forward).map(\.name).formatted(.list(type: .and))
   }
 
   static func beginFavoriteChange<Action: Sendable>(_ action: Action) -> Effect<Action> {

@@ -25,6 +25,14 @@ enum SchemaV6: VersionedSchema {
     }
 
     var valueType: Actor { .init(modelId: persistentModelID, name: name) }
+
+    func sortedMovies(order: SortOrder?) -> [MovieModel] {
+      switch order {
+      case .forward: return movies.sorted { $0.sortableTitle.localizedCompare($1.sortableTitle) == .orderedAscending }
+      case .reverse: return movies.sorted { $0.sortableTitle.localizedCompare($1.sortableTitle) == .orderedDescending }
+      case nil: return movies
+      }
+    }
   }
 
   @Model
@@ -42,6 +50,14 @@ enum SchemaV6: VersionedSchema {
     }
 
     var valueType: Movie { .init(modelId: persistentModelID, name: title, favorite: favorite) }
+
+    func sortedActors(order: SortOrder?) -> [ActorModel] {
+      switch order {
+      case .forward: return actors.sorted { $0.name.localizedCompare($1.name) == .orderedAscending }
+      case .reverse: return actors.sorted { $0.name.localizedCompare($1.name) == .orderedDescending }
+      case nil: return actors
+      }
+    }
   }
 
   struct Actor {
@@ -50,7 +66,7 @@ enum SchemaV6: VersionedSchema {
 
     func movies(ordering: SortOrder?) -> IdentifiedArrayOf<Movie> {
       @Dependency(\.modelContextProvider) var context
-      return .init(uncheckedUniqueElements: Support.sortedMovies(for: backingObject(), order: ordering).map(\.valueType))
+      return .init(uncheckedUniqueElements: backingObject().sortedMovies(order: ordering).map(\.valueType))
     }
 
     @discardableResult
@@ -74,7 +90,7 @@ enum SchemaV6: VersionedSchema {
     }
 
     func actors(ordering: SortOrder?) -> IdentifiedArrayOf<Actor> {
-      .init(uncheckedUniqueElements: Support.sortedActors(for: backingObject(), order: ordering).map(\.valueType))
+      .init(uncheckedUniqueElements: backingObject().sortedActors(order: ordering).map(\.valueType))
     }
 
     @discardableResult

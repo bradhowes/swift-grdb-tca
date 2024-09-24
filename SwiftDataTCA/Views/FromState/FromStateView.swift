@@ -99,7 +99,12 @@ private struct MovieListRow: View {
     Button {
       _ = store.send(.detailButtonTapped(movie))
     } label: {
-      Utils.MovieView(movie: movie, showChevron: true)
+      Utils.MovieView(
+        name: movie.name,
+        favorite: movie.favorite,
+        actorNames: Utils.actorNamesList(for: movie),
+        showChevron: true
+      )
     }
   }
 }
