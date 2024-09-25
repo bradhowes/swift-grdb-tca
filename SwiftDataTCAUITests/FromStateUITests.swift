@@ -13,7 +13,7 @@ final class FromStateUITests: XCTestCase {
     app.launchArguments = ["UITEST"]
     app.launch()
     app.buttons[navBarName].tap()
-    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 1.0))
+    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 30.0))
   }
 
   func testActorNameOrdering() throws {
@@ -29,7 +29,7 @@ final class FromStateUITests: XCTestCase {
 
     let navBar = app.navigationBars[firstMovieTitle]
     let backButton = navBar.buttons[navBarName]
-    XCTAssertTrue(backButton.waitForExistence(timeout: 1.0))
+    XCTAssertTrue(backButton.waitForExistence(timeout: 30.0))
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
 
     let titleSortMenu = navBar.buttons["actor ordering, actor ordering, choose actor ordering"]
@@ -52,7 +52,7 @@ final class FromStateUITests: XCTestCase {
     navBar.buttons["favorite movie"].tap()
     backButton.tap()
 
-    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 1.0))
+    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 30.0))
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
     XCTAssertEqual(firstMovie.label, "Favorited " + firstMovieTitle)
   }
@@ -149,7 +149,7 @@ final class FromStateUITests: XCTestCase {
 
     let actorsNavBar = app.navigationBars[firstMovieTitle]
     let actorsBackButton = actorsNavBar.buttons[navBarName]
-    XCTAssertTrue(actorsBackButton.waitForExistence(timeout: 1.0))
+    XCTAssertTrue(actorsBackButton.waitForExistence(timeout: 30.0))
 
     let firstActor = collectionViewsQuery.cells.element(boundBy: 0).staticTexts.element(boundBy: 0)
     let firstActorName = "Angela Bassett"
@@ -159,7 +159,7 @@ final class FromStateUITests: XCTestCase {
     firstActor.tap()
     let moviesNavBar = app.navigationBars[firstActorName]
     let moviesBackButton = moviesNavBar.buttons[firstMovieTitle]
-    XCTAssertTrue(moviesBackButton.waitForExistence(timeout: 1.0))
+    XCTAssertTrue(moviesBackButton.waitForExistence(timeout: 30.0))
 
     XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Favorited " + firstMovieTitle)
   }

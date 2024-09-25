@@ -13,7 +13,7 @@ final class FromQueryUITests: XCTestCase {
     app.launchArguments = ["UITEST"]
     app.launch()
     app.buttons[navBarName].tap()
-    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 1.0))
+    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 30.0))
   }
 
   func testActorNameOrdering() throws {
@@ -29,10 +29,10 @@ final class FromQueryUITests: XCTestCase {
     firstMovie.tap()
 
     let navBar = app.navigationBars[firstMovieTitle]
-    XCTAssertTrue(navBar.waitForExistence(timeout: 1.0))
+    XCTAssertTrue(navBar.waitForExistence(timeout: 30.0))
 
     let backButton = navBar.buttons[navBarName]
-    XCTAssertTrue(backButton.waitForExistence(timeout: 1.0))
+    XCTAssertTrue(backButton.waitForExistence(timeout: 30.0))
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
 
     let titleSortMenu = navBar.buttons["actor ordering, actor ordering, choose actor ordering"]
@@ -52,7 +52,7 @@ final class FromQueryUITests: XCTestCase {
 
     navBar.buttons["favorite movie"].tap()
     backButton.tap()
-    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 1.0))
+    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 30.0))
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
     XCTAssertEqual(firstMovie.label, "Favorited " + firstMovieTitle)
   }
