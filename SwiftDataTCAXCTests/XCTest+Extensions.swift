@@ -18,7 +18,7 @@ extension XCTest {
   @inlinable
   func assertSnapshot<V: SwiftUI.View>(
     matching: V,
-    size: CGSize = CGSize(width: 320, height: 480),
+    size: CGSize = CGSize(width: 640, height: 1136),
     file: StaticString = #file,
     testName: String = #function,
     line: UInt = #line

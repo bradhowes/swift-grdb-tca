@@ -11,7 +11,7 @@ import XCTest
 
 final class ActorMoviesFeatureTests: XCTestCase {
 
-  var store: TestStore<ActorMoviesFeature.State, ActorMoviesFeature.Action>!
+  var store: TestStoreOf<ActorMoviesFeature>!
   var context: ModelContext { store.dependencies.modelContextProvider }
 
   override func setUpWithError() throws {
@@ -22,7 +22,9 @@ final class ActorMoviesFeatureTests: XCTestCase {
       @Dependency(\.modelContextProvider) var context
       let movies = try context.fetch(FetchDescriptor<MovieModel>())
       let actor = movies[0].valueType.actors(ordering: .forward)[2]
-      return TestStore(initialState: ActorMoviesFeature.State(actor: actor)) { ActorMoviesFeature() }
+      return TestStore(initialState: ActorMoviesFeature.State(actor: actor)) {
+        ActorMoviesFeature()
+      }
     }
   }
 

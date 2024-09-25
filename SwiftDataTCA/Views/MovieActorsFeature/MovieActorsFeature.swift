@@ -1,19 +1,20 @@
 import ComposableArchitecture
 import Foundation
+import IdentifiedCollections
 import SwiftData
 import SwiftUI
 
 @Reducer
 struct MovieActorsFeature {
+
   @ObservableState
   struct State: Equatable {
     var movie: Movie
-    var nameSort: SortOrder? = .forward
+    var nameSort: SortOrder?
     var actors: IdentifiedArrayOf<Actor>
     var animateButton = false
 
     init(movie: Movie, nameSort: SortOrder? = .forward) {
-      @Dependency(\.modelContextProvider) var modelContext
       self.movie = movie
       self.nameSort = nameSort
       self.actors = movie.actors(ordering: nameSort)

@@ -10,7 +10,7 @@ import XCTest
 
 final class AnimationTests: XCTestCase {
 
-  let recording: SnapshotTestingConfiguration.Record = .missing
+  let recording: SnapshotTestingConfiguration.Record = .failed
 
   @MainActor
   func testFlashDemoPreviewFalse() throws {

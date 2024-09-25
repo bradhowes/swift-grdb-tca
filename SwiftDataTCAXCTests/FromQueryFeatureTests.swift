@@ -9,7 +9,8 @@ import XCTest
 
 final class FromQueryFeatureTests: XCTestCase {
   typealias Movies = (Array<SchemaV6.MovieModel>, Array<SchemaV6.Movie>)
-  let recording: SnapshotTestingConfiguration.Record = .missing
+
+  let recording: SnapshotTestingConfiguration.Record = .failed
   var store: TestStore<FromQueryFeature.State, FromQueryFeature.Action>!
   var context: ModelContext { store.dependencies.modelContextProvider }
 

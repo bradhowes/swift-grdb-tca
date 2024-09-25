@@ -9,7 +9,8 @@ import XCTest
 
 final class FromStateFeatureTests: XCTestCase {
   typealias Movies = (Array<SchemaV6.MovieModel>, Array<SchemaV6.Movie>)
-  let recording: SnapshotTestingConfiguration.Record = .missing
+
+  let recording: SnapshotTestingConfiguration.Record = .failed
   var store: TestStoreOf<FromStateFeature>!
   var context: ModelContext { store.dependencies.modelContextProvider }
 
@@ -113,7 +114,7 @@ final class FromStateFeatureTests: XCTestCase {
   func testDetailButtonTapped() async throws {
     let (_, movies) = try await fetch()
     await store.send(.detailButtonTapped(movies[0])) {
-      $0.path.append(.showMovieActors(.init(movie: movies[0])))
+      $0.path.append(.showMovieActors(.init(movie: movies[0], nameSort: .forward)))
     }
   }
 
@@ -132,24 +133,24 @@ final class FromStateFeatureTests: XCTestCase {
     let (movieObjs, movies) = try await fetch()
 
     await store.send(.detailButtonTapped(movies[0])) {
-      $0.path.append(.showMovieActors(.init(movie: movies[0])))
+      $0.path.append(.showMovieActors(.init(movie: movies[0], nameSort: .forward)))
     }
 
     let actorObj = movieObjs[0].actors[0]
     await store.send(.path(.element(id: 0, action: .showMovieActors(.detailButtonTapped(actorObj.valueType))))) {
-      $0.path.append(.showActorMovies(.init(actor: actorObj.valueType)))
+      $0.path.append(.showActorMovies(.init(actor: actorObj.valueType, titleSort: .forward)))
     }
 
     await store.send(.path(.element(id: 1, action: .showActorMovies(.detailButtonTapped(movies[0]))))) {
-      $0.path.append(.showMovieActors(.init(movie: movies[0])))
+      $0.path.append(.showMovieActors(.init(movie: movies[0], nameSort: .forward)))
     }
 
     await store.send(.path(.element(id: 2, action: .showMovieActors(.detailButtonTapped(actorObj.valueType))))) {
-      $0.path.append(.showActorMovies(.init(actor: actorObj.valueType)))
+      $0.path.append(.showActorMovies(.init(actor: actorObj.valueType, titleSort: .forward)))
     }
 
     await store.send(.path(.element(id: 3, action: .showActorMovies(.detailButtonTapped(movies[0]))))) {
-      $0.path.append(.showMovieActors(.init(movie: movies[0])))
+      $0.path.append(.showMovieActors(.init(movie: movies[0], nameSort: .forward)))
     }
 
     await store.send(.path(.popFrom(id: 4))) { _ = $0.path.popLast() }

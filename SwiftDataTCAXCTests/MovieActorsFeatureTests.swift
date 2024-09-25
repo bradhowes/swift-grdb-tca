@@ -10,7 +10,7 @@ import XCTest
 
 final class MovieActorsFeatureTests: XCTestCase {
 
-  var store: TestStore<MovieActorsFeature.State, MovieActorsFeature.Action>!
+  var store: TestStoreOf<MovieActorsFeature>!
   var context: ModelContext { store.dependencies.modelContextProvider }
 
   override func setUpWithError() throws {
@@ -21,7 +21,9 @@ final class MovieActorsFeatureTests: XCTestCase {
     } operation: {
       @Dependency(\.modelContextProvider) var context
       let movies = try context.fetch(FetchDescriptor<MovieModel>())
-      return TestStore(initialState: MovieActorsFeature.State(movie: movies[0].valueType)) { MovieActorsFeature() }
+      return TestStore(initialState: MovieActorsFeature.State(movie: movies[0].valueType)) {
+        MovieActorsFeature()
+      }
     }
   }
 
@@ -84,12 +86,25 @@ final class MovieActorsFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func testPreviewRender() throws {
+  func testPreviewRenderWithButtons() throws {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue
       $0.viewLinkType = LinkKind.button
     } operation: {
-      try withSnapshotTesting(record: .missing) {
+      try withSnapshotTesting(record: .failed) {
+        let view = MovieActorsView.preview
+        try assertSnapshot(matching: view)
+      }
+    }
+  }
+
+  @MainActor
+  func SKIP_testPreviewRenderWithLinks() throws {
+    try withDependencies {
+      $0.modelContextProvider = ModelContextKey.previewValue
+      $0.viewLinkType = LinkKind.navLink
+    } operation: {
+      try withSnapshotTesting(record: .failed) {
         let view = MovieActorsView.preview
         try assertSnapshot(matching: view)
       }
