@@ -35,9 +35,6 @@ struct FromStateFeature {
     case searchTextChanged(String)
     case titleSortChanged(SortOrder?)
     case toggleFavoriteState(Movie)
-    // Reducer-only action to refresh the array of movies when another action changed what would be returned by the
-    // `fetchDescriptor`.
-    case _fetchMovies(Movie?)
   }
 
   @Dependency(\.database) var db
@@ -106,9 +103,6 @@ struct FromStateFeature {
 
       case .toggleFavoriteState(let movie):
         return Utils.toggleFavoriteState(movie, movies: &state.movies)
-
-      case ._fetchMovies(let movie):
-        return fetchMovies(movie, state: &state)
       }
     }
     .forEach(\.path, action: \.path)
@@ -116,12 +110,6 @@ struct FromStateFeature {
 }
 
 extension FromStateFeature {
-
-  private func doSendFetchMovies(_ movie: Movie? = nil) -> Effect<Action> {
-    .run { @MainActor send in
-      send(._fetchMovies(movie), animation: .default)
-    }
-  }
 
   private func fetchMovies(_ movie: Movie?, state: inout State) -> Effect<Action> {
     @Dependency(\.database) var db

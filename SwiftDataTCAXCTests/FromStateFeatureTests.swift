@@ -240,6 +240,51 @@ final class FromStateFeatureTests: XCTestCase {
   }
 
   @MainActor
+  func testPreviewRenderWithLinksDrillDownMovie() throws {
+    try withDependencies {
+      $0.modelContextProvider = ModelContextKey.previewValue
+      $0.viewLinkType = .navLink
+    } operation: {
+      try withSnapshotTesting(record: recording) {
+        @Dependency(\.modelContextProvider) var context
+        let movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward))
+        let store = Store(initialState: .init(
+          path: StackState<RootFeature.Path.State>(
+            [.showMovieActors(MovieActorsFeature.State(movie: movies[0].valueType))]
+          )
+        )) { FromStateFeature() }
+        let view = FromStateView(store: store)
+          .modelContext(context)
+        try assertSnapshot(matching: view)
+      }
+    }
+  }
+
+  @MainActor
+  func testPreviewRenderWithLinksDrillDownMovieActor() throws {
+    try withDependencies {
+      $0.modelContextProvider = ModelContextKey.previewValue
+      $0.viewLinkType = .navLink
+    } operation: {
+      try withSnapshotTesting(record: recording) {
+        @Dependency(\.modelContextProvider) var context
+        let movies = try! context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward))
+        let store = Store(initialState: .init(
+          path: StackState<RootFeature.Path.State>(
+            [
+              .showMovieActors(MovieActorsFeature.State(movie: movies[0].valueType)),
+              .showActorMovies(ActorMoviesFeature.State(actor: movies[0].sortedActors(order: .forward)[0].valueType)),
+            ]
+          )
+        )) { FromStateFeature() }
+        let view = FromStateView(store: store)
+          .modelContext(context)
+        try assertSnapshot(matching: view)
+      }
+    }
+  }
+
+  @MainActor
   func testRootContentViewRender() throws {
     try withDependencies {
       $0.modelContextProvider = ModelContextKey.previewValue

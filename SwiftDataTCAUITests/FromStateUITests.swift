@@ -122,7 +122,7 @@ final class FromStateUITests: XCTestCase {
   }
 
   func testDrillDown() throws {
-    let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
+    var firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
     let firstMovieTitle = "The Score"
     XCTAssertEqual(firstMovie.label, "Favorited " + firstMovieTitle)
 
@@ -131,7 +131,7 @@ final class FromStateUITests: XCTestCase {
 
     let actorsNavBar = app.navigationBars[firstMovieTitle]
     let actorsBackButton = actorsNavBar.buttons[navBarName]
-    XCTAssertTrue(actorsBackButton.waitForExistence(timeout: 30.0))
+    XCTAssertTrue(actorsBackButton.waitForExistence(timeout: 2.0))
 
     let firstActor = collectionViewsQuery.cells.element(boundBy: 0).staticTexts.element(boundBy: 0)
     let firstActorName = "Angela Bassett"
@@ -139,10 +139,18 @@ final class FromStateUITests: XCTestCase {
 
     // Show movies of first actor
     firstActor.tap()
+    firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
+
+    firstMovie.gentleSwipeLeft()
+    print(collectionViewsQuery.buttons.debugDescription)
+
+    let button = collectionViewsQuery.buttons["unfavorite movie"]
+    button.tap()
+
     let moviesNavBar = app.navigationBars[firstActorName]
     let moviesBackButton = moviesNavBar.buttons[firstMovieTitle]
-    XCTAssertTrue(moviesBackButton.waitForExistence(timeout: 30.0))
+    XCTAssertTrue(moviesBackButton.waitForExistence(timeout: 2.0))
 
-    XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Favorited " + firstMovieTitle)
+    XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, firstMovieTitle)
   }
 }
