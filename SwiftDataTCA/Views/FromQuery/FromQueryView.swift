@@ -72,11 +72,14 @@ private struct MovieListView: View {
 private struct MovieListRow: View {
   var store: StoreOf<FromQueryFeature>
   let movie: Movie
+  let actorNames: String
   @Dependency(\.viewLinkType) var viewLinkType
 
   init(store: StoreOf<FromQueryFeature>, movie: Movie) {
     self.store = store
     self.movie = movie
+    // Fetch the actor names while we know that the Movie is valid.
+    self.actorNames = Utils.actorNamesList(for: movie)
   }
 
   var body: some View {
@@ -100,8 +103,8 @@ private struct MovieListRow: View {
       Utils.MovieView(
         name: movie.name,
         favorite: movie.favorite,
-        actorNames: Utils.actorNamesList(for: movie),
-        showChevron: false
+        actorNames: actorNames,
+        showChevron: true
       )
     }
   }

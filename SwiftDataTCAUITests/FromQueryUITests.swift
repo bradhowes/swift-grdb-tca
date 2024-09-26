@@ -118,6 +118,6 @@ final class FromQueryUITests: XCTestCase {
     XCTAssertEqual(firstMovie.label, firstMovieTitle)
 
     firstMovie.swipeLeft(velocity: .fast)
-    XCTAssertTrue(collectionViewsQuery.buttons["Delete"].exists)
+    XCTAssertTrue(collectionViewsQuery.buttons["Delete"].waitForExistence(timeout: 2.0))
   }
 }

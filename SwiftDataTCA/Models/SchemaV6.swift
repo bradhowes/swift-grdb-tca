@@ -89,10 +89,27 @@ enum SchemaV6: VersionedSchema {
       return .init(modelId: modelId, name: name, favorite: !favorite)
     }
 
+    /**
+     Obtain an order collection of the actors for the movie.
+
+     NOTE: this must only be called when Movie is valid. In particular do not lazy fetch the actors to build a view
+     which might need an update after deleting the Movie it is based on.
+
+     - parameter ordering how to order the Actor instances by their names
+     - returns IndentifiedArray of Actor values
+     */
     func actors(ordering: SortOrder?) -> IdentifiedArrayOf<Actor> {
       .init(uncheckedUniqueElements: backingObject().sortedActors(order: ordering).map(\.valueType))
     }
 
+    /**
+     Obtain the MovieModel instance for this struct.
+
+     NOTE: this is risky if called when the Movie has been deleted.
+
+     - parameter performing an optional block to execute with the MovieModel instance
+     - returns MovieModel instance
+     */
     @discardableResult
     func backingObject(performing: ((MovieModel) -> Void)? = nil) -> MovieModel {
       @Dependency(\.modelContextProvider) var context

@@ -22,7 +22,7 @@ struct ActorMoviesView: View {
 }
 
 private struct MoviesListView: View {
-  @Bindable var store: StoreOf<ActorMoviesFeature>
+  var store: StoreOf<ActorMoviesFeature>
   let send: ((ActorMoviesFeature.Action) -> StoreTask)?
 
   var body: some View {

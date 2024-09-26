@@ -39,24 +39,18 @@ struct FromStateView: View {
 private struct MovieListView: View {
   var store: StoreOf<FromStateFeature>
 
-  init(store: StoreOf<FromStateFeature>) {
-    self.store = store
-  }
-
   var body: some View {
     ScrollViewReader { proxy in
-      List {
-        ForEach(store.movies, id: \.id) { movie in
-          MovieListRow(store: store, movie: movie)
-            .swipeActions(allowsFullSwipe: false) {
-              Utils.deleteSwipeAction(movie) {
-                store.send(.deleteSwiped(movie), animation: .snappy)
-              }
-              Utils.favoriteSwipeAction(movie) {
-                store.send(.favoriteSwiped(movie), animation: .bouncy)
-              }
+      List(store.movies, id: \.id) { movie in
+        MovieListRow(store: store, movie: movie)
+          .swipeActions(allowsFullSwipe: false) {
+            Utils.deleteSwipeAction(movie) {
+              store.send(.deleteSwiped(movie), animation: .snappy)
             }
-        }
+            Utils.favoriteSwipeAction(movie) {
+              store.send(.favoriteSwiped(movie), animation: .bouncy)
+            }
+          }
       }
       .onChange(of: store.scrollTo) { _, movie in
         if let movie {
@@ -73,14 +67,17 @@ private struct MovieListView: View {
 private struct MovieListRow: View {
   var store: StoreOf<FromStateFeature>
   let movie: Movie
+  let actorNames: String
+  @Dependency(\.viewLinkType) var viewLinkType
 
   init(store: StoreOf<FromStateFeature>, movie: Movie) {
     self.store = store
     self.movie = movie
+    // Fetch the actor names while we know that the Movie is valid.
+    self.actorNames = Utils.actorNamesList(for: movie)
   }
 
   var body: some View {
-    @Dependency(\.viewLinkType) var viewLinkType
     if viewLinkType == .navLink {
       RootFeature.link(movie)
         .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
@@ -101,7 +98,7 @@ private struct MovieListRow: View {
       Utils.MovieView(
         name: movie.name,
         favorite: movie.favorite,
-        actorNames: Utils.actorNamesList(for: movie),
+        actorNames: actorNames,
         showChevron: true
       )
     }
