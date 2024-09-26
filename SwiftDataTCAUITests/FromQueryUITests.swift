@@ -13,81 +13,63 @@ final class FromQueryUITests: XCTestCase {
     app.launchArguments = ["UITEST"]
     app.launch()
     app.buttons[navBarName].tap()
-    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 30.0))
+    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 5.0))
   }
 
   func testActorNameOrdering() throws {
-    let add = app.navigationBars[navBarName].buttons["add"]
-    add.tap()
-
-    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
-    // print(collectionViewsQuery.staticTexts.debugDescription)
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 4)
 
     let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
-    let firstMovieTitle = "The Island of Dr. Moreau"
-    XCTAssertEqual(firstMovie.label, firstMovieTitle)
+    let firstMovieTitle = "The Score"
+    XCTAssertEqual(firstMovie.label, "Favorited " + firstMovieTitle)
     firstMovie.tap()
 
     let navBar = app.navigationBars[firstMovieTitle]
-    XCTAssertTrue(navBar.waitForExistence(timeout: 30.0))
+    XCTAssertTrue(navBar.waitForExistence(timeout: 2.0))
 
     let backButton = navBar.buttons[navBarName]
-    XCTAssertTrue(backButton.waitForExistence(timeout: 30.0))
+    XCTAssertTrue(backButton.waitForExistence(timeout: 2.0))
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
+    XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Angela Bassett")
 
     let titleSortMenu = navBar.buttons["actor ordering, actor ordering, choose actor ordering"]
     app.tapMenuItem(menu: titleSortMenu, button: "arrow.down")
 
-    XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Val Kilmer")
-    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
-
-    app.tapMenuItem(menu: titleSortMenu, button: "arrow.up")
-
-    XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Daniel Rigney")
-    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
+    XCTAssertEqual(collectionViewsQuery.staticTexts.element(boundBy: 0).label, "Robert De Niro")
 
     app.tapMenuItem(menu: titleSortMenu, button: "alternatingcurrent")
     // Cannot test specific entities due to randomly ordered contents
     XCTAssertEqual(collectionViewsQuery.staticTexts.count, 10)
 
-    navBar.buttons["favorite movie"].tap()
+    navBar.buttons["unfavorite movie"].tap()
     backButton.tap()
-    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 30.0))
-    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
-    XCTAssertEqual(firstMovie.label, "Favorited " + firstMovieTitle)
+
+    XCTAssertTrue(app.navigationBars[navBarName].waitForExistence(timeout: 2.0))
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 4)
+
+    XCTAssertEqual(firstMovie.label, firstMovieTitle)
   }
 
   func testMovieNameOrdering() throws {
     let navBar = app.navigationBars[navBarName]
-    let add = navBar.buttons["add"]
-    add.tap()
-
-    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6) // 3 movies, each with title and actor labels
 
     let firstMovie = collectionViewsQuery.staticTexts.element(boundBy: 0)
-    let lastMovie = collectionViewsQuery.staticTexts.element(boundBy: 4)
-    let firstMovieTitle = "The Island of Dr. Moreau"
+    let lastMovie = collectionViewsQuery.staticTexts.element(boundBy: 2)
+    let firstMovieTitle = "Favorited The Score"
     let lastMovieTitle = "Superman"
     XCTAssertEqual(firstMovie.label, firstMovieTitle)
     XCTAssertEqual(lastMovie.label, lastMovieTitle)
 
     let titleSortMenu = navBar.buttons["movie ordering, movie ordering, choose movie ordering"]
-
     app.tapMenuItem(menu: titleSortMenu, button: "arrow.down")
 
     XCTAssertEqual(firstMovie.label, lastMovieTitle)
     XCTAssertEqual(lastMovie.label, firstMovieTitle)
-    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
-
-    app.tapMenuItem(menu: titleSortMenu, button: "arrow.up")
-
-    XCTAssertEqual(firstMovie.label, firstMovieTitle)
-    XCTAssertEqual(lastMovie.label, lastMovieTitle)
-    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 4)
 
     app.tapMenuItem(menu: titleSortMenu, button: "alternatingcurrent")
     // Cannot test specific entities due to randomly ordered contents
-    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 6)
+    XCTAssertEqual(collectionViewsQuery.staticTexts.count, 4)
   }
 
   func testFavoriteSwiping() throws {

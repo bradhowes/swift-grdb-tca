@@ -143,17 +143,14 @@ extension SchemaV6 {
   }
 
   static func fetchOrMakeActor(_ context: ModelContext, name: String) -> ActorModel {
-    print("fetchOrMakeActor - \(name)")
     let predicate = #Predicate<ActorModel> { $0.name == name }
     let fetchDescriptor = FetchDescriptor<ActorModel>(predicate: predicate)
 
     let actors = try? context.fetch(fetchDescriptor)
     if let actors, !actors.isEmpty {
-      print("fetchOrMakeActor - usiing existing actor")
       return actors[0]
     }
 
-    print("fetchOrMakeActor - creating new actor")
     let actor = ActorModel(name: name)
     context.insert(actor)
     try? context.save()
@@ -186,14 +183,11 @@ extension SchemaV6 {
   }
 
   static func deleteMovie(_ context: ModelContext, movie: MovieModel) throws {
-    print("deleteMovie - \(movie.title)")
     let actors = movie.actors
     movie.actors = []
     for actor in actors {
-      print("removing movie from actor \(actor.name)")
       actor.movies = actor.movies.filter { $0 != movie }
       if actor.movies.isEmpty {
-        print("actor has no movies - deleting")
         context.delete(actor)
       }
     }

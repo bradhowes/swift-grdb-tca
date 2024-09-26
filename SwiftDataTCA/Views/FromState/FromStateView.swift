@@ -77,7 +77,6 @@ private struct MovieListRow: View {
   init(store: StoreOf<FromStateFeature>, movie: Movie) {
     self.store = store
     self.movie = movie
-    print("\(movie.name)")
   }
 
   var body: some View {
