@@ -73,7 +73,7 @@ enum SchemaV6: VersionedSchema {
     private func backingObject() -> ActorModel {
       @Dependency(\.modelContextProvider) var context
       guard let actor = context.model(for: self.modelId) as? ActorModel else {
-        fatalError("Faied to resolve \(self.name) usiing \(self.modelId)")
+        fatalError("Faied to resolve \(self.name) using \(self.modelId)")
       }
       return actor
     }
