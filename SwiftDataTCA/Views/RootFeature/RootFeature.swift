@@ -72,3 +72,7 @@ extension RootFeature {
     .showActorMovies(.init(actor: actor))
   }
 }
+
+#Preview {
+  RootFeatureView.preview
+}

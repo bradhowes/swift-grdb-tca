@@ -11,7 +11,7 @@ enum LinkKind {
 }
 
 struct ViewLinkType: DependencyKey {
-  static let liveValue: LinkKind = .navLink
+  static let liveValue: LinkKind = .button
 }
 
 extension DependencyValues {

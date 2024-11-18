@@ -4,12 +4,10 @@ import SwiftData
 import SwiftUI
 
 struct ActorMoviesView: View {
-  @Dependency(\.viewLinkType) var viewLinkType
   @Bindable var store: StoreOf<ActorMoviesFeature>
-  var send: ((ActorMoviesFeature.Action) -> StoreTask)? { viewLinkType == .navLink ? store.send : nil }
 
   var body: some View {
-    MoviesListView(store: store, send: send)
+    MoviesListView(store: store)
       .navigationTitle(store.actor.name)
       .toolbar(.hidden, for: .tabBar)
       .toolbar {
@@ -23,14 +21,14 @@ struct ActorMoviesView: View {
 
 private struct MoviesListView: View {
   var store: StoreOf<ActorMoviesFeature>
-  let send: ((ActorMoviesFeature.Action) -> StoreTask)?
+  @Dependency(\.viewLinkType) var viewLinkType
 
   var body: some View {
     List(store.movies, id: \.id) { movie in
       withSwipeActions(movie: movie) {
-        if let send {
+        if viewLinkType == .button {
           Button {
-            _ = send(.detailButtonTapped(movie))
+            _ = store.send(.detailButtonTapped(movie))
           } label: {
             Utils.MovieView(
               name: movie.name,

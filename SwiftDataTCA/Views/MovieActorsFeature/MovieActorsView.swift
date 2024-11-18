@@ -5,10 +5,9 @@ import SwiftUI
 
 struct MovieActorsView: View {
   @Bindable var store: StoreOf<MovieActorsFeature>
-  @Dependency(\.viewLinkType) var viewLinkType
 
   var body: some View {
-    ActorsListView(actors: store.actors, send: viewLinkType == .button ? store.send : nil)
+    ActorsListView(store: store)
       .navigationTitle(store.movie.name)
       .toolbar(.hidden, for: .tabBar)
       .toolbar {
@@ -39,20 +38,20 @@ struct MovieActorsView: View {
 }
 
 private struct ActorsListView: View {
-  var actors: IdentifiedArrayOf<Actor>
-  let send: ((MovieActorsFeature.Action) -> StoreTask)?
+  @Bindable var store: StoreOf<MovieActorsFeature>
+  @Dependency(\.viewLinkType) var viewLinkType
 
   var body: some View {
-    List(actors, id: \.id) { actor in
-      if let send {
-        Button {
-          _ = send(.detailButtonTapped(actor))
-        } label: {
-          Utils.ActorView(name: actor.name, movieTitles: Utils.movieTitlesList(for: actor), showChevron: true)
-        }
-      } else {
+    List(store.actors, id: \.id) { actor in
+      if viewLinkType == .navLink {
         NavigationLink(state: RootFeature.showActorMovies(actor)) {
           Utils.ActorView(name: actor.name, movieTitles: Utils.movieTitlesList(for: actor), showChevron: false)
+        }
+      } else {
+        Button {
+          store.send(.detailButtonTapped(actor))
+        } label: {
+          Utils.ActorView(name: actor.name, movieTitles: Utils.movieTitlesList(for: actor), showChevron: true)
         }
       }
     }
