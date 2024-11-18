@@ -67,9 +67,6 @@
 		BDD57C282C9D982E0082178E /* XCUIElement+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C272C9D981E0082178E /* XCUIElement+Extensions.swift */; };
 		BDD57C2A2C9D9E210082178E /* SchemaV1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C292C9D9E210082178E /* SchemaV1Tests.swift */; };
 		BDD57C2C2C9DAB370082178E /* ViewLinkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C2B2C9DAB370082178E /* ViewLinkType.swift */; };
-		BDF299C52C4A69AC00D7EB85 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BDF299C42C4A69AC00D7EB85 /* Debug.xcconfig */; };
-		BDF299C62C4A69AC00D7EB85 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BDF299C42C4A69AC00D7EB85 /* Debug.xcconfig */; };
-		BDF299C72C4A69AC00D7EB85 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BDF299C42C4A69AC00D7EB85 /* Debug.xcconfig */; };
 		BDF59DD02CA1E18E00DC7D00 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */; };
 /* End PBXBuildFile section */
 
@@ -517,7 +514,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					23A64E852ACC5312005B6344 = {
 						CreatedOnToolsVersion = 15.0;
@@ -569,7 +566,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				23A64E942ACC5313005B6344 /* Preview Assets.xcassets in Resources */,
-				BDF299C52C4A69AC00D7EB85 /* Debug.xcconfig in Resources */,
 				23A64E902ACC5313005B6344 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -578,7 +574,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDF299C72C4A69AC00D7EB85 /* Debug.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,7 +588,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDF299C62C4A69AC00D7EB85 /* Debug.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -866,7 +860,7 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -905,7 +899,7 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
