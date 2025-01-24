@@ -11,13 +11,21 @@ struct ActorMoviesFeature {
   struct State: Equatable {
     let actor: Actor
     var titleSort: SortOrder?
-    var movies: IdentifiedArrayOf<Movie>
+    @SharedReader var movies: [Movie]
     var selectedMovie: Movie?
 
     init(actor: Actor, titleSort: SortOrder? = .forward) {
       self.actor = actor
       self.titleSort = titleSort
-      self.movies = actor.movies(ordering: titleSort)
+      _movies = Self.makeQuery(actor: actor, titleSort: titleSort)
+    }
+
+    static func makeQuery(actor: Actor, titleSort: SortOrder?) -> SharedReader<[Movie]> {
+      SharedReader(.fetchAll(query: actor.movies.order(titleSort?.by(Movie.Columns.sortableTitle))))
+    }
+
+    mutating func updateQuery() {
+      _movies = Self.makeQuery(actor: actor, titleSort: titleSort)
     }
   }
 
@@ -29,8 +37,6 @@ struct ActorMoviesFeature {
     case toggleFavoriteState(Movie)
   }
 
-  @Dependency(\.continuousClock) var clock
-
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
@@ -38,7 +44,7 @@ struct ActorMoviesFeature {
       case .favoriteSwiped(let movie): return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
       case .refresh: return refresh(state: &state)
       case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
-      case .toggleFavoriteState(let movie): return Utils.toggleFavoriteState(movie, movies: &state.movies)
+      case .toggleFavoriteState(let movie): return Utils.toggleFavoriteState(movie)
       }
     }
   }
@@ -47,13 +53,13 @@ struct ActorMoviesFeature {
 extension ActorMoviesFeature {
 
   private func refresh(state: inout State) -> Effect<Action> {
-    state.movies = state.actor.movies(ordering: state.titleSort)
+    state.updateQuery()
     return .none
   }
 
   private func setTitleSort(_ newSort: SortOrder?, state: inout State) -> Effect<Action> {
     state.titleSort = newSort
-    state.movies = state.actor.movies(ordering: newSort)
+    state.updateQuery()
     return .none
   }
 }

@@ -13,29 +13,14 @@ struct RootFeatureView: View {
 #endif
 
   var body: some View {
-    TabView(selection: $store.activeTab.sending(\.tabChanged)) {
-      FromStateView(store: store.scope(state: \.fromState, action: \.fromState))
-        .padding()
-        .tabItem {
-          Label("FromState", systemImage: "1.circle")
-        }
-        .tag(RootFeature.Tab.fromStateFeature)
-
-      FromQueryView(store: store.scope(state: \.fromQuery, action: \.fromQuery))
-        .padding()
-        .tabItem {
-          Label("FromQuery", systemImage: "2.circle")
-        }
-        .tag(RootFeature.Tab.fromQueryFeature)
-    }
+    FromStateView(store: store.scope(state: \.fromState, action: \.fromState))
+      .padding()
   }
 }
 
 extension RootFeatureView {
   static var preview: some View {
-    @Dependency(\.modelContextProvider) var context
-    return RootFeatureView()
-      .modelContext(context)
+    RootFeatureView()
   }
 }
 

@@ -11,17 +11,23 @@ struct MovieActorsFeature {
   struct State: Equatable {
     var movie: Movie
     var nameSort: SortOrder?
-    var actors: IdentifiedArrayOf<Actor>
+    @SharedReader var actors: [Actor]
     var animateButton = false
 
     init(movie: Movie, nameSort: SortOrder? = .forward) {
       self.movie = movie
       self.nameSort = nameSort
-      self.actors = movie.actors(ordering: nameSort)
+      _actors = Self.makeQuery(movie: movie, nameSort: nameSort)
+    }
+
+    static func makeQuery(movie: Movie, nameSort: SortOrder?) -> SharedReader<[Actor]> {
+      SharedReader(.fetchAll(query: movie.actors.order(nameSort?.by(Actor.Columns.name))))
+    }
+
+    mutating func updateQuery() {
+      _actors = Self.makeQuery(movie: movie, nameSort: nameSort)
     }
   }
-
-  @Dependency(\.modelContextProvider) var modelContext
 
   enum Action: Sendable {
     case detailButtonTapped(Actor)
@@ -35,7 +41,7 @@ struct MovieActorsFeature {
       switch action {
       case .detailButtonTapped: return .none
       case .favoriteTapped: return toggleFavoriteState(state: &state)
-      case .nameSortChanged(let newSort): return setTitleSort(newSort, state: &state)
+      case .nameSortChanged(let newSort): return setNameSort(newSort, state: &state)
       case .refresh: return refresh(state: &state)
       }
     }
@@ -45,18 +51,18 @@ struct MovieActorsFeature {
 extension MovieActorsFeature {
 
   private func refresh(state: inout State) -> Effect<Action> {
-    state.movie = state.movie.backingObject().valueType
+    state.updateQuery()
     return .none
   }
 
-  private func setTitleSort(_ newSort: SortOrder?, state: inout State) -> Effect<Action> {
+  private func setNameSort(_ newSort: SortOrder?, state: inout State) -> Effect<Action> {
     state.nameSort = newSort
-    state.actors = state.movie.actors(ordering: newSort)
+    state.updateQuery()
     return .none
   }
 
   func toggleFavoriteState(state: inout State) -> Effect<Action> {
-    state.movie = state.movie.toggleFavorite()
+    state.movie.toggleFavorite()
     state.animateButton = state.movie.favorite
     return .none
   }

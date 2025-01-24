@@ -159,17 +159,33 @@ enum Utils {
   }
 
   static func actorNamesList(for movie: Movie) -> String {
-    movie.actors(ordering: .forward).map(\.name).formatted(.list(type: .and))
+    @Dependency(\.defaultDatabase) var database
+    do {
+      let actors = try database.read { db in
+        try movie.actors.order(Actor.Columns.name.asc).fetchAll(db)
+      }
+      return actors.map(\.name).joined(separator: ", ")
+    } catch {
+      fatalError("failed to fetch actors of movie \(movie.title): \(error)")
+    }
   }
 
   static func movieTitlesList(for actor: Actor) -> String {
-    actor.movies(ordering: .forward).map(\.name).formatted(.list(type: .and))
+    @Dependency(\.defaultDatabase) var database
+    do {
+      let movies = try database.read { db in
+        try actor.movies.order(Movie.Columns.sortableTitle.asc).fetchAll(db)
+      }
+      return movies.map(\.title).joined(separator: ", ")
+    } catch {
+      fatalError("failed to fetch movies of actor \(actor.name): \(error)")
+    }
   }
 
   static func beginFavoriteChange<Action: Sendable>(_ action: Action) -> Effect<Action> {
     @Dependency(\.continuousClock) var clock
     return .run { send in
-      // Wait until swiped row is restored
+      // Wait until swiped row is restored -- TODO: there must be a better way to do this
       try await clock.sleep(for: .milliseconds(700))
       await send(action, animation: .default)
     }
@@ -181,11 +197,9 @@ enum Utils {
     }
   }
 
-  static func toggleFavoriteState<Action>(_ movie: Movie, movies: inout IdentifiedArrayOf<Movie>) -> Effect<Action> {
-    let changed = movie.toggleFavorite()
-    for (index, movie) in movies.enumerated() where movie.modelId == changed.modelId {
-      movies[index] = changed
-    }
+  static func toggleFavoriteState<Action>(_ movie: Movie) -> Effect<Action> {
+    var changed: Movie = movie
+    changed.toggleFavorite()
     return .none
   }
 }

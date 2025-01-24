@@ -5,9 +5,7 @@ import SwiftUI
 struct SwiftDataTCAApp: App {
   var body: some Scene {
     WindowGroup {
-      @Dependency(\.modelContextProvider) var context
       RootFeatureView()
-        .modelContext(context)
     }
   }
 }

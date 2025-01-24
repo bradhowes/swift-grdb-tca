@@ -2,10 +2,13 @@ identifier_name:
   excluded:
     - db
     - id
+    - ID
     - URL
   allowed_symbols: ["_"]
 
 type_name:
+  excluded:
+    - ID
   allowed_symbols: ["_"]
 
 opt_in_rules:
@@ -35,7 +38,6 @@ opt_in_rules:
   - redundant_self_in_closure
   - redundant_type_annotation
   - shorthand_optional_binding
-  - strict_fileprivate
   - superfluous_else
   - toggle_bool
   - trailing_closure
@@ -62,4 +64,5 @@ indentation_width:
   indentation_width: 2
   include_comments: false
   include_multiline_strings: false
-    
+  include_compiler_directives: false
+

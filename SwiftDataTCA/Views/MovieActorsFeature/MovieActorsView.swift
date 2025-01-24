@@ -8,7 +8,7 @@ struct MovieActorsView: View {
 
   var body: some View {
     ActorsListView(store: store)
-      .navigationTitle(store.movie.name)
+      .navigationTitle(store.movie.title)
       .toolbar(.hidden, for: .tabBar)
       .toolbar {
         ToolbarItemGroup(placement: .automatic) {
@@ -60,12 +60,10 @@ private struct ActorsListView: View {
 
 extension MovieActorsView {
   static var preview: some View {
-    @Dependency(\.modelContextProvider) var context
-    let movies = (try? context.fetch(ActiveSchema.movieFetchDescriptor(titleSort: .forward))) ?? []
-    let movie = movies[0].valueType
+    @Dependency(\.defaultDatabase) var database
+    let movies = (try? database.read { try Movie.all().fetchAll($0) }) ?? []
     return NavigationView {
-      MovieActorsView(store: Store(initialState: .init(movie: movie)) { MovieActorsFeature() })
-        .modelContext(context)
+      MovieActorsView(store: Store(initialState: .init(movie: movies[0])) { MovieActorsFeature() })
     }.navigationViewStyle(.stack)
   }
 }

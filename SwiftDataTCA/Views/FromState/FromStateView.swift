@@ -74,7 +74,15 @@ private struct MovieListRow: View {
     self.store = store
     self.movie = movie
     // Fetch the actor names while we know that the Movie is valid.
-    self.actorNames = Utils.actorNamesList(for: movie)
+    @Dependency(\.defaultDatabase) var database
+    do {
+      let actors = try database.read { db in
+        try movie.actors.order(Actor.Columns.name.asc).fetchAll(db)
+      }
+      actorNames = actors.map(\.name).joined(separator: ", ")
+    } catch {
+      fatalError("failed to fetch actors of movie \(movie.title): \(error)")
+    }
   }
 
   var body: some View {
@@ -96,7 +104,7 @@ private struct MovieListRow: View {
       _ = store.send(.detailButtonTapped(movie))
     } label: {
       Utils.MovieView(
-        name: movie.name,
+        name: movie.title,
         favorite: movie.favorite,
         actorNames: actorNames,
         showChevron: true
@@ -107,17 +115,13 @@ private struct MovieListRow: View {
 
 extension FromStateView {
   static var previewWithLinks: some View {
-    @Dependency(\.modelContextProvider) var context
     let store = Store(initialState: .init()) { FromStateFeature() }
     return FromStateView(store: store)
-      .modelContext(context)
   }
 
   static var previewWithButtons: some View {
-    @Dependency(\.modelContextProvider) var context
     let store = Store(initialState: .init()) { FromStateFeature() }
     return FromStateView(store: store)
-      .modelContext(context)
   }
 }
 

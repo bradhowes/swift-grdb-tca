@@ -1,6 +1,5 @@
 import ComposableArchitecture
 import Foundation
-import SwiftData
 import SwiftUI
 
 @Reducer
@@ -10,14 +9,24 @@ struct FromStateFeature {
   @ObservableState
   struct State: Equatable {
     var path = StackState<Path.State>()
-    var movies: IdentifiedArrayOf<Movie> = []
+    @SharedReader var movies: [Movie]
     var titleSort: SortOrder? = .forward
     var isSearchFieldPresented = false
     var searchText: String = ""
     var scrollTo: Movie?
     var highlight: Movie?
-    var fetchDescriptor: FetchDescriptor<MovieModel> {
-      ActiveSchema.movieFetchDescriptor(titleSort: self.titleSort, search: searchText)
+
+    init(titleSort: SortOrder? = .forward) {
+      self.titleSort = titleSort
+      _movies = Self.makeQuery(titleSort: titleSort)
+    }
+
+    static func makeQuery(titleSort: SortOrder?) -> SharedReader<[Movie]> {
+      SharedReader(.fetchAll(query: Movie.all().order(titleSort?.by(Movie.Columns.sortableTitle))))
+    }
+
+    mutating func updateQuery() {
+      _movies = Self.makeQuery(titleSort: titleSort)
     }
   }
 
@@ -37,15 +46,17 @@ struct FromStateFeature {
     case toggleFavoriteState(Movie)
   }
 
-  @Dependency(\.database) var db
+  @Dependency(\.defaultDatabase) var database
 
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
 
       case .addButtonTapped:
-        let movieModel = db.add()
-        return fetchMovies(movieModel.valueType, state: &state)
+        try? database.write { db in
+          try Support.generateMocks(db: db, count: 1)
+        }
+        return .none
 
       case .clearHighlight:
         state.highlight = nil
@@ -62,8 +73,10 @@ struct FromStateFeature {
         }
 
       case .deleteSwiped(let movie):
-        state.movies = state.movies.filter { $0.id != movie.id }
-        db.delete(movie.backingObject())
+        // state.movies = state.movies.filter { $0.id != movie.id }
+        _ = try? database.write { db in
+          try? movie.delete(db)
+        }
         return .none
 
       case .detailButtonTapped(let movie):
@@ -102,7 +115,7 @@ struct FromStateFeature {
         return fetchMovies(nil, state: &state)
 
       case .toggleFavoriteState(let movie):
-        return Utils.toggleFavoriteState(movie, movies: &state.movies)
+        return Utils.toggleFavoriteState(movie)
       }
     }
     .forEach(\.path, action: \.path)
@@ -112,12 +125,12 @@ struct FromStateFeature {
 extension FromStateFeature {
 
   private func fetchMovies(_ movie: Movie?, state: inout State) -> Effect<Action> {
-    @Dependency(\.database) var db
-    state.movies = .init(uncheckedUniqueElements: db.fetchMovies(state.fetchDescriptor).map(\.valueType))
-    if let movie {
-      state.scrollTo = movie
-    }
-    return .none
+//    @Dependency(\.defaultDatabase) var database
+//    state.movies = .init(uncheckedUniqueElements: db.fetchMovies(state.fetchDescriptor).map(\.valueType))
+//    if let movie {
+//      state.scrollTo = movie
+//    }
+    .none
   }
 
   private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
