@@ -115,7 +115,7 @@ struct FromStateFeature {
         return updateQuery(state)
 
       case .toggleFavoriteState(let movie):
-        return .none // Utils.toggleFavoriteState(movie, in: &state.movies)
+        return Utils.toggleFavoriteState(movie)
       }
     }
     .forEach(\.path, action: \.path)

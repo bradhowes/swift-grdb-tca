@@ -218,7 +218,7 @@ enum Utils {
   }
 
   static func toggleFavoriteState<State>(_ movie: Movie) -> Effect<State> {
-    let _ = toggleFavoriteState(movie)
+    _ = toggleFavoriteState(movie)
     return .none
   }
 }
