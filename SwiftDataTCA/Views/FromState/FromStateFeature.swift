@@ -1,33 +1,43 @@
+import Combine
 import ComposableArchitecture
 import Foundation
 import Models
+import Sharing
 import SwiftUI
+
+enum Ordering: String {
+  case forward, reverse, none
+
+  var sortOrder: SortOrder? {
+    switch self {
+    case .forward: return .forward
+    case .reverse: return .reverse
+    case .none: return nil
+    }
+  }
+}
 
 @Reducer
 struct FromStateFeature {
   typealias Path = RootFeature.Path
 
   @ObservableState
-  struct State: Equatable {
+  struct State: Equatable, Sendable {
     var path = StackState<Path.State>()
-    var titleSort: SortOrder? = .forward
+    @Shared(.appStorage("titleSort")) var titleSort: Ordering = .forward
+    @Shared(.appStorage("searchText")) var searchText: String = ""
     @SharedReader var allMovies: IdentifiedArrayOf<Movie>
     var isSearchFieldPresented = false
-    var searchText: String = ""
     var scrollTo: Movie?
     var highlight: Movie?
 
-    init(titleSort: SortOrder? = .forward) {
-      self.titleSort = titleSort
-      _allMovies = Self.makeQuery(titleSort: titleSort)
-    }
-
-    static func makeQuery(titleSort: SortOrder?) -> SharedReader<IdentifiedArrayOf<Movie>> {
-      SharedReader(.fetch(AllMoviesQuery(ordering: titleSort)))
-    }
-
-    mutating func updateQuery() {
-      _allMovies = Self.makeQuery(titleSort: titleSort)
+    init() {
+      _allMovies = SharedReader(
+        .fetch(
+          AllMoviesQuery(ordering: _titleSort.wrappedValue.sortOrder),
+          animation: .smooth
+        )
+      )
     }
   }
 
@@ -43,7 +53,7 @@ struct FromStateFeature {
     case path(StackActionOf<Path>)
     case searchButtonTapped(Bool)
     case searchTextChanged(String)
-    case titleSortChanged(SortOrder?)
+    case titleSortChanged(Ordering)
     case toggleFavoriteState(Movie)
   }
 
@@ -92,7 +102,7 @@ struct FromStateFeature {
         return .none
 
       case .onAppear:
-        return updateQuery(&state)
+        return updateQuery(state)
 
       case .path(let pathAction):
         return monitorPathChange(pathAction, state: &state)
@@ -100,20 +110,21 @@ struct FromStateFeature {
       case .searchButtonTapped(let enabled):
         state.isSearchFieldPresented = enabled
         if !enabled {
-          state.searchText = ""
+          state.$searchText.withLock { $0 = "" }
+          return updateQuery(state)
         }
-        return updateQuery(&state)
+        return .none
 
       case .searchTextChanged(let query):
         if query != state.searchText {
-          state.searchText = query
-          return updateQuery(&state)
+          state.$searchText.withLock { $0 = query }
+          return updateQuery(state)
         }
         return .none
 
       case .titleSortChanged(let newSort):
-        state.titleSort = newSort
-        return updateQuery(&state)
+        state.$titleSort.withLock { $0 = newSort }
+        return updateQuery(state)
 
       case .toggleFavoriteState(let movie):
         return .none // Utils.toggleFavoriteState(movie, in: &state.movies)
@@ -125,9 +136,17 @@ struct FromStateFeature {
 
 extension FromStateFeature {
 
-  private func updateQuery(_ state: inout State) -> Effect<Action> {
-    state.updateQuery()
-    return .none
+  private func updateQuery(_ state: State) -> Effect<Action> {
+    let searchText = state.searchText.isEmpty ? nil : state.searchText
+    let titleSort = state.titleSort
+    return .run { _ in
+      do {
+        try await state.$allMovies.load(.fetch(AllMoviesQuery(ordering: titleSort.sortOrder, searchText: searchText)))
+      } catch {
+        reportIssue(error)
+      }
+    }
+    .cancellable(id: "FromStateFeature.updateQuery")
   }
 
   private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
@@ -148,7 +167,7 @@ extension FromStateFeature {
     case .popFrom:
       let count = state.path.count
       if count == 1 {
-        return updateQuery(&state)
+        return updateQuery(state)
       }
 
     default:

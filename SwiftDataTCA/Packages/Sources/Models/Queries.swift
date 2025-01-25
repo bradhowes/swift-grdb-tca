@@ -6,13 +6,21 @@ import SharedGRDB
 
 public struct AllMoviesQuery: FetchKeyRequest {
   public let ordering: SortOrder?
+  public let searchText: String?
 
-  public init(ordering: SortOrder? = .forward) {
+  public init(ordering: SortOrder? = .forward, searchText: String? = nil) {
     self.ordering = ordering
+    self.searchText = searchText
   }
 
   public func fetch(_ db: Database) throws -> IdentifiedArrayOf<Movie> {
-    try .init(uncheckedUniqueElements: Movie.all().order(ordering?.by(Movie.Columns.sortableTitle)).fetchAll(db))
+    let rows = try Movie.all().order(ordering?.by(Movie.Columns.sortableTitle)).fetchAll(db)
+    if let searchText, !searchText.isEmpty {
+      return .init(uncheckedUniqueElements:
+                    rows.filter { $0.sortableTitle.localizedCaseInsensitiveContains(searchText) }
+      )
+    }
+    return .init(uncheckedUniqueElements: rows)
   }
 }
 
@@ -57,10 +65,6 @@ public struct MovieActorsQuery: FetchKeyRequest {
 }
 
 extension DatabaseReader {
-
-  public func actors(ordering: SortOrder? = .forward) -> IdentifiedArrayOf<Actor> {
-    (try? read { try AllActorsQuery(ordering: ordering).fetch($0) }) ?? []
-  }
 
   public func movies(ordering: SortOrder? = .forward) -> IdentifiedArrayOf<Movie> {
     (try? read { try AllMoviesQuery(ordering: ordering).fetch($0) }) ?? []

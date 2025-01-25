@@ -41,15 +41,17 @@ private struct MovieListView: View {
   var body: some View {
     ScrollViewReader { proxy in
       List(store.allMovies, id: \.id) { movie in
-        MovieListRow(store: store, movie: movie)
-          .swipeActions(allowsFullSwipe: false) {
-            Utils.deleteSwipeAction(movie) {
-              store.send(.deleteSwiped(movie), animation: .snappy)
+        if store.searchText.isEmpty || movie.title.localizedCaseInsensitiveContains(store.searchText) {
+          MovieListRow(store: store, movie: movie)
+            .swipeActions(allowsFullSwipe: false) {
+              Utils.deleteSwipeAction(movie) {
+                store.send(.deleteSwiped(movie), animation: .snappy)
+              }
+              Utils.favoriteSwipeAction(movie) {
+                store.send(.favoriteSwiped(movie), animation: .bouncy)
+              }
             }
-            Utils.favoriteSwipeAction(movie) {
-              store.send(.favoriteSwiped(movie), animation: .bouncy)
-            }
-          }
+        }
       }
       .onChange(of: store.scrollTo) { _, movie in
         if let movie {

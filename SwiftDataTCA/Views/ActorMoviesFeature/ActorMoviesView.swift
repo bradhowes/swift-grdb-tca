@@ -72,9 +72,10 @@ extension ActorMoviesView {
       $0.viewLinkType = .button
     }
     @Dependency(\.defaultDatabase) var queue
-    let actors = queue.actors()
+    let movies = queue.movies()
+    let actors = queue.actorsFor(movie: movies[0])
     return NavigationView {
-      ActorMoviesView(store: Store(initialState: .init(actor: actors[27])) {
+      ActorMoviesView(store: Store(initialState: .init(actor: actors[1])) {
         ActorMoviesFeature()
       })
     }.navigationViewStyle(.stack)

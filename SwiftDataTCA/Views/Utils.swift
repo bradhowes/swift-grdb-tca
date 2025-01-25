@@ -25,17 +25,17 @@ enum Utils {
 
 #endif
 
-  static func pickerView(title: String, binding: Binding<SortOrder?>) -> some View {
+  static func pickerView(title: String, binding: Binding<Ordering>) -> some View {
     Picker(title, systemImage: "arrow.up.arrow.down", selection: binding) {
-      Label("Alphabetical", systemImage: "arrow.up")
+      Label("Forward", systemImage: "arrow.up")
         .accessibilityLabel("alphabetical \(title)")
-        .tag(SortOrder?.some(.forward))
-      Label("Reverse alphabetical", systemImage: "arrow.down")
+        .tag(Ordering.forward)
+      Label("Reverse", systemImage: "arrow.down")
         .accessibilityLabel("reverse alphabetical \(title)")
-        .tag(SortOrder?.some(.reverse))
+        .tag(Ordering.reverse)
       Label("Unordered", systemImage: "alternatingcurrent")
         .accessibilityLabel("random \(title)")
-        .tag(SortOrder?.none)
+        .tag(Ordering.none)
     }.pickerStyle(.automatic)
       .accessibilityLabel("choose \(title)")
   }
@@ -205,11 +205,8 @@ enum Utils {
     return changed
   }
 
-  static func toggleFavoriteState<State>(_ movie: Movie, in collection: inout IdentifiedArrayOf<Movie>) -> Effect<State> {
-    let changed = toggleFavoriteState(movie)
-    if let index = collection.firstIndex(where: { $0.id == changed.id }) {
-      collection[index] = changed
-    }
+  static func toggleFavoriteState<State>(_ movie: Movie) -> Effect<State> {
+    let _ = toggleFavoriteState(movie)
     return .none
   }
 }
