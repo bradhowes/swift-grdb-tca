@@ -5,11 +5,11 @@ import SwiftUI
 
 struct SwiftDataTCAApp: App {
   var body: some Scene {
+    let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
+      $0.defaultDatabase = try! DatabaseQueue.appDatabase() // swiftlint:disable:this force_try
+      $0.viewLinkType = ProcessInfo.processInfo.arguments.contains("NAVLINKS") ? .navLink : .button
+    }
     WindowGroup {
-      let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
-        $0.defaultDatabase = try! DatabaseQueue.appDatabase() // swiftlint:disable:this force_try
-        $0.viewLinkType = .button
-      }
       RootFeatureView()
     }
   }
@@ -31,11 +31,7 @@ enum AppTrampoline {
     if isTest || NSClassFromString("XCTestCase") != nil {
       TestApp.main()
     } else {
-      withDependencies {
-        $0.viewLinkType = ProcessInfo.processInfo.arguments.contains("NAVLINKS") ? .navLink : .button
-      } operation: {
-        SwiftDataTCAApp.main()
-      }
+      SwiftDataTCAApp.main()
     }
   }
 }

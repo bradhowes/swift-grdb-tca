@@ -4,6 +4,18 @@ import Models
 import SwiftData
 import SwiftUI
 
+enum Ordering: String {
+  case forward, reverse, none
+
+  var sortOrder: SortOrder? {
+    switch self {
+    case .forward: return .forward
+    case .reverse: return .reverse
+    case .none: return nil
+    }
+  }
+}
+
 enum Utils {
 
 #if os(iOS)
