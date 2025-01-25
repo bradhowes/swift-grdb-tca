@@ -1,7 +1,6 @@
 import ComposableArchitecture
 import IdentifiedCollections
 import Models
-import SwiftData
 import SwiftUI
 
 enum Ordering: String {
@@ -168,30 +167,6 @@ enum Utils {
         Label("favorite movie", systemImage: "star")
       }
       .tint(.blue)
-    }
-  }
-
-  static func actorNamesList(for movie: Movie) -> String {
-    @Dependency(\.defaultDatabase) var database
-    do {
-      let actors = try database.read { try movie.actors.order(Actor.Columns.name.asc).fetchAll($0) }
-      let names = actors.map(\.name).joined(separator: ", ")
-      print("actorNamesList:", names)
-      return names
-    } catch {
-      fatalError("failed to fetch actors of movie \(movie.title): \(error)")
-    }
-  }
-
-  static func movieTitlesList(for actor: Actor) -> String {
-    @Dependency(\.defaultDatabase) var database
-    do {
-      let movies = try database.read { try actor.movies.order(Movie.Columns.sortableTitle.asc).fetchAll($0) }
-      let titles = movies.map(\.title).joined(separator: ", ")
-      print("movieTitlesList:", titles)
-      return titles
-    } catch {
-      fatalError("failed to fetch movies of actor \(actor.name): \(error)")
     }
   }
 

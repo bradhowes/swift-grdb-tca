@@ -23,6 +23,7 @@ struct ActorMoviesView: View {
 private struct MoviesListView: View {
   var store: StoreOf<ActorMoviesFeature>
   @Dependency(\.viewLinkType) var viewLinkType
+  @Dependency(\.defaultDatabase) var database
 
   var body: some View {
     List(store.movies, id: \.id) { movie in
@@ -34,7 +35,7 @@ private struct MoviesListView: View {
             Utils.MovieView(
               name: movie.title,
               favorite: movie.favorite,
-              actorNames: Utils.actorNamesList(for: movie),
+              actorNames: database.actors(for: movie).csv,
               showChevron: true
             )
           }
@@ -43,7 +44,7 @@ private struct MoviesListView: View {
             Utils.MovieView(
               name: movie.title,
               favorite: movie.favorite,
-              actorNames: Utils.actorNamesList(for: movie),
+              actorNames: database.actors(for: movie).csv,
               showChevron: false
             )
           }
@@ -73,7 +74,7 @@ extension ActorMoviesView {
     }
     @Dependency(\.defaultDatabase) var queue
     let movies = queue.movies()
-    let actors = queue.actorsFor(movie: movies[0])
+    let actors = queue.actors(for: movies[0])
     return NavigationView {
       ActorMoviesView(store: Store(initialState: .init(actor: actors[1])) {
         ActorMoviesFeature()

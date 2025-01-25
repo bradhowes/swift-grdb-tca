@@ -2,7 +2,6 @@ import ComposableArchitecture
 import Dependencies
 import GRDB
 import Models
-import SwiftData
 import SwiftUI
 
 struct FromStateView: View {

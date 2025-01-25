@@ -1,7 +1,6 @@
 import ComposableArchitecture
 import Dependencies
 import Models
-import SwiftData
 import SwiftUI
 
 @Reducer
@@ -32,12 +31,13 @@ extension RootFeature {
 
   @MainActor
   static func link(_ movie: Movie) -> some View {
-    NavigationLink(state: RootFeature.showMovieActors(movie)) {
+    @Dependency(\.defaultDatabase) var database
+    return NavigationLink(state: RootFeature.showMovieActors(movie)) {
       // Fetch the actor names while we know that the Movie is valid.
       Utils.MovieView(
         name: movie.title,
         favorite: movie.favorite,
-        actorNames: Utils.actorNamesList(for: movie),
+        actorNames: database.actors(for: movie).csv,
         showChevron: false
       )
     }

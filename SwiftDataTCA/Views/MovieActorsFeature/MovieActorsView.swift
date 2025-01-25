@@ -2,7 +2,6 @@ import ComposableArchitecture
 import Dependencies
 import GRDB
 import Models
-import SwiftData
 import SwiftUI
 
 struct MovieActorsView: View {
@@ -19,7 +18,6 @@ struct MovieActorsView: View {
         }
       }
       .labelsHidden()
-      .onAppear { store.send(.refresh) }
   }
 
   private var favoriteButton: some View {
@@ -42,18 +40,19 @@ struct MovieActorsView: View {
 private struct ActorsListView: View {
   @Bindable var store: StoreOf<MovieActorsFeature>
   @Dependency(\.viewLinkType) var viewLinkType
+  @Dependency(\.defaultDatabase) var database
 
   var body: some View {
     List(store.actors, id: \.id) { actor in
       if viewLinkType == .navLink {
         NavigationLink(state: RootFeature.showActorMovies(actor)) {
-          Utils.ActorView(name: actor.name, movieTitles: Utils.movieTitlesList(for: actor), showChevron: false)
+          Utils.ActorView(name: actor.name, movieTitles: database.movies(for: actor).csv, showChevron: false)
         }
       } else {
         Button {
           store.send(.detailButtonTapped(actor))
         } label: {
-          Utils.ActorView(name: actor.name, movieTitles: Utils.movieTitlesList(for: actor), showChevron: true)
+          Utils.ActorView(name: actor.name, movieTitles: database.movies(for: actor).csv, showChevron: true)
         }
       }
     }

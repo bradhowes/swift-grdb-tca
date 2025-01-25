@@ -1,6 +1,5 @@
 import Dependencies
 import Foundation
-import SwiftData
 
 /**
  Collection of SwiftData operations one can perform on a "database" regardless of operating environment.

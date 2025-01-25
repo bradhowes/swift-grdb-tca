@@ -10,7 +10,7 @@ struct ActorMoviesFeature {
   @ObservableState
   struct State: Equatable {
     let actor: Actor
-    @Shared(.appStorage("titleSort")) var titleSort: Ordering = .forward
+    @Shared(.appStorage("ActorMovieFeatue-titleSort")) var titleSort: Ordering = .forward
     @SharedReader var movies: IdentifiedArrayOf<Movie>
 
     init(actor: Actor) {
@@ -27,7 +27,6 @@ struct ActorMoviesFeature {
   enum Action: Sendable {
     case detailButtonTapped(Movie)
     case favoriteSwiped(Movie)
-    case refresh
     case titleSortChanged(Ordering)
     case toggleFavoriteState(Movie)
   }
@@ -37,7 +36,6 @@ struct ActorMoviesFeature {
       switch action {
       case .detailButtonTapped: return .none
       case .favoriteSwiped(let movie): return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
-      case .refresh: return updateQuery(state)
       case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
       case .toggleFavoriteState(let movie): return Utils.toggleFavoriteState(movie)
       }
@@ -48,20 +46,23 @@ struct ActorMoviesFeature {
 extension ActorMoviesFeature {
 
   private func updateQuery(_ state: State) -> Effect<Action> {
-    let titleSort = state.titleSort
+    let actor = state.actor
+    let sortOrder = state.titleSort.sortOrder
     return .run { _ in
       do {
+        print("ActorMoviesFeature.updateQuery BEGIN")
         try await state.$movies.load(
           .fetch(
-            ActorMoviesQuery(actor: state.actor, ordering: titleSort.sortOrder),
+            ActorMoviesQuery(actor: actor, ordering: sortOrder),
             animation: .smooth
           )
         )
+        print("ActorMoviesFeature.updateQuery END")
       } catch {
         reportIssue(error)
       }
     }
-    .cancellable(id: "ActorMoviesFeature.updateQuery")
+    .cancellable(id: "ActorMoviesFeature.updateQuery", cancelInFlight: true)
   }
 
   private func setTitleSort(_ newSort: Ordering, state: inout State) -> Effect<Action> {

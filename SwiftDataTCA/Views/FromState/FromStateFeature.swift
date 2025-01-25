@@ -90,7 +90,8 @@ struct FromStateFeature {
         return .none
 
       case .onAppear:
-        return updateQuery(state)
+        return .none
+        // return updateQuery(state)
 
       case .path(let pathAction):
         return monitorPathChange(pathAction, state: &state)
@@ -129,12 +130,19 @@ extension FromStateFeature {
     let titleSort = state.titleSort
     return .run { _ in
       do {
-        try await state.$allMovies.load(.fetch(AllMoviesQuery(ordering: titleSort.sortOrder, searchText: searchText)))
+        print("FromStateFeature.updateQuery BEGIN")
+        try await state.$allMovies.load(
+          .fetch(
+            AllMoviesQuery(ordering: titleSort.sortOrder, searchText: searchText),
+            animation: .smooth
+          )
+        )
+        print("FromStateFeature.updateQuery BEGIN")
       } catch {
         reportIssue(error)
       }
     }
-    .cancellable(id: "FromStateFeature.updateQuery")
+    .cancellable(id: "FromStateFeature.updateQuery", cancelInFlight: true)
   }
 
   private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
@@ -155,7 +163,7 @@ extension FromStateFeature {
     case .popFrom:
       let count = state.path.count
       if count == 1 {
-        return updateQuery(state)
+        // return updateQuery(state)
       }
 
     default:

@@ -4,7 +4,6 @@ import Foundation
 import IdentifiedCollections
 import Models
 import SharedGRDB
-import SwiftData
 import SwiftUI
 
 @Reducer
@@ -13,7 +12,7 @@ struct MovieActorsFeature {
   @ObservableState
   struct State: Equatable {
     var movie: Movie
-    @Shared(.appStorage("nameSort")) var nameSort: Ordering = .forward
+    @Shared(.appStorage("MovieActorsFeature-nameSort")) var nameSort: Ordering = .forward
     @SharedReader var actors: IdentifiedArrayOf<Actor>
     var animateButton = false
 
@@ -32,7 +31,6 @@ struct MovieActorsFeature {
     case detailButtonTapped(Actor)
     case favoriteTapped
     case nameSortChanged(Ordering)
-    case refresh
   }
 
   var body: some Reducer<State, Action> {
@@ -41,7 +39,6 @@ struct MovieActorsFeature {
       case .detailButtonTapped: return .none
       case .favoriteTapped: return toggleFavoriteState(state: &state)
       case .nameSortChanged(let newSort): return setNameSort(newSort, state: &state)
-      case .refresh: return updateQuery(state)
       }
     }
   }
@@ -50,20 +47,23 @@ struct MovieActorsFeature {
 extension MovieActorsFeature {
 
   private func updateQuery(_ state: State) -> Effect<Action> {
-    let nameSort = state.nameSort
+    let movie = state.movie
+    let sortOrder = state.nameSort.sortOrder
     return .run { _ in
       do {
+        print("MovieActorssFeature.updateQuery BEGIN")
         try await state.$actors.load(
           .fetch(
-            MovieActorsQuery(movie: state.movie, ordering: nameSort.sortOrder),
+            MovieActorsQuery(movie: movie, ordering: sortOrder),
             animation: .smooth
           )
         )
+        print("MovieActorssFeature.updateQuery END")
       } catch {
         reportIssue(error)
       }
     }
-    .cancellable(id: "MovieActorsFeature.updateQuery")
+    .cancellable(id: "MovieActorsFeature.updateQuery", cancelInFlight: true)
   }
 
   private func setNameSort(_ newSort: Ordering, state: inout State) -> Effect<Action> {
