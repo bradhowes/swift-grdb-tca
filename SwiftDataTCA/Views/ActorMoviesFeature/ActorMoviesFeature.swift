@@ -12,7 +12,6 @@ struct ActorMoviesFeature {
     let actor: Actor
     @SharedReader var movies: IdentifiedArrayOf<Movie>
     var titleSort: SortOrder?
-    var selectedMovie: Movie?
 
     init(actor: Actor, titleSort: SortOrder? = .forward) {
       self.actor = actor

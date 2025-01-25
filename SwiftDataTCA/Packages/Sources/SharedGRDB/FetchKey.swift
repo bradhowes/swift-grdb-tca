@@ -29,17 +29,21 @@ public struct FetchKey<Value: Sendable>: SharedReaderKey {
   }
 
   public func load(context: LoadContext<Value>, continuation: LoadContinuation<Value>) {
+    print("FetchKey.load")
 #if DEBUG
     guard !isDefaultDatabase else {
+      print("FetchKey isDefaultDatabase")
       return continuation.resumeReturningInitialValue()
     }
 #endif
 
     guard case .userInitiated = context else {
+      print("FetchKey userInitiated")
       return continuation.resumeReturningInitialValue()
     }
 
     guard !isTesting else {
+      print("FetchKey isTesting")
       return continuation.resume(with: Result { try database.read(request.fetch) })
     }
 
