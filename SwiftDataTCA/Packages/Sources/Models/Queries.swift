@@ -2,6 +2,7 @@ import Foundation
 import GRDB
 import SharedGRDB
 
+
 public struct AllMoviesQuery: FetchKeyRequest {
   public let ordering: SortOrder?
 
@@ -36,7 +37,7 @@ public struct ActorMoviesQuery: FetchKeyRequest {
   }
 
   public func fetch(_ db: Database) throws -> [Movie] {
-    try actor.movies.order(ordering?.by(Movie.Columns.title)).fetchAll(db)
+    try actor.movies.order(ordering?.by(Movie.Columns.sortableTitle)).fetchAll(db)
   }
 }
 

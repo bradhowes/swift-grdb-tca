@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import Foundation
 import IdentifiedCollections
-import SwiftData
+import Models
 import SwiftUI
 
 @Reducer

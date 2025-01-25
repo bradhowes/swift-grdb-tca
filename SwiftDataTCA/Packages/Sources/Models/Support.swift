@@ -2,9 +2,9 @@ import Dependencies
 import Foundation
 import GRDB
 
-enum Support {
+public enum Support {
 
-  static let articles = Set(["a", "el", "la", "las", "le", "les", "los", "the", "un", "una"])
+  public static let articles = Set(["a", "el", "la", "las", "le", "les", "los", "the", "un", "una"])
 
   /**
    Drop any initial articles from a title to get reasonable sort results.
@@ -12,7 +12,7 @@ enum Support {
    - parameter title: the string value to work with
    - returns: a sortable version of the input value
    */
-  static func sortableTitle(_ title: String) -> String {
+  public static func sortableTitle(_ title: String) -> String {
     let words = title.lowercased().components(separatedBy: " ")
     if articles.contains(words[0]) {
       return words.dropFirst().joined(separator: " ")
@@ -21,7 +21,7 @@ enum Support {
   }
 
   /// Obtain an entry from the collection of movie titles and cast members.
-  static func nextMockMovieEntry(_ movies: [Movie]) -> (String, [String]) {
+  public static func nextMockMovieEntry(_ movies: [Movie]) -> (String, [String]) {
     let titles = Set(movies.map { $0.sortableTitle })
     for index in movies.count..<mockData.count {
       let (title, cast) = mockData[index]
@@ -33,7 +33,7 @@ enum Support {
     fatalError("ran out of mock data!")
   }
 
-  static func generateMocks(db: Database, count: Int) throws {
+  public static func generateMocks(db: Database, count: Int) throws {
     for index in 0..<count {
       try Movie.makeMock(in: db, entry: mockData[index], favorited: index % 5 == 0)
     }

@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import Foundation
+import Models
 import SwiftUI
 
 @Reducer
@@ -163,8 +164,4 @@ extension FromStateFeature {
 
 #Preview {
   FromStateView.previewWithLinks
-}
-
-#Preview {
-  FromStateView.previewWithButtons
 }

@@ -188,8 +188,8 @@ func testMovieActorTable() async throws {
 @Test(
   "ActorMoviesQuery Honors Ordering",
   arguments: [
-    (SortOrder.forward, "Apocalypse Now, Don Juan DeMarco, Superman, The Island of Dr. Moreau, The Score"),
-    (SortOrder.reverse, "The Score, The Island of Dr. Moreau, Superman, Don Juan DeMarco, Apocalypse Now"),
+    (SortOrder.forward, "Apocalypse Now, Don Juan DeMarco, The Island of Dr. Moreau, The Score, Superman"),
+    (SortOrder.reverse, "Superman, The Score, The Island of Dr. Moreau, Don Juan DeMarco, Apocalypse Now"),
     (nil, "The Score, Superman, The Island of Dr. Moreau, Apocalypse Now, Don Juan DeMarco")
   ]
 )

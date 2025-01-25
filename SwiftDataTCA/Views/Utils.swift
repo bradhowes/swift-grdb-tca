@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import IdentifiedCollections
+import Models
 import SwiftData
 import SwiftUI
 
@@ -198,8 +199,9 @@ enum Utils {
   }
 
   static func toggleFavoriteState<Action>(_ movie: Movie) -> Effect<Action> {
+    @Dependency(\.defaultDatabase) var database
     var changed: Movie = movie
-    changed.toggleFavorite()
+    try? database.write { try changed.toggleFavorite(in: $0) }
     return .none
   }
 }

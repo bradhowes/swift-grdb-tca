@@ -1,6 +1,9 @@
 import ComposableArchitecture
+import Dependencies
 import Foundation
 import IdentifiedCollections
+import Models
+import SharedGRDB
 import SwiftData
 import SwiftUI
 
@@ -17,7 +20,8 @@ struct MovieActorsFeature {
     init(movie: Movie, nameSort: SortOrder? = .forward) {
       self.movie = movie
       self.nameSort = nameSort
-      _actors = Self.makeQuery(movie: movie, nameSort: nameSort)
+      let query = MovieActorsQuery(movie: movie, ordering: nameSort)
+      _actors = SharedReaderKey.fetchAll(query: query))
     }
 
     static func makeQuery(movie: Movie, nameSort: SortOrder?) -> SharedReader<[Actor]> {
@@ -62,7 +66,8 @@ extension MovieActorsFeature {
   }
 
   func toggleFavoriteState(state: inout State) -> Effect<Action> {
-    state.movie.toggleFavorite()
+    @Dependency(\.defaultDatabase) var database
+    try? database.write { try state.movie.toggleFavorite(in: $0) }
     state.animateButton = state.movie.favorite
     return .none
   }

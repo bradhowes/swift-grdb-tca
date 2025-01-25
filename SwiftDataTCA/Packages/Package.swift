@@ -39,7 +39,7 @@ let package = Package(
     ),
     .testTarget(
       name: "SharedGRDBTests",
-      dependencies: ["SharedGRDB"]
+      dependencies: ["Models", "SharedGRDB"]
     ),
     .testTarget(
       name: "ModelsTests",

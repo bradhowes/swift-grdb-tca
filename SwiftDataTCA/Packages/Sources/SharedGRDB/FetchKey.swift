@@ -30,10 +30,19 @@ public struct FetchKey<Value: Sendable>: SharedReaderKey {
 
   public func load(context: LoadContext<Value>, continuation: LoadContinuation<Value>) {
 #if DEBUG
-    guard !isDefaultDatabase else { return continuation.resumeReturningInitialValue() }
+    guard !isDefaultDatabase else {
+      return continuation.resumeReturningInitialValue()
+    }
 #endif
-    guard case .userInitiated = context else { return continuation.resumeReturningInitialValue() }
-    guard !isTesting else { return continuation.resume(with: Result { try database.read(request.fetch) }) }
+
+    guard case .userInitiated = context else {
+      return continuation.resumeReturningInitialValue()
+    }
+
+    guard !isTesting else {
+      return continuation.resume(with: Result { try database.read(request.fetch) })
+    }
+
     database.asyncRead { dbResult in
       let result = dbResult.flatMap { db in
         Result { try request.fetch(db) }
@@ -44,8 +53,11 @@ public struct FetchKey<Value: Sendable>: SharedReaderKey {
 
   public func subscribe(context: LoadContext<Value>, subscriber: SharedSubscriber<Value>) -> SharedSubscription {
 #if DEBUG
-    guard !isDefaultDatabase else { return SharedSubscription {} }
+    guard !isDefaultDatabase else {
+      return SharedSubscription {}
+    }
 #endif
+
     let observation = ValueObservation.tracking(request.fetch)
 
     let dropFirst = switch context {
@@ -63,6 +75,7 @@ public struct FetchKey<Value: Sendable>: SharedReaderKey {
       } receiveValue: { newValue in
         subscriber.yield(newValue)
       }
+
     return SharedSubscription {
       cancellable.cancel()
     }

@@ -1,7 +1,10 @@
 import ComposableArchitecture
 import Dependencies
+import GRDB
+import Models
 import SwiftData
 import SwiftUI
+
 
 struct MovieActorsView: View {
   @Bindable var store: StoreOf<MovieActorsFeature>
@@ -60,11 +63,19 @@ private struct ActorsListView: View {
 
 extension MovieActorsView {
   static var preview: some View {
-    @Dependency(\.defaultDatabase) var database
-    let movies = (try? database.read { try Movie.all().fetchAll($0) }) ?? []
-    return NavigationView {
-      MovieActorsView(store: Store(initialState: .init(movie: movies[0])) { MovieActorsFeature() })
-    }.navigationViewStyle(.stack)
+    withDependencies {
+      do {
+        $0.defaultDatabase = try DatabaseQueue.appDatabase()
+      } catch {
+        fatalError("help!")
+      }
+    } operation: {
+      @Dependency(\.defaultDatabase) var database
+      let movies = (try? database.read { try Movie.all().fetchAll($0) }) ?? []
+      return NavigationView {
+        MovieActorsView(store: Store(initialState: .init(movie: movies[0])) { MovieActorsFeature() })
+      }.navigationViewStyle(.stack)
+    }
   }
 }
 

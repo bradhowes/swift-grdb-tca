@@ -1,5 +1,7 @@
 import ComposableArchitecture
 import Dependencies
+import GRDB
+import Models
 import SwiftData
 import SwiftUI
 
@@ -115,20 +117,20 @@ private struct MovieListRow: View {
 
 extension FromStateView {
   static var previewWithLinks: some View {
-    let store = Store(initialState: .init()) { FromStateFeature() }
-    return FromStateView(store: store)
-  }
-
-  static var previewWithButtons: some View {
-    let store = Store(initialState: .init()) { FromStateFeature() }
-    return FromStateView(store: store)
+    withDependencies {
+      do {
+        $0.defaultDatabase = try DatabaseQueue.appDatabase()
+      } catch {
+        fatalError("help!")
+      }
+    } operation: {
+      @Dependency(\.defaultDatabase) var database
+      let store = Store(initialState: .init()) { FromStateFeature() }
+      return FromStateView(store: store)
+    }
   }
 }
 
 #Preview {
   FromStateView.previewWithLinks
-}
-
-#Preview {
-  FromStateView.previewWithButtons
 }

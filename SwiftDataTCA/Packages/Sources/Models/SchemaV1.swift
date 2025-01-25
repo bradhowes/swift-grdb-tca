@@ -27,20 +27,20 @@ public struct Movie: Codable, Identifiable, FetchableRecord, MutablePersistableR
   public let sortableTitle: String
   public var favorite: Bool
 
-  public static let databaseTableName: String = PendingMovie.databaseTableName
-
   public mutating func toggleFavorite(in db: Database) throws {
     favorite.toggle()
     try update(db)
   }
+
+  public static let databaseTableName: String = PendingMovie.databaseTableName
 }
 
 extension Movie {
-  enum Columns {
-    static let id = Column(CodingKeys.id)
-    static let title = Column(CodingKeys.title)
-    static let sortableTitle = Column(CodingKeys.sortableTitle)
-    static let favorite = Column(CodingKeys.favorite)
+  public enum Columns {
+    public static let id = Column(CodingKeys.id)
+    public static let title = Column(CodingKeys.title)
+    public static let sortableTitle = Column(CodingKeys.sortableTitle)
+    public static let favorite = Column(CodingKeys.favorite)
   }
 
   static func createTable(in db: Database) throws {
@@ -79,9 +79,9 @@ public struct Actor: Codable, Identifiable, FetchableRecord, MutablePersistableR
 }
 
 extension Actor {
-  enum Columns {
-    static let id = Column(CodingKeys.id)
-    static let name = Column(CodingKeys.name)
+  public enum Columns {
+    public static let id = Column(CodingKeys.id)
+    public static let name = Column(CodingKeys.name)
   }
 
   static func createTable(in db: Database) throws {
