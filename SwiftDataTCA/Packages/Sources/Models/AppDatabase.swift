@@ -5,7 +5,11 @@ import GRDB
 
 extension DatabaseWriter where Self == DatabaseQueue {
 
-  public static func appDatabase(path: URL? = nil, configuration: Configuration? = nil) throws -> Self {
+  public static func appDatabase(
+    path: URL? = nil,
+    configuration: Configuration? = nil,
+    mockCount: Int = 0
+  ) throws -> Self {
     var config = configuration ?? Configuration()
 #if DEBUG
     config.publicStatementArguments = true
@@ -25,7 +29,10 @@ extension DatabaseWriter where Self == DatabaseQueue {
 
     try databaseQueue.migrate()
 
+    if mockCount > 0 {
+      try databaseQueue.write { try Support.generateMocks(db: $0, count: mockCount) }
+    }
+
     return databaseQueue
   }
 }
-

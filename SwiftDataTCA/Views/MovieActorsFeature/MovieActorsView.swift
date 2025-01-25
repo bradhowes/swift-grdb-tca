@@ -5,7 +5,6 @@ import Models
 import SwiftData
 import SwiftUI
 
-
 struct MovieActorsView: View {
   @Bindable var store: StoreOf<MovieActorsFeature>
 
@@ -63,19 +62,17 @@ private struct ActorsListView: View {
 
 extension MovieActorsView {
   static var preview: some View {
-    withDependencies {
-      do {
-        $0.defaultDatabase = try DatabaseQueue.appDatabase()
-      } catch {
-        fatalError("help!")
-      }
-    } operation: {
-      @Dependency(\.defaultDatabase) var database
-      let movies = (try? database.read { try Movie.all().fetchAll($0) }) ?? []
-      return NavigationView {
-        MovieActorsView(store: Store(initialState: .init(movie: movies[0])) { MovieActorsFeature() })
-      }.navigationViewStyle(.stack)
+    let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
+      $0.defaultDatabase = try! DatabaseQueue.appDatabase(mockCount: 13) // swiftlint:disable:this force_try
+      $0.viewLinkType = .button
     }
+    @Dependency(\.defaultDatabase) var queue
+    let movies = queue.movies()
+    return NavigationView {
+      MovieActorsView(store: Store(initialState: .init(movie: movies[0])) {
+        MovieActorsFeature()
+      })
+    }.navigationViewStyle(.stack)
   }
 }
 

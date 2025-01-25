@@ -14,18 +14,17 @@ struct MovieActorsFeature {
   struct State: Equatable {
     var movie: Movie
     var nameSort: SortOrder?
-    @SharedReader var actors: [Actor]
+    @SharedReader var actors: IdentifiedArrayOf<Actor>
     var animateButton = false
 
     init(movie: Movie, nameSort: SortOrder? = .forward) {
       self.movie = movie
       self.nameSort = nameSort
-      let query = MovieActorsQuery(movie: movie, ordering: nameSort)
-      _actors = SharedReaderKey.fetchAll(query: query))
+      _actors = Self.makeQuery(movie: movie, nameSort: nameSort)
     }
 
-    static func makeQuery(movie: Movie, nameSort: SortOrder?) -> SharedReader<[Actor]> {
-      SharedReader(.fetchAll(query: movie.actors.order(nameSort?.by(Actor.Columns.name))))
+    static func makeQuery(movie: Movie, nameSort: SortOrder?) -> SharedReader<IdentifiedArrayOf<Actor>> {
+      SharedReader(.fetch(MovieActorsQuery(movie: movie, ordering: nameSort)))
     }
 
     mutating func updateQuery() {

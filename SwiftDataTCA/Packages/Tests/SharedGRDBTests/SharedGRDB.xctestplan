@@ -12,7 +12,13 @@
 
   },
   "testTargets" : [
-
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "SharedGRDBTests",
+        "name" : "SharedGRDBTests"
+      }
+    }
   ],
   "version" : 1
 }

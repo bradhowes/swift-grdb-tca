@@ -162,10 +162,10 @@ enum Utils {
   static func actorNamesList(for movie: Movie) -> String {
     @Dependency(\.defaultDatabase) var database
     do {
-      let actors = try database.read { db in
-        try movie.actors.order(Actor.Columns.name.asc).fetchAll(db)
-      }
-      return actors.map(\.name).joined(separator: ", ")
+      let actors = try database.read { try movie.actors.order(Actor.Columns.name.asc).fetchAll($0) }
+      let names = actors.map(\.name).joined(separator: ", ")
+      print("actorNamesList:", names)
+      return names
     } catch {
       fatalError("failed to fetch actors of movie \(movie.title): \(error)")
     }
@@ -174,10 +174,10 @@ enum Utils {
   static func movieTitlesList(for actor: Actor) -> String {
     @Dependency(\.defaultDatabase) var database
     do {
-      let movies = try database.read { db in
-        try actor.movies.order(Movie.Columns.sortableTitle.asc).fetchAll(db)
-      }
-      return movies.map(\.title).joined(separator: ", ")
+      let movies = try database.read { try actor.movies.order(Movie.Columns.sortableTitle.asc).fetchAll($0) }
+      let titles = movies.map(\.title).joined(separator: ", ")
+      print("movieTitlesList:", titles)
+      return titles
     } catch {
       fatalError("failed to fetch movies of actor \(actor.name): \(error)")
     }
@@ -198,10 +198,18 @@ enum Utils {
     }
   }
 
-  static func toggleFavoriteState<Action>(_ movie: Movie) -> Effect<Action> {
+  static func toggleFavoriteState(_ movie: Movie) -> Movie {
     @Dependency(\.defaultDatabase) var database
     var changed: Movie = movie
     try? database.write { try changed.toggleFavorite(in: $0) }
+    return changed
+  }
+
+  static func toggleFavoriteState<State>(_ movie: Movie, in collection: inout IdentifiedArrayOf<Movie>) -> Effect<State> {
+    let changed = toggleFavoriteState(movie)
+    if let index = collection.firstIndex(where: { $0.id == changed.id }) {
+      collection[index] = changed
+    }
     return .none
   }
 }

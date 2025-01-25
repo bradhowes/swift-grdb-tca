@@ -10,8 +10,8 @@ struct FromStateFeature {
   @ObservableState
   struct State: Equatable {
     var path = StackState<Path.State>()
-    @SharedReader var movies: [Movie]
     var titleSort: SortOrder? = .forward
+    @SharedReader var allMovies: IdentifiedArrayOf<Movie>
     var isSearchFieldPresented = false
     var searchText: String = ""
     var scrollTo: Movie?
@@ -19,15 +19,15 @@ struct FromStateFeature {
 
     init(titleSort: SortOrder? = .forward) {
       self.titleSort = titleSort
-      _movies = Self.makeQuery(titleSort: titleSort)
+      _allMovies = Self.makeQuery(titleSort: titleSort)
     }
 
-    static func makeQuery(titleSort: SortOrder?) -> SharedReader<[Movie]> {
-      SharedReader(.fetchAll(query: Movie.all().order(titleSort?.by(Movie.Columns.sortableTitle))))
+    static func makeQuery(titleSort: SortOrder?) -> SharedReader<IdentifiedArrayOf<Movie>> {
+      SharedReader(.fetch(AllMoviesQuery(ordering: titleSort)))
     }
 
     mutating func updateQuery() {
-      _movies = Self.makeQuery(titleSort: titleSort)
+      _allMovies = Self.makeQuery(titleSort: titleSort)
     }
   }
 
@@ -54,10 +54,10 @@ struct FromStateFeature {
       switch action {
 
       case .addButtonTapped:
-        try? database.write { db in
-          try Support.generateMocks(db: db, count: 1)
-        }
-        return .none
+        let next = Support.nextMockMovieEntry(state.allMovies)
+        let movie = try? database.write { try Movie.makeMock(in: $0, entry: next, favorited: false) }
+        state.scrollTo = movie
+        return .none.animation()
 
       case .clearHighlight:
         state.highlight = nil
@@ -92,7 +92,7 @@ struct FromStateFeature {
         return .none
 
       case .onAppear:
-        return fetchMovies(nil, state: &state)
+        return updateQuery(&state)
 
       case .path(let pathAction):
         return monitorPathChange(pathAction, state: &state)
@@ -102,21 +102,21 @@ struct FromStateFeature {
         if !enabled {
           state.searchText = ""
         }
-        return fetchMovies(nil, state: &state)
+        return updateQuery(&state)
 
       case .searchTextChanged(let query):
         if query != state.searchText {
           state.searchText = query
-          return fetchMovies(nil, state: &state)
+          return updateQuery(&state)
         }
         return .none
 
       case .titleSortChanged(let newSort):
         state.titleSort = newSort
-        return fetchMovies(nil, state: &state)
+        return updateQuery(&state)
 
       case .toggleFavoriteState(let movie):
-        return Utils.toggleFavoriteState(movie)
+        return .none // Utils.toggleFavoriteState(movie, in: &state.movies)
       }
     }
     .forEach(\.path, action: \.path)
@@ -125,13 +125,9 @@ struct FromStateFeature {
 
 extension FromStateFeature {
 
-  private func fetchMovies(_ movie: Movie?, state: inout State) -> Effect<Action> {
-//    @Dependency(\.defaultDatabase) var database
-//    state.movies = .init(uncheckedUniqueElements: db.fetchMovies(state.fetchDescriptor).map(\.valueType))
-//    if let movie {
-//      state.scrollTo = movie
-//    }
-    .none
+  private func updateQuery(_ state: inout State) -> Effect<Action> {
+    state.updateQuery()
+    return .none
   }
 
   private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
@@ -152,7 +148,7 @@ extension FromStateFeature {
     case .popFrom:
       let count = state.path.count
       if count == 1 {
-        return fetchMovies(nil, state: &state)
+        return updateQuery(&state)
       }
 
     default:
@@ -163,5 +159,5 @@ extension FromStateFeature {
 }
 
 #Preview {
-  FromStateView.previewWithLinks
+  FromStateView.previewWithButtons
 }

@@ -131,12 +131,13 @@ extension Actor {
 
 extension Movie {
 
-  static func makeMock(in db: Database, entry: (String, [String]), favorited: Bool) throws {
+  public static func makeMock(in db: Database, entry: (String, [String]), favorited: Bool) throws -> Movie {
     let movie = try PendingMovie(title: entry.0).insertAndFetch(db, as: Movie.self)
     for name in entry.1 {
       let actor = try Actor.fetchOrCreate(in: db, name: name)
       try MovieActor(moviesId: movie.id, actorsId: actor.id).insert(db)
     }
+    return movie
   }
 }
 
@@ -163,7 +164,6 @@ extension DatabaseWriter {
         try Movie.deleteAll(db)
         try Actor.deleteAll(db)
         try MovieActor.deleteAll(db) // just to be safe
-        try Support.generateMocks(db: db, count: 13)
       }
 #endif
     }

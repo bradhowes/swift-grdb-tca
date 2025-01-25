@@ -10,8 +10,8 @@ struct ActorMoviesFeature {
   @ObservableState
   struct State: Equatable {
     let actor: Actor
+    @SharedReader var movies: IdentifiedArrayOf<Movie>
     var titleSort: SortOrder?
-    @SharedReader var movies: [Movie]
     var selectedMovie: Movie?
 
     init(actor: Actor, titleSort: SortOrder? = .forward) {
@@ -20,8 +20,8 @@ struct ActorMoviesFeature {
       _movies = Self.makeQuery(actor: actor, titleSort: titleSort)
     }
 
-    static func makeQuery(actor: Actor, titleSort: SortOrder?) -> SharedReader<[Movie]> {
-      SharedReader(.fetchAll(query: actor.movies.order(titleSort?.by(Movie.Columns.sortableTitle))))
+    static func makeQuery(actor: Actor, titleSort: SortOrder?) -> SharedReader<IdentifiedArrayOf<Movie>> {
+      SharedReader(.fetch(ActorMoviesQuery(actor: actor, ordering: titleSort)))
     }
 
     mutating func updateQuery() {
@@ -44,7 +44,10 @@ struct ActorMoviesFeature {
       case .favoriteSwiped(let movie): return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
       case .refresh: return refresh(state: &state)
       case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
-      case .toggleFavoriteState(let movie): return Utils.toggleFavoriteState(movie)
+
+      case .toggleFavoriteState(let movie):
+        _ = Utils.toggleFavoriteState(movie)
+        return .none
       }
     }
   }

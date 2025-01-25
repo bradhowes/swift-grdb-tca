@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import Dependencies
+import GRDB
 import Models
-import SwiftData
 import SwiftUI
 
 struct ActorMoviesView: View {
@@ -49,8 +49,6 @@ private struct MoviesListView: View {
           }
         }
       }
-    }.onAppear {
-      store.send(.refresh)
     }
   }
 }
@@ -69,18 +67,17 @@ extension MoviesListView {
 
 extension ActorMoviesView {
   static var preview: some View {
-    @Dependency(\.defaultDatabase) var database
-    let actor: Actor
-    do {
-      actor = try database.read { try Actor.fetchOrCreate(in: $0, name: "Marlon Brando") }
-    } catch {
-      fatalError()
+    let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
+      $0.defaultDatabase = try! DatabaseQueue.appDatabase(mockCount: 13) // swiftlint:disable:this force_try
+      $0.viewLinkType = .button
     }
+    @Dependency(\.defaultDatabase) var queue
+    let actors = queue.actors()
     return NavigationView {
-      ActorMoviesView(store: Store(initialState: .init(actor: actor)) {
+      ActorMoviesView(store: Store(initialState: .init(actor: actors[27])) {
         ActorMoviesFeature()
       })
-    }
+    }.navigationViewStyle(.stack)
   }
 }
 

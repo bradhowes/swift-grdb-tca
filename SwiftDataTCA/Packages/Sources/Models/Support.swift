@@ -1,6 +1,8 @@
 import Dependencies
 import Foundation
 import GRDB
+import IdentifiedCollections
+
 
 public enum Support {
 
@@ -21,12 +23,13 @@ public enum Support {
   }
 
   /// Obtain an entry from the collection of movie titles and cast members.
-  public static func nextMockMovieEntry(_ movies: [Movie]) -> (String, [String]) {
+  public static func nextMockMovieEntry(_ movies: IdentifiedArrayOf<Movie>) -> (String, [String]) {
     let titles = Set(movies.map { $0.sortableTitle })
-    for index in movies.count..<mockData.count {
+    for index in 0..<mockData.count {
       let (title, cast) = mockData[index]
       let stitle = sortableTitle(title)
       if !titles.contains(stitle) {
+        print("next entry:", title, cast)
         return (title, cast)
       }
     }
@@ -35,7 +38,7 @@ public enum Support {
 
   public static func generateMocks(db: Database, count: Int) throws {
     for index in 0..<count {
-      try Movie.makeMock(in: db, entry: mockData[index], favorited: index % 5 == 0)
+      _ = try Movie.makeMock(in: db, entry: mockData[index], favorited: index % 5 == 0)
     }
   }
 }

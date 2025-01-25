@@ -1,10 +1,15 @@
 import Dependencies
-import SwiftData
+import GRDB
+import Models
 import SwiftUI
 
 struct SwiftDataTCAApp: App {
   var body: some Scene {
     WindowGroup {
+      let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
+        $0.defaultDatabase = try! DatabaseQueue.appDatabase() // swiftlint:disable:this force_try
+        $0.viewLinkType = .button
+      }
       RootFeatureView()
     }
   }

@@ -11,7 +11,7 @@ struct FromStateView: View {
   var body: some View {
     NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
       MovieListView(store: store)
-        .navigationTitle("FromState")
+        .navigationTitle("Movies")
         .searchable(
           text: $store.searchText.sending(\.searchTextChanged),
           isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
@@ -26,9 +26,6 @@ struct FromStateView: View {
           }
         }
         .labelsHidden()
-        .onAppear {
-          store.send(.onAppear)
-        }
     } destination: { store in
       switch store.case {
       case let .showMovieActors(store): MovieActorsView(store: store)
@@ -43,7 +40,7 @@ private struct MovieListView: View {
 
   var body: some View {
     ScrollViewReader { proxy in
-      List(store.movies, id: \.id) { movie in
+      List(store.allMovies, id: \.id) { movie in
         MovieListRow(store: store, movie: movie)
           .swipeActions(allowsFullSwipe: false) {
             Utils.deleteSwipeAction(movie) {
@@ -116,21 +113,16 @@ private struct MovieListRow: View {
 }
 
 extension FromStateView {
-  static var previewWithLinks: some View {
-    withDependencies {
-      do {
-        $0.defaultDatabase = try DatabaseQueue.appDatabase()
-      } catch {
-        fatalError("help!")
-      }
-    } operation: {
-      @Dependency(\.defaultDatabase) var database
-      let store = Store(initialState: .init()) { FromStateFeature() }
-      return FromStateView(store: store)
+  static var previewWithButtons: some View {
+    let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
+      $0.defaultDatabase = try! DatabaseQueue.appDatabase(mockCount: 5) // swiftlint:disable:this force_try
+      $0.viewLinkType = .button
     }
+    let store = Store(initialState: .init()) { FromStateFeature() }
+    return FromStateView(store: store)
   }
 }
 
 #Preview {
-  FromStateView.previewWithLinks
+  FromStateView.previewWithButtons
 }

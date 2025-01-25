@@ -134,42 +134,41 @@ func testMovieActorTable() async throws {
 @Test func testFavoriteToggle() async throws {
   let queue = try DatabaseQueue.appDatabase()
   try await queue.write { _ = try PendingMovie(title: "The Blob").insert($0) }
-  let movies = try await queue.read { try Movie.all().fetchAll($0) }
+  var movies = queue.movies()
+  let movie = movies[0]
   #expect(movies[0].favorite == false)
   try await queue.write { db in
-    var changing = movies[0]
+    var changing = movie
     try changing.toggleFavorite(in: db)
   }
 
-  let movies2 = try await queue.read { try Movie.all().fetchAll($0) }
-  #expect(movies2[0].favorite == true)
+  movies = queue.movies()
+  #expect(movies[0].favorite == true)
 }
 
 @Test func testMocks() async throws {
-  let queue = try DatabaseQueue.appDatabase()
-  try await queue.write { db in try Support.generateMocks(db: db, count: 13) }
-  let movies = try await queue.read { db in try AllMoviesQuery(ordering: .forward).fetch(db) }
+  let queue = try DatabaseQueue.appDatabase(mockCount: 13)
+  let movies = queue.movies()
   #expect(movies.count == 13)
   #expect(movies[0].title == "Apocalypse Now")
-  let actors = try await queue.read { try movies[0].actors.order(Actor.Columns.name).fetchAll($0) }
+  let actors = queue.actorsFor(movie: movies[0])
   #expect(actors.count == 5)
   #expect(actors.map(\.name).joined(separator: ", ") ==
           "Frederic Forrest, Marlon Brando, Martin Sheen, Robert Duvall, Sam Bottoms")
 
-  let actorMovies = try await queue.read { try actors[1].movies.order(Movie.Columns.sortableTitle).fetchAll($0) }
+  let actorMovies = queue.moviesFor(actor: actors[1])
   #expect(actorMovies.count == 8)
   #expect(actorMovies.map(\.title).joined(separator: ", ") == "Apocalypse Now, Don Juan DeMarco, The Godfather, The Island of Dr. Moreau, On the Waterfront, The Score, A Streetcar Named Desire, Superman")
 }
 
 @Test func testAppDatabase() async throws {
-  try await withDependencies {
+  try withDependencies {
     $0.context = .live
   } operation: {
     let path = FileManager.default.temporaryDirectory.appending(component: "testAppDatabase_db.sqlite")
     try? FileManager.default.removeItem(at: path)
-    let queue = try DatabaseQueue.appDatabase(path: path)
-    try await queue.write { db in try Support.generateMocks(db: db, count: 13) }
-    let movies = try await queue.read { try AllMoviesQuery(ordering: .forward).fetch($0) }
+    let queue = try DatabaseQueue.appDatabase(path: path, mockCount: 13)
+    let movies = queue.movies()
     #expect(movies.count == 13)
   }
 }
@@ -194,12 +193,11 @@ func testMovieActorTable() async throws {
   ]
 )
 func testActorMoviesQuery(args: (SortOrder?, String)) async throws {
-  let queue = try DatabaseQueue.appDatabase()
-  try await queue.write { db in try Support.generateMocks(db: db, count: 5) }
-  let actors = try await queue.read { try AllActorsQuery(ordering: .forward).fetch($0) }
+  let queue = try DatabaseQueue.appDatabase(mockCount: 5)
+  let actors = queue.actors(ordering: .forward)
   #expect(actors.count == 21)
   #expect(actors[13].name == "Marlon Brando")
-  let movies = try await queue.read { try ActorMoviesQuery(actor: actors[13], ordering: args.0).fetch($0) }
+  let movies = queue.moviesFor(actor: actors[13], ordering: args.0)
   #expect(movies.count == 5)
   #expect(String(movies.map(\.title).joined(separator: ", ")) == args.1)
 }
@@ -213,12 +211,11 @@ func testActorMoviesQuery(args: (SortOrder?, String)) async throws {
   ]
 )
 func testMovieActorsQuery(args: (SortOrder?, String)) async throws {
-  let queue = try DatabaseQueue.appDatabase()
-  try await queue.write { db in try Support.generateMocks(db: db, count: 5) }
-  let movies = try await queue.read { try AllMoviesQuery(ordering: .forward).fetch($0) }
+  let queue = try DatabaseQueue.appDatabase(mockCount: 5)
+  let movies = queue.movies(ordering: .forward)
   #expect(movies.count == 5)
   #expect(movies[0].title == "Apocalypse Now")
-  let actors = try await queue.read { try MovieActorsQuery(movie: movies[0], ordering: args.0).fetch($0) }
+  let actors = queue.actorsFor(movie: movies[0], ordering: args.0)
   #expect(actors.count == 5)
   #expect(actors.map(\.name).joined(separator: ", ") == args.1)
 }
