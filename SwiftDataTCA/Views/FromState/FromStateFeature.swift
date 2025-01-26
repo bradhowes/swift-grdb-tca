@@ -7,7 +7,12 @@ import SwiftUI
 
 @Reducer
 struct FromStateFeature {
-  typealias Path = RootFeature.Path
+
+  @Reducer(state: .equatable)
+  enum Path {
+    case showMovieActors(MovieActorsFeature)
+    case showActorMovies(ActorMoviesFeature)
+  }
 
   @ObservableState
   struct State: Equatable, Sendable {
@@ -37,7 +42,6 @@ struct FromStateFeature {
     case detailButtonTapped(Movie)
     case favoriteSwiped(Movie)
     case highlight(Movie)
-    case onAppear
     case path(StackActionOf<Path>)
     case searchButtonTapped(Bool)
     case searchTextChanged(String)
@@ -79,7 +83,7 @@ struct FromStateFeature {
         return .none
 
       case .detailButtonTapped(let movie):
-        state.path.append(RootFeature.showMovieActors(movie))
+        state.path.append(.showMovieActors(.init(movie: movie)))
         return .none
 
       case .favoriteSwiped(let movie):
@@ -88,10 +92,6 @@ struct FromStateFeature {
       case .highlight(let movie):
         state.highlight = movie
         return .none
-
-      case .onAppear:
-        return .none
-        // return updateQuery(state)
 
       case .path(let pathAction):
         return monitorPathChange(pathAction, state: &state)
@@ -128,16 +128,17 @@ extension FromStateFeature {
   private func updateQuery(_ state: State) -> Effect<Action> {
     let searchText = state.searchText.isEmpty ? nil : state.searchText
     let titleSort = state.titleSort
+    let allMovies = state.$allMovies
     return .run { _ in
       do {
-        print("FromStateFeature.updateQuery BEGIN")
-        try await state.$allMovies.load(
+        print("-- FromStateFeature.updateQuery >>>")
+        try await allMovies.load(
           .fetch(
             AllMoviesQuery(ordering: titleSort.sortOrder, searchText: searchText),
             animation: .smooth
           )
         )
-        print("FromStateFeature.updateQuery BEGIN")
+        print("-- FromStateFeature.updateQuery <<<")
       } catch {
         reportIssue(error)
       }
@@ -151,17 +152,20 @@ extension FromStateFeature {
       // Detect when the MovieActorsFeature list button is tapped, and show a new ActorMoviesView for the actor that was
       // tapped.
     case .element(id: _, action: .showMovieActors(.detailButtonTapped(let actor))):
-      state.path.append(RootFeature.showActorMovies(actor))
+      print("pushing .showActorMovies(.init(actor: \(actor)))")
+      state.path.append(.showActorMovies(.init(actor: actor)))
 
       // Detect when the ActorMoviesFeature list button is tapped, and show a new MoveActorsView for the movie that was
       // tapped.
     case .element(id: _, action: .showActorMovies(.detailButtonTapped(let movie))):
-      state.path.append(RootFeature.showMovieActors(movie))
+      print("pushing .showMovieActors(.init(movie: \(movie)))")
+      state.path.append(.showMovieActors(.init(movie: movie)))
 
       // If we will have popped off all of the detail views, we must refresh our Movies in case it was changed in one
       // of the detail views.
     case .popFrom:
       let count = state.path.count
+      print("popFrom: \(count)")
       if count == 1 {
         // return updateQuery(state)
       }
@@ -171,6 +175,23 @@ extension FromStateFeature {
     }
     return .none
   }
+}
+
+extension FromStateFeature {
+//
+//  @MainActor
+//  static func link(_ movie: Movie) -> some View {
+//    @Dependency(\.defaultDatabase) var database
+//    return NavigationLink(state: Path.State.showMovieActors(.init(movie: movie))) {
+//      // Fetch the actor names while we know that the Movie is valid.
+//      Utils.MovieView(
+//        name: movie.title,
+//        favorite: movie.favorite,
+//        actorNames: database.actors(for: movie).csv,
+//        showChevron: false
+//      )
+//    }
+//  }
 }
 
 #Preview {

@@ -25,10 +25,10 @@ struct FromStateView: View {
           }
         }
         .labelsHidden()
-    } destination: { store in
-      switch store.case {
-      case let .showMovieActors(store): MovieActorsView(store: store)
-      case let .showActorMovies(store): ActorMoviesView(store: store)
+    } destination: {
+      switch $0.case {
+      case .showMovieActors(let child): MovieActorsView(store: child)
+      case .showActorMovies(let child): ActorMoviesView(store: child)
       }
     }
   }
@@ -36,21 +36,20 @@ struct FromStateView: View {
 
 private struct MovieListView: View {
   var store: StoreOf<FromStateFeature>
+  @Dependency(\.defaultDatabase) var database
 
   var body: some View {
     ScrollViewReader { proxy in
       List(store.allMovies, id: \.id) { movie in
-        if store.searchText.isEmpty || movie.title.localizedCaseInsensitiveContains(store.searchText) {
-          MovieListRow(store: store, movie: movie)
-            .swipeActions(allowsFullSwipe: false) {
-              Utils.deleteSwipeAction(movie) {
-                store.send(.deleteSwiped(movie), animation: .snappy)
-              }
-              Utils.favoriteSwipeAction(movie) {
-                store.send(.favoriteSwiped(movie), animation: .bouncy)
-              }
+        MovieListRow(store: store, movie: movie, actorNames: database.actors(for: movie).csv)
+          .swipeActions(allowsFullSwipe: false) {
+            Utils.deleteSwipeAction(movie) {
+              store.send(.deleteSwiped(movie), animation: .snappy)
             }
-        }
+            Utils.favoriteSwipeAction(movie) {
+              store.send(.favoriteSwiped(movie), animation: .bouncy)
+            }
+          }
       }
       .onChange(of: store.scrollTo) { _, movie in
         if let movie {
@@ -68,35 +67,18 @@ private struct MovieListRow: View {
   var store: StoreOf<FromStateFeature>
   let movie: Movie
   let actorNames: String
-  @Dependency(\.viewLinkType) var viewLinkType
 
-  init(store: StoreOf<FromStateFeature>, movie: Movie) {
+  init(store: StoreOf<FromStateFeature>, movie: Movie, actorNames: String) {
     self.store = store
     self.movie = movie
-    // Fetch the actor names while we know that the Movie is valid.
-    @Dependency(\.defaultDatabase) var database
-    do {
-      let actors = try database.read { db in
-        try movie.actors.order(Actor.Columns.name.asc).fetchAll(db)
-      }
-      actorNames = actors.map(\.name).joined(separator: ", ")
-    } catch {
-      fatalError("failed to fetch actors of movie \(movie.title): \(error)")
-    }
+    self.actorNames = actorNames
   }
 
   var body: some View {
-    if viewLinkType == .navLink {
-      RootFeature.link(movie)
-        .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
-          store.send(.clearHighlight)
-        }
-    } else {
-      detailButton
-        .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
-          store.send(.clearHighlight)
-        }
-    }
+    detailButton
+      .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
+        store.send(.clearHighlight)
+      }
   }
 
   private var detailButton: some View {
@@ -117,7 +99,6 @@ extension FromStateView {
   static var previewWithButtons: some View {
     let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
       $0.defaultDatabase = try! DatabaseQueue.appDatabase(mockCount: 5) // swiftlint:disable:this force_try
-      $0.viewLinkType = .button
     }
     let store = Store(initialState: .init()) { FromStateFeature() }
     return FromStateView(store: store)

@@ -39,21 +39,14 @@ struct MovieActorsView: View {
 
 private struct ActorsListView: View {
   @Bindable var store: StoreOf<MovieActorsFeature>
-  @Dependency(\.viewLinkType) var viewLinkType
   @Dependency(\.defaultDatabase) var database
 
   var body: some View {
     List(store.actors, id: \.id) { actor in
-      if viewLinkType == .navLink {
-        NavigationLink(state: RootFeature.showActorMovies(actor)) {
-          Utils.ActorView(name: actor.name, movieTitles: database.movies(for: actor).csv, showChevron: false)
-        }
-      } else {
-        Button {
-          store.send(.detailButtonTapped(actor))
-        } label: {
-          Utils.ActorView(name: actor.name, movieTitles: database.movies(for: actor).csv, showChevron: true)
-        }
+      Button {
+        store.send(.detailButtonTapped(actor))
+      } label: {
+        Utils.ActorView(name: actor.name, movieTitles: database.movies(for: actor).csv, showChevron: true)
       }
     }
   }
@@ -63,7 +56,6 @@ extension MovieActorsView {
   static var preview: some View {
     let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
       $0.defaultDatabase = try! DatabaseQueue.appDatabase(mockCount: 13) // swiftlint:disable:this force_try
-      $0.viewLinkType = .button
     }
     @Dependency(\.defaultDatabase) var queue
     let movies = queue.movies()

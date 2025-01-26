@@ -1,16 +1,25 @@
+import ComposableArchitecture
 import Dependencies
 import GRDB
 import Models
 import SwiftUI
 
 struct SwiftDataTCAApp: App {
+
+#if os(iOS)
+  init() {
+    UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
+      .lineBreakMode = .byTruncatingMiddle
+  }
+#endif
+
   var body: some Scene {
     let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
       $0.defaultDatabase = try! DatabaseQueue.appDatabase() // swiftlint:disable:this force_try
-      $0.viewLinkType = ProcessInfo.processInfo.arguments.contains("NAVLINKS") ? .navLink : .button
+      // $0.viewLinkType = .button // ProcessInfo.processInfo.arguments.contains("NAVLINKS") ? .navLink : .button
     }
     WindowGroup {
-      RootFeatureView()
+      FromStateView(store: Store(initialState: .init()) { FromStateFeature() })
     }
   }
 }
