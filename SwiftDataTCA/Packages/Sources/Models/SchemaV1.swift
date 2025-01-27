@@ -50,6 +50,10 @@ extension Movie {
       table.column(Columns.sortableTitle, .text).notNull().unique()
       table.column(Columns.favorite, .boolean).defaults(to: false)
     }
+    try db.create(virtualTable: "movie_ft", using: FTS5()) { table in
+      table.synchronize(withTable: Movie.databaseTableName)
+      table.column(Movie.Columns.title.name)
+    }
   }
 }
 
@@ -118,7 +122,7 @@ extension MovieActor {
 extension Movie {
   static let movieActors = hasMany(MovieActor.self)
   static let actors = hasMany(Actor.self, through: movieActors, using: MovieActor.actor)
-
+  static let fullText = hasOne(Table("movie_ft"), using: ForeignKey([.rowID], to: [.rowID]))
   public var actors: QueryInterfaceRequest<Actor> { request(for: Movie.actors) }
 }
 
@@ -169,6 +173,12 @@ extension DatabaseWriter {
     }
 
     try migrator.migrate(self)
+  }
+}
+
+extension DerivableRequest<Movie> {
+  public func matching(_ pattern: FTS5Pattern?) -> Self {
+    joining(required: Movie.fullText.matching(pattern))
   }
 }
 
