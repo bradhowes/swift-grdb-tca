@@ -83,7 +83,7 @@ private struct MovieListRow: View {
 
   private var detailButton: some View {
     Button {
-      _ = store.send(.detailButtonTapped(movie))
+      _ = store.send(.movieButtonTapped(movie))
     } label: {
       Utils.MovieView(
         name: movie.title,

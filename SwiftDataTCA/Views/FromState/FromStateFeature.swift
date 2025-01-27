@@ -17,17 +17,21 @@ struct FromStateFeature {
   @ObservableState
   struct State: Equatable, Sendable {
     var path = StackState<Path.State>()
-    @Shared(.appStorage("titleSort")) var titleSort: Ordering = .forward
-    @Shared(.appStorage("searchText")) var searchText: String = ""
     @SharedReader var allMovies: IdentifiedArrayOf<Movie>
     var isSearchFieldPresented = false
     var scrollTo: Movie?
     var highlight: Movie?
 
+    // These fields affect the contents of the allMovies collection so no need to observer their changes.
+    @ObservationStateIgnored var titleSort: Ordering = .forward
+    @ObservationStateIgnored var searchText: String = ""
+
     init() {
+      let sort = Ordering.forward
+      self.titleSort = sort
       _allMovies = SharedReader(
         .fetch(
-          AllMoviesQuery(ordering: _titleSort.wrappedValue.sortOrder),
+          AllMoviesQuery(ordering: sort.sortOrder),
           animation: .smooth
         )
       )
@@ -39,9 +43,9 @@ struct FromStateFeature {
     case clearHighlight
     case clearScrollTo
     case deleteSwiped(Movie)
-    case detailButtonTapped(Movie)
     case favoriteSwiped(Movie)
     case highlight(Movie)
+    case movieButtonTapped(Movie)
     case path(StackActionOf<Path>)
     case searchButtonTapped(Bool)
     case searchTextChanged(String)
@@ -76,13 +80,12 @@ struct FromStateFeature {
         }
 
       case .deleteSwiped(let movie):
-        // state.movies = state.movies.filter { $0.id != movie.id }
         _ = try? database.write { db in
           try? movie.delete(db)
         }
         return .none
 
-      case .detailButtonTapped(let movie):
+      case .movieButtonTapped(let movie):
         state.path.append(.showMovieActors(.init(movie: movie)))
         return .none
 
@@ -99,20 +102,20 @@ struct FromStateFeature {
       case .searchButtonTapped(let enabled):
         state.isSearchFieldPresented = enabled
         if !enabled {
-          state.$searchText.withLock { $0 = "" }
+          state.searchText = ""
           return updateQuery(state)
         }
         return .none
 
       case .searchTextChanged(let query):
         if query != state.searchText {
-          state.$searchText.withLock { $0 = query }
+          state.searchText = query
           return updateQuery(state)
         }
         return .none
 
       case .titleSortChanged(let newSort):
-        state.$titleSort.withLock { $0 = newSort }
+        state.titleSort = newSort
         return updateQuery(state)
 
       case .toggleFavoriteState(let movie):

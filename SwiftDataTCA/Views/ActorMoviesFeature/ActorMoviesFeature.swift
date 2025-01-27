@@ -10,17 +10,15 @@ struct ActorMoviesFeature {
   @ObservableState
   struct State: Equatable {
     let actor: Actor
-    @Shared(.appStorage("ActorMovieFeatue-titleSort")) var titleSort: Ordering = .forward
-    @SharedReader var movies: IdentifiedArrayOf<Movie>
+    var movies: IdentifiedArrayOf<Movie>
+    @ObservationStateIgnored var titleSort: Ordering
 
     init(actor: Actor) {
+      let sort = Ordering.forward
+      self.titleSort = sort
       self.actor = actor
-      _movies = .init(
-        .fetch(
-          ActorMoviesQuery(actor: actor, ordering: _titleSort.wrappedValue.sortOrder),
-          animation: .smooth
-        )
-      )
+      @Dependency(\.defaultDatabase) var database
+      movies = database.movies(for: actor, ordering: sort.sortOrder)
     }
   }
 
@@ -45,29 +43,15 @@ struct ActorMoviesFeature {
 
 extension ActorMoviesFeature {
 
-  private func updateQuery(_ state: State) -> Effect<Action> {
-    let actor = state.actor
-    let sortOrder = state.titleSort.sortOrder
-    return .run { _ in
-      do {
-        print("ActorMoviesFeature.updateQuery BEGIN")
-        try await state.$movies.load(
-          .fetch(
-            ActorMoviesQuery(actor: actor, ordering: sortOrder),
-            animation: .smooth
-          )
-        )
-        print("ActorMoviesFeature.updateQuery END")
-      } catch {
-        reportIssue(error)
-      }
-    }
-    .cancellable(id: "ActorMoviesFeature.updateQuery", cancelInFlight: true)
+  private func updateQuery(_ state: inout State) -> Effect<Action> {
+    @Dependency(\.defaultDatabase) var database
+    state.movies = database.movies(for: state.actor, ordering: state.titleSort.sortOrder)
+    return .none.animation(.smooth)
   }
 
   private func setTitleSort(_ newSort: Ordering, state: inout State) -> Effect<Action> {
-    state.$titleSort.withLock { $0 = newSort }
-    return updateQuery(state)
+    state.titleSort = newSort
+    return updateQuery(&state)
   }
 }
 

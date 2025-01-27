@@ -12,18 +12,16 @@ struct MovieActorsFeature {
   @ObservableState
   struct State: Equatable {
     var movie: Movie
-    @Shared(.appStorage("MovieActorsFeature-nameSort")) var nameSort: Ordering = .forward
-    @SharedReader var actors: IdentifiedArrayOf<Actor>
+    var actors: IdentifiedArrayOf<Actor>
     var animateButton = false
+    @ObservationStateIgnored var nameSort: Ordering
 
     init(movie: Movie, nameSort: Ordering = .forward) {
+      let sort = Ordering.forward
       self.movie = movie
-      _actors = .init(
-        .fetch(
-          MovieActorsQuery(movie: movie, ordering: _nameSort.wrappedValue.sortOrder),
-          animation: .smooth
-        )
-      )
+      self.nameSort = sort
+      @Dependency(\.defaultDatabase) var database
+      actors = database.actors(for: movie, ordering: sort.sortOrder)
     }
   }
 
@@ -46,35 +44,21 @@ struct MovieActorsFeature {
 
 extension MovieActorsFeature {
 
-  private func updateQuery(_ state: State) -> Effect<Action> {
-    let movie = state.movie
-    let sortOrder = state.nameSort.sortOrder
-    return .run { _ in
-      do {
-        print("MovieActorssFeature.updateQuery BEGIN")
-        try await state.$actors.load(
-          .fetch(
-            MovieActorsQuery(movie: movie, ordering: sortOrder),
-            animation: .smooth
-          )
-        )
-        print("MovieActorssFeature.updateQuery END")
-      } catch {
-        reportIssue(error)
-      }
-    }
-    .cancellable(id: "MovieActorsFeature.updateQuery", cancelInFlight: true)
+  private func updateQuery(_ state: inout State) -> Effect<Action> {
+    @Dependency(\.defaultDatabase) var database
+    state.actors = database.actors(for: state.movie, ordering: state.nameSort.sortOrder)
+    return .none.animation(.smooth)
   }
 
   private func setNameSort(_ newSort: Ordering, state: inout State) -> Effect<Action> {
-    state.$nameSort.withLock { $0 = newSort }
-    return updateQuery(state)
+    state.nameSort = newSort
+    return updateQuery(&state)
   }
 
   func toggleFavoriteState(state: inout State) -> Effect<Action> {
     @Dependency(\.defaultDatabase) var database
     try? database.write { try state.movie.toggleFavorite(in: $0) }
-    state.animateButton = state.movie.favorite
+    // state.animateButton = state.movie.favorite
     return .none
   }
 }

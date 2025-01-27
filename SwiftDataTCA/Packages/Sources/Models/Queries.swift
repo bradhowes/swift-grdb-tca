@@ -34,9 +34,9 @@ public struct AllActorsQuery: FetchKeyRequest {
   }
 
   public func fetch(_ db: Database) throws -> IdentifiedArrayOf<Actor> {
-    let rows = try Actor.all().order(ordering?.by(Actor.Columns.name)).fetchAll(db)
+    let rows = try Actor.all().order(ordering?.by(Actor.Columns.name)).fetchIdentifiedArray(db)
     print("AllMoviesQuery: \(rows.count)")
-    return .init(uncheckedUniqueElements: rows)
+    return rows
   }
 }
 
@@ -50,9 +50,9 @@ public struct ActorMoviesQuery: FetchKeyRequest {
   }
 
   public func fetch(_ db: Database) throws -> IdentifiedArrayOf<Movie> {
-    let rows = try actor.movies.order(ordering?.by(Movie.Columns.sortableTitle)).fetchAll(db)
+    let rows = try actor.movies.order(ordering?.by(Movie.Columns.sortableTitle)).fetchIdentifiedArray(db)
     print("ActorMoviesQuery: \(actor.name): \(rows.count)")
-    return .init(uncheckedUniqueElements: rows)
+    return rows
   }
 }
 
@@ -66,9 +66,15 @@ public struct MovieActorsQuery: FetchKeyRequest {
   }
 
   public func fetch(_ db: Database) throws -> IdentifiedArrayOf<Actor> {
-    let rows = try movie.actors.order(ordering?.by(Actor.Columns.name)).fetchAll(db)
+    let rows = try movie.actors.order(ordering?.by(Actor.Columns.name)).fetchIdentifiedArray(db)
     print("MovieActorssQuery: \(movie.sortableTitle): \(rows.count)")
-    return .init(uncheckedUniqueElements: rows)
+    return rows
+  }
+}
+
+extension FetchRequest where RowDecoder: FetchableRecord & Identifiable {
+  public func fetchIdentifiedArray(_ db: Database) throws -> IdentifiedArrayOf<RowDecoder> {
+    try IdentifiedArray(fetchCursor(db))
   }
 }
 
