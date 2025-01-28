@@ -14,8 +14,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: Select Xcode 16.0
-      run: ls -l /Applications && sudo xcode-select -s /Applications/Xcode_16.app
+    - name: Select Xcode 16.2
+      run: ls -l /Applications && sudo xcode-select -s /Applications/Xcode_16.2.app
     - name: Build, test, and code coverage
       run: env && make
     - name: Archive test artifacts
@@ -28,7 +28,7 @@ jobs:
       with:
         auth: ${{ secrets.GIST_UPDATE }}
         gistID: 54c92d8df32d9a1b64d945f2e76696f1
-        filename: SwiftDataTCA-coverage.json
+        filename: SwiftGRDBTCA-coverage.json
         label: Coverage
         message: ${{ env.PERCENTAGE }}
         color: success
