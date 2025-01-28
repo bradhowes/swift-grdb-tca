@@ -10,7 +10,7 @@ extension DatabaseWriter where Self == DatabaseQueue {
     configuration: Configuration? = nil,
     mockCount: Int = 0
   ) throws -> Self {
-    var config = configuration ?? Configuration()
+    let config = configuration ?? Configuration()
 //#if DEBUG
 //    config.publicStatementArguments = true
 //    config.prepareDatabase { db in db.trace { print($0) }}

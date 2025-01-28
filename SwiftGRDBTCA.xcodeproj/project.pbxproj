@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		23A64E8A2ACC5312005B6344 /* SwiftDataTCAApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64E892ACC5312005B6344 /* SwiftDataTCAApp.swift */; };
+		23A64E8A2ACC5312005B6344 /* SwiftGRDBTCAApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64E892ACC5312005B6344 /* SwiftGRDBTCAApp.swift */; };
 		23A64E902ACC5313005B6344 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23A64E8F2ACC5313005B6344 /* Assets.xcassets */; };
 		23A64E942ACC5313005B6344 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23A64E932ACC5313005B6344 /* Preview Assets.xcassets */; };
 		23A64E9D2ACC5DFE005B6344 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 23A64E9C2ACC5DFE005B6344 /* ComposableArchitecture */; };
@@ -31,14 +31,14 @@
 		BD7324F02C8799BE0026E1BE /* FadeIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7324EA2C8799BE0026E1BE /* FadeIn.swift */; };
 		BD7324F22C8799BE0026E1BE /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7324EC2C8799BE0026E1BE /* Utils.swift */; };
 		BD73380D2C4118CA001D0E04 /* SchemaV3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD73380C2C4118CA001D0E04 /* SchemaV3Tests.swift */; };
-		BD7732802D44519400D40D77 /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = BD77327F2D44519400D40D77 /* Models */; };
-		BD7732822D44519400D40D77 /* SharedGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = BD7732812D44519400D40D77 /* SharedGRDB */; };
 		BD81CD142C71F28D0095164F /* SchemaV6Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD81CD132C71F28D0095164F /* SchemaV6Tests.swift */; };
 		BD81CD162C71F5180095164F /* SchemaV6Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD81CD152C71F5180095164F /* SchemaV6Tests.swift */; };
 		BD8F4DAE2C4688FC004ACF0B /* MovieActorsFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3C7FF02C4686FA00C68195 /* MovieActorsFeature.swift */; };
 		BD8F4DB02C4689A4004ACF0B /* MovieActorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8F4DAF2C4689A4004ACF0B /* MovieActorsView.swift */; };
 		BD8F4DB32C46C7E7004ACF0B /* ActorMoviesFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8F4DB22C46C7E7004ACF0B /* ActorMoviesFeature.swift */; };
 		BD8F4DB52C46C7F9004ACF0B /* ActorMoviesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8F4DB42C46C7F9004ACF0B /* ActorMoviesView.swift */; };
+		BD90438D2D4974B4000D66B0 /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = BD90438C2D4974B4000D66B0 /* Models */; };
+		BD90438F2D4974B4000D66B0 /* SharedGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = BD90438E2D4974B4000D66B0 /* SharedGRDB */; };
 		BD92A3FA2D3FF83600649D33 /* Tagged in Frameworks */ = {isa = PBXBuildFile; productRef = BD92A3F92D3FF83600649D33 /* Tagged */; };
 		BDA182042C4CFD4C001ACC6F /* SchemaV2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA182032C4CFD43001ACC6F /* SchemaV2Tests.swift */; };
 		BDA182062C4CFE15001ACC6F /* SchemaV3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA182052C4CFE15001ACC6F /* SchemaV3Tests.swift */; };
@@ -81,17 +81,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		23A64E862ACC5312005B6344 /* SwiftDataTCA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftDataTCA.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		23A64E892ACC5312005B6344 /* SwiftDataTCAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTCAApp.swift; sourceTree = "<group>"; };
+		23A64E862ACC5312005B6344 /* SwiftGRDBTCA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftGRDBTCA.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		23A64E892ACC5312005B6344 /* SwiftGRDBTCAApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftGRDBTCAApp.swift; sourceTree = "<group>"; };
 		23A64E8F2ACC5313005B6344 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		23A64E912ACC5313005B6344 /* SwiftDataTCA.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftDataTCA.entitlements; sourceTree = "<group>"; };
+		23A64E912ACC5313005B6344 /* SwiftGRDBTCA.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftGRDBTCA.entitlements; sourceTree = "<group>"; };
 		23A64E932ACC5313005B6344 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		23A64E952ACC5313005B6344 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23A64E9E2ACC5E16005B6344 /* FromStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromStateView.swift; sourceTree = "<group>"; };
-		BD0DC1DC2C41779D00821D09 /* SwiftDataTCAXCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftDataTCAXCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD0DC1DC2C41779D00821D09 /* SwiftGRDBTCAXCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftGRDBTCAXCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD0DC1DE2C41779D00821D09 /* FromStateFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromStateFeatureTests.swift; sourceTree = "<group>"; };
 		BD1676AA2C98CF13004AA2D2 /* AnimationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationTests.swift; sourceTree = "<group>"; };
-		BD1676B12C98DC64004AA2D2 /* SwiftDataTCAUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftDataTCAUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD1676B12C98DC64004AA2D2 /* SwiftGRDBTCAUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftGRDBTCAUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD1676B32C98DC64004AA2D2 /* FromQueryUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromQueryUITests.swift; sourceTree = "<group>"; };
 		BD1676B52C98DC65004AA2D2 /* SwiftDataTCAUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTCAUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		BD20DFEF2CA021E30071D66C /* TestingSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingSupport.swift; sourceTree = "<group>"; };
@@ -108,7 +108,7 @@
 		BD7324EA2C8799BE0026E1BE /* FadeIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeIn.swift; sourceTree = "<group>"; };
 		BD7324EB2C8799BE0026E1BE /* Flash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flash.swift; sourceTree = "<group>"; };
 		BD7324EC2C8799BE0026E1BE /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		BD73380A2C4118CA001D0E04 /* SwiftDataTCATests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftDataTCATests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD73380A2C4118CA001D0E04 /* SwiftGRDBTCATests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftGRDBTCATests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD73380C2C4118CA001D0E04 /* SchemaV3Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaV3Tests.swift; sourceTree = "<group>"; };
 		BD7338152C4158A0001D0E04 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
 		BD7338162C4158A0001D0E04 /* LICENSE.MD */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.MD; sourceTree = "<group>"; };
@@ -118,14 +118,14 @@
 		BD8F4DAF2C4689A4004ACF0B /* MovieActorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieActorsView.swift; sourceTree = "<group>"; };
 		BD8F4DB22C46C7E7004ACF0B /* ActorMoviesFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActorMoviesFeature.swift; sourceTree = "<group>"; };
 		BD8F4DB42C46C7F9004ACF0B /* ActorMoviesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActorMoviesView.swift; sourceTree = "<group>"; };
-		BD92A3FB2D41671600649D33 /* Packages */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Packages; path = SwiftDataTCA/Packages; sourceTree = "<group>"; };
+		BD90438B2D4973D5000D66B0 /* Packages */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Packages; path = SwiftGRDBTCA/Packages; sourceTree = "<group>"; };
 		BDA182032C4CFD43001ACC6F /* SchemaV2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaV2Tests.swift; sourceTree = "<group>"; };
 		BDA182052C4CFE15001ACC6F /* SchemaV3Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV3Tests.swift; sourceTree = "<group>"; };
 		BDA182072C4D0003001ACC6F /* SchemaV4Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV4Tests.swift; sourceTree = "<group>"; };
 		BDA182092C4D00FD001ACC6F /* SchemaV5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaV5Tests.swift; sourceTree = "<group>"; };
 		BDA1820B2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorMoviesFeatureTests.swift; sourceTree = "<group>"; };
 		BDA1820D2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieActorsFeatureTests.swift; sourceTree = "<group>"; };
-		BDA64E152C4A3E0F00B04E3A /* SwiftDataTCA.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SwiftDataTCA.xctestplan; sourceTree = "<group>"; };
+		BDA64E152C4A3E0F00B04E3A /* SwiftGRDBTCA.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SwiftGRDBTCA.xctestplan; sourceTree = "<group>"; };
 		BDD57C232C9D82BC0082178E /* FromStateUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FromStateUITests.swift; sourceTree = "<group>"; };
 		BDD57C252C9D8D2C0082178E /* DatabaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTests.swift; sourceTree = "<group>"; };
 		BDD57C272C9D981E0082178E /* XCUIElement+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIElement+Extensions.swift"; sourceTree = "<group>"; };
@@ -140,12 +140,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD7732802D44519400D40D77 /* Models in Frameworks */,
+				BD90438D2D4974B4000D66B0 /* Models in Frameworks */,
 				BD92A3FA2D3FF83600649D33 /* Tagged in Frameworks */,
 				BDD776AB2D3F89AB003DEA2F /* GRDB in Frameworks */,
 				23A64E9D2ACC5DFE005B6344 /* ComposableArchitecture in Frameworks */,
 				BDF59DD02CA1E18E00DC7D00 /* IdentifiedCollections in Frameworks */,
-				BD7732822D44519400D40D77 /* SharedGRDB in Frameworks */,
+				BD90438F2D4974B4000D66B0 /* SharedGRDB in Frameworks */,
 				BDD776B02D3F982A003DEA2F /* Sharing in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -178,16 +178,16 @@
 		23A64E7D2ACC5312005B6344 = {
 			isa = PBXGroup;
 			children = (
-				BD92A3FB2D41671600649D33 /* Packages */,
+				BD90438B2D4973D5000D66B0 /* Packages */,
 				BD7338172C4158A0001D0E04 /* README.md */,
 				BD7338162C4158A0001D0E04 /* LICENSE.MD */,
 				BD7338152C4158A0001D0E04 /* CONTRIBUTING.md */,
 				BDE3C3052C53DF88007C3AB8 /* Configs */,
-				BDA64E152C4A3E0F00B04E3A /* SwiftDataTCA.xctestplan */,
-				23A64E882ACC5312005B6344 /* SwiftDataTCA */,
-				BD73380B2C4118CA001D0E04 /* SwiftDataTCATests */,
-				BD0DC1DD2C41779D00821D09 /* SwiftDataTCAXCTests */,
-				BD1676B22C98DC64004AA2D2 /* SwiftDataTCAUITests */,
+				BDA64E152C4A3E0F00B04E3A /* SwiftGRDBTCA.xctestplan */,
+				23A64E882ACC5312005B6344 /* SwiftGRDBTCA */,
+				BD73380B2C4118CA001D0E04 /* SwiftGRDBTCATests */,
+				BD0DC1DD2C41779D00821D09 /* SwiftGRDBTCAXCTests */,
+				BD1676B22C98DC64004AA2D2 /* SwiftGRDBTCAUITests */,
 				23A64E872ACC5312005B6344 /* Products */,
 				BD13FE5C2C49395400606C7D /* Frameworks */,
 			);
@@ -196,26 +196,26 @@
 		23A64E872ACC5312005B6344 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				23A64E862ACC5312005B6344 /* SwiftDataTCA.app */,
-				BD73380A2C4118CA001D0E04 /* SwiftDataTCATests.xctest */,
-				BD0DC1DC2C41779D00821D09 /* SwiftDataTCAXCTests.xctest */,
-				BD1676B12C98DC64004AA2D2 /* SwiftDataTCAUITests.xctest */,
+				23A64E862ACC5312005B6344 /* SwiftGRDBTCA.app */,
+				BD73380A2C4118CA001D0E04 /* SwiftGRDBTCATests.xctest */,
+				BD0DC1DC2C41779D00821D09 /* SwiftGRDBTCAXCTests.xctest */,
+				BD1676B12C98DC64004AA2D2 /* SwiftGRDBTCAUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		23A64E882ACC5312005B6344 /* SwiftDataTCA */ = {
+		23A64E882ACC5312005B6344 /* SwiftGRDBTCA */ = {
 			isa = PBXGroup;
 			children = (
-				23A64E892ACC5312005B6344 /* SwiftDataTCAApp.swift */,
+				23A64E892ACC5312005B6344 /* SwiftGRDBTCAApp.swift */,
 				23A64EAA2AD0CCE4005B6344 /* Views */,
 				23A64EA52ACF5803005B6344 /* Services */,
 				23A64E8F2ACC5313005B6344 /* Assets.xcassets */,
-				23A64E912ACC5313005B6344 /* SwiftDataTCA.entitlements */,
+				23A64E912ACC5313005B6344 /* SwiftGRDBTCA.entitlements */,
 				23A64E952ACC5313005B6344 /* Info.plist */,
 				23A64E922ACC5313005B6344 /* Preview Content */,
 			);
-			path = SwiftDataTCA;
+			path = SwiftGRDBTCA;
 			sourceTree = "<group>";
 		};
 		23A64E922ACC5313005B6344 /* Preview Content */ = {
@@ -246,7 +246,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		BD0DC1DD2C41779D00821D09 /* SwiftDataTCAXCTests */ = {
+		BD0DC1DD2C41779D00821D09 /* SwiftGRDBTCAXCTests */ = {
 			isa = PBXGroup;
 			children = (
 				BDA1820B2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift */,
@@ -262,7 +262,7 @@
 				BD81CD152C71F5180095164F /* SchemaV6Tests.swift */,
 				BD21828D2C4D406D00FCB16E /* XCTest+Extensions.swift */,
 			);
-			path = SwiftDataTCAXCTests;
+			path = SwiftGRDBTCAXCTests;
 			sourceTree = "<group>";
 		};
 		BD13FE5C2C49395400606C7D /* Frameworks */ = {
@@ -272,7 +272,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		BD1676B22C98DC64004AA2D2 /* SwiftDataTCAUITests */ = {
+		BD1676B22C98DC64004AA2D2 /* SwiftGRDBTCAUITests */ = {
 			isa = PBXGroup;
 			children = (
 				BD1676B32C98DC64004AA2D2 /* FromQueryUITests.swift */,
@@ -280,7 +280,7 @@
 				BD1676B52C98DC65004AA2D2 /* SwiftDataTCAUITestsLaunchTests.swift */,
 				BDD57C272C9D981E0082178E /* XCUIElement+Extensions.swift */,
 			);
-			path = SwiftDataTCAUITests;
+			path = SwiftGRDBTCAUITests;
 			sourceTree = "<group>";
 		};
 		BD22651A2C3FC31700A975E8 /* FromState */ = {
@@ -312,7 +312,7 @@
 			path = Animations;
 			sourceTree = "<group>";
 		};
-		BD73380B2C4118CA001D0E04 /* SwiftDataTCATests */ = {
+		BD73380B2C4118CA001D0E04 /* SwiftGRDBTCATests */ = {
 			isa = PBXGroup;
 			children = (
 				BDD57C292C9D9E210082178E /* SchemaV1Tests.swift */,
@@ -324,7 +324,7 @@
 				BDD57C252C9D8D2C0082178E /* DatabaseTests.swift */,
 				BD20DFEF2CA021E30071D66C /* TestingSupport.swift */,
 			);
-			path = SwiftDataTCATests;
+			path = SwiftGRDBTCATests;
 			sourceTree = "<group>";
 		};
 		BD8F4DB12C46C7D4004ACF0B /* ActorMoviesFeature */ = {
@@ -348,9 +348,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		23A64E852ACC5312005B6344 /* SwiftDataTCA */ = {
+		23A64E852ACC5312005B6344 /* SwiftGRDBTCA */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23A64E982ACC5313005B6344 /* Build configuration list for PBXNativeTarget "SwiftDataTCA" */;
+			buildConfigurationList = 23A64E982ACC5313005B6344 /* Build configuration list for PBXNativeTarget "SwiftGRDBTCA" */;
 			buildPhases = (
 				23A64E822ACC5312005B6344 /* Sources */,
 				23A64E832ACC5312005B6344 /* Frameworks */,
@@ -361,23 +361,23 @@
 			dependencies = (
 				BD0DC1E72C43A83400821D09 /* PBXTargetDependency */,
 			);
-			name = SwiftDataTCA;
+			name = SwiftGRDBTCA;
 			packageProductDependencies = (
 				23A64E9C2ACC5DFE005B6344 /* ComposableArchitecture */,
 				BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */,
 				BDD776AA2D3F89AB003DEA2F /* GRDB */,
 				BDD776AF2D3F982A003DEA2F /* Sharing */,
 				BD92A3F92D3FF83600649D33 /* Tagged */,
-				BD77327F2D44519400D40D77 /* Models */,
-				BD7732812D44519400D40D77 /* SharedGRDB */,
+				BD90438C2D4974B4000D66B0 /* Models */,
+				BD90438E2D4974B4000D66B0 /* SharedGRDB */,
 			);
 			productName = SwiftDataTCA;
-			productReference = 23A64E862ACC5312005B6344 /* SwiftDataTCA.app */;
+			productReference = 23A64E862ACC5312005B6344 /* SwiftGRDBTCA.app */;
 			productType = "com.apple.product-type.application";
 		};
-		BD0DC1DB2C41779D00821D09 /* SwiftDataTCAXCTests */ = {
+		BD0DC1DB2C41779D00821D09 /* SwiftGRDBTCAXCTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BD0DC1E42C41779D00821D09 /* Build configuration list for PBXNativeTarget "SwiftDataTCAXCTests" */;
+			buildConfigurationList = BD0DC1E42C41779D00821D09 /* Build configuration list for PBXNativeTarget "SwiftGRDBTCAXCTests" */;
 			buildPhases = (
 				BD0DC1D82C41779D00821D09 /* Sources */,
 				BD0DC1D92C41779D00821D09 /* Frameworks */,
@@ -388,17 +388,17 @@
 			dependencies = (
 				BD0DC1E12C41779D00821D09 /* PBXTargetDependency */,
 			);
-			name = SwiftDataTCAXCTests;
+			name = SwiftGRDBTCAXCTests;
 			packageProductDependencies = (
 				BD2182892C4D35DA00FCB16E /* SnapshotTesting */,
 			);
 			productName = SwiftDataTCAXCTests;
-			productReference = BD0DC1DC2C41779D00821D09 /* SwiftDataTCAXCTests.xctest */;
+			productReference = BD0DC1DC2C41779D00821D09 /* SwiftGRDBTCAXCTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		BD1676B02C98DC64004AA2D2 /* SwiftDataTCAUITests */ = {
+		BD1676B02C98DC64004AA2D2 /* SwiftGRDBTCAUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BD1676B92C98DC65004AA2D2 /* Build configuration list for PBXNativeTarget "SwiftDataTCAUITests" */;
+			buildConfigurationList = BD1676B92C98DC65004AA2D2 /* Build configuration list for PBXNativeTarget "SwiftGRDBTCAUITests" */;
 			buildPhases = (
 				BD1676AD2C98DC64004AA2D2 /* Sources */,
 				BD1676AE2C98DC64004AA2D2 /* Frameworks */,
@@ -409,14 +409,14 @@
 			dependencies = (
 				BD1676B82C98DC65004AA2D2 /* PBXTargetDependency */,
 			);
-			name = SwiftDataTCAUITests;
+			name = SwiftGRDBTCAUITests;
 			productName = SwiftDataTCAUITests;
-			productReference = BD1676B12C98DC64004AA2D2 /* SwiftDataTCAUITests.xctest */;
+			productReference = BD1676B12C98DC64004AA2D2 /* SwiftGRDBTCAUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		BD7338092C4118CA001D0E04 /* SwiftDataTCATests */ = {
+		BD7338092C4118CA001D0E04 /* SwiftGRDBTCATests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BD7338102C4118CA001D0E04 /* Build configuration list for PBXNativeTarget "SwiftDataTCATests" */;
+			buildConfigurationList = BD7338102C4118CA001D0E04 /* Build configuration list for PBXNativeTarget "SwiftGRDBTCATests" */;
 			buildPhases = (
 				BD7338062C4118CA001D0E04 /* Sources */,
 				BD7338072C4118CA001D0E04 /* Frameworks */,
@@ -427,11 +427,11 @@
 			dependencies = (
 				BD73380F2C4118CA001D0E04 /* PBXTargetDependency */,
 			);
-			name = SwiftDataTCATests;
+			name = SwiftGRDBTCATests;
 			packageProductDependencies = (
 			);
 			productName = SwiftDataTCATests;
-			productReference = BD73380A2C4118CA001D0E04 /* SwiftDataTCATests.xctest */;
+			productReference = BD73380A2C4118CA001D0E04 /* SwiftGRDBTCATests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -461,7 +461,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 23A64E812ACC5312005B6344 /* Build configuration list for PBXProject "SwiftDataTCA" */;
+			buildConfigurationList = 23A64E812ACC5312005B6344 /* Build configuration list for PBXProject "SwiftGRDBTCA" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -483,10 +483,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				23A64E852ACC5312005B6344 /* SwiftDataTCA */,
-				BD7338092C4118CA001D0E04 /* SwiftDataTCATests */,
-				BD0DC1DB2C41779D00821D09 /* SwiftDataTCAXCTests */,
-				BD1676B02C98DC64004AA2D2 /* SwiftDataTCAUITests */,
+				23A64E852ACC5312005B6344 /* SwiftGRDBTCA */,
+				BD7338092C4118CA001D0E04 /* SwiftGRDBTCATests */,
+				BD0DC1DB2C41779D00821D09 /* SwiftGRDBTCAXCTests */,
+				BD1676B02C98DC64004AA2D2 /* SwiftGRDBTCAUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -531,7 +531,7 @@
 			files = (
 				23A64E9F2ACC5E16005B6344 /* FromStateView.swift in Sources */,
 				BD8F4DAE2C4688FC004ACF0B /* MovieActorsFeature.swift in Sources */,
-				23A64E8A2ACC5312005B6344 /* SwiftDataTCAApp.swift in Sources */,
+				23A64E8A2ACC5312005B6344 /* SwiftGRDBTCAApp.swift in Sources */,
 				BD7324EE2C8799BE0026E1BE /* Animations.swift in Sources */,
 				BD7324EF2C8799BE0026E1BE /* Confetti.swift in Sources */,
 				BD7324F02C8799BE0026E1BE /* FadeIn.swift in Sources */,
@@ -595,7 +595,7 @@
 /* Begin PBXTargetDependency section */
 		BD0DC1E12C41779D00821D09 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 23A64E852ACC5312005B6344 /* SwiftDataTCA */;
+			target = 23A64E852ACC5312005B6344 /* SwiftGRDBTCA */;
 			targetProxy = BD0DC1E02C41779D00821D09 /* PBXContainerItemProxy */;
 		};
 		BD0DC1E72C43A83400821D09 /* PBXTargetDependency */ = {
@@ -604,12 +604,12 @@
 		};
 		BD1676B82C98DC65004AA2D2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 23A64E852ACC5312005B6344 /* SwiftDataTCA */;
+			target = 23A64E852ACC5312005B6344 /* SwiftGRDBTCA */;
 			targetProxy = BD1676B72C98DC65004AA2D2 /* PBXContainerItemProxy */;
 		};
 		BD73380F2C4118CA001D0E04 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 23A64E852ACC5312005B6344 /* SwiftDataTCA */;
+			target = 23A64E852ACC5312005B6344 /* SwiftGRDBTCA */;
 			targetProxy = BD73380E2C4118CA001D0E04 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -742,15 +742,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SwiftDataTCA/SwiftDataTCA.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SwiftGRDBTCA/SwiftGRDBTCA.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"SwiftDataTCA/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"SwiftGRDBTCA/Preview Content\"";
 				DEVELOPMENT_TEAM = UP6SS5ES7E;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SwiftDataTCA/Info.plist;
+				INFOPLIST_FILE = SwiftGRDBTCA/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -766,7 +766,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.braysoftware.SwiftDataTCA;
+				PRODUCT_BUNDLE_IDENTIFIER = com.braysoftware.SwiftGRDBTCA;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -780,15 +780,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SwiftDataTCA/SwiftDataTCA.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SwiftGRDBTCA/SwiftGRDBTCA.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"SwiftDataTCA/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"SwiftGRDBTCA/Preview Content\"";
 				DEVELOPMENT_TEAM = UP6SS5ES7E;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SwiftDataTCA/Info.plist;
+				INFOPLIST_FILE = SwiftGRDBTCA/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -804,7 +804,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.braysoftware.SwiftDataTCA;
+				PRODUCT_BUNDLE_IDENTIFIER = com.braysoftware.SwiftGRDBTCA;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -830,7 +830,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftDataTCA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftDataTCA";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftGRDBTCA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftGRDBTCA";
 				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
@@ -852,7 +852,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftDataTCA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftDataTCA";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftGRDBTCA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftGRDBTCA";
 				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
@@ -911,7 +911,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftDataTCA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftDataTCA";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftGRDBTCA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftGRDBTCA";
 				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
@@ -933,7 +933,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftDataTCA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftDataTCA";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftGRDBTCA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftGRDBTCA";
 				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
@@ -941,7 +941,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		23A64E812ACC5312005B6344 /* Build configuration list for PBXProject "SwiftDataTCA" */ = {
+		23A64E812ACC5312005B6344 /* Build configuration list for PBXProject "SwiftGRDBTCA" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23A64E962ACC5313005B6344 /* Debug */,
@@ -950,7 +950,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23A64E982ACC5313005B6344 /* Build configuration list for PBXNativeTarget "SwiftDataTCA" */ = {
+		23A64E982ACC5313005B6344 /* Build configuration list for PBXNativeTarget "SwiftGRDBTCA" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23A64E992ACC5313005B6344 /* Debug */,
@@ -959,7 +959,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BD0DC1E42C41779D00821D09 /* Build configuration list for PBXNativeTarget "SwiftDataTCAXCTests" */ = {
+		BD0DC1E42C41779D00821D09 /* Build configuration list for PBXNativeTarget "SwiftGRDBTCAXCTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BD0DC1E22C41779D00821D09 /* Debug */,
@@ -968,7 +968,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BD1676B92C98DC65004AA2D2 /* Build configuration list for PBXNativeTarget "SwiftDataTCAUITests" */ = {
+		BD1676B92C98DC65004AA2D2 /* Build configuration list for PBXNativeTarget "SwiftGRDBTCAUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BD1676BA2C98DC65004AA2D2 /* Debug */,
@@ -977,7 +977,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BD7338102C4118CA001D0E04 /* Build configuration list for PBXNativeTarget "SwiftDataTCATests" */ = {
+		BD7338102C4118CA001D0E04 /* Build configuration list for PBXNativeTarget "SwiftGRDBTCATests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BD7338112C4118CA001D0E04 /* Debug */,
@@ -1071,11 +1071,11 @@
 			package = BD2182882C4D357700FCB16E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
 		};
-		BD77327F2D44519400D40D77 /* Models */ = {
+		BD90438C2D4974B4000D66B0 /* Models */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Models;
 		};
-		BD7732812D44519400D40D77 /* SharedGRDB */ = {
+		BD90438E2D4974B4000D66B0 /* SharedGRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SharedGRDB;
 		};
