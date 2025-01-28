@@ -1,45 +1,38 @@
-[![CI](https://github.com/bradhowes/SwiftDataTCA/actions/workflows/CI.yml/badge.svg)](https://github.com/bradhowes/SwiftDataTCA/actions/workflows/CI.yml)
-[![COV](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/bradhowes/54c92d8df32d9a1b64d945f2e76696f1/raw/SwiftDataTCA-coverage.json)](https://github.com/bradhowes/SwiftDataTCA/actions/workflows/CI.yml)
+[![CI](https://github.com/bradhowes/swift-grdb-tca/actions/workflows/CI.yml/badge.svg)](https://github.com/bradhowes/swift-grdb-tca/actions/workflows/CI.yml)
+[![COV](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/bradhowes/54c92d8df32d9a1b64d945f2e76696f1/raw/swift-grdb-tca-coverage.json)](https://github.com/bradhowes/swift-grdb-tca/actions/workflows/CI.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-A31F34.svg)](https://opensource.org/licenses/MIT)
 
 # Introduction
 
-This is a fork of the [SwiftDataTCA](https://github.com/SouzaRodrigo61/SwiftDataTCA) repo by 
-[Rodrigo Santos de Souza](https://github.com/SouzaRodrigo61) that I've used to explore how best to incorporate 
-[SwiftData](https://developer.apple.com/documentation/swiftdata) into an application written using 
-[The Composable Architecture v1.11.2 (TCA)](https://github.com/pointfreeco/swift-composable-architecture) library and tools.
-My changes were done in Xcode 16.0 Beta using Swift 6 with _Complete Concurrency Checking_ enabled.
+This is a simple app that uses SwiftUI for views, [The Composable Architecture v1.11.2
+(TCA)](https://github.com/pointfreeco/swift-composable-architecture) framework for managing logic and state, and
+[GRDB](https://github.com/groue/GRDB.swift) for backend storage. This was originally a branch of my
+[SwiftDataTCA](https://github.com/bradhowes/SwiftDataTCA) app that I used for experimenting with SwiftData, but
+switching the branches was a pain with Xcode, so a new repo it is.
 
-## GRDB Branch
-
-There is now a GRDB branch that replicates the functionality of the original app but with GRDB for the datastore
-instead of SwiftData. This is using the `@SharedReader` feature described in Point\*Free episodes about GRDB and found
-in the [GRDBDemo](https://github.com/pointfreeco/swift-sharing/tree/main/Examples/GRDBDemo) app of the 
+The code here is using the `@SharedReader` feature described in [Point\*Free](https://pointfree.co) episodes about GRDB
+-- a version of this macro can be found in the
+[GRDBDemo](https://github.com/pointfreeco/swift-sharing/tree/main/Examples/GRDBDemo) app of their
 [swift-sharing](https://github.com/pointfreeco/swift-sharing) package. Works pretty well!
 
 # Overview
 
-The code contains two top-level TCA "features" (combination of a reducer and a SwiftUI view):
+The code contains a top-level TCA "feature" (combination of a reducer and a SwiftUI view) called
+[FromStateFeature](swiftui-grdb-tca/Views/FromState/FromStateFeature.swift). It shows a list of movies
+and the names of the actors associated with the movie.
 
-* [FromStateFeature](SwiftDataTCA/Views/FromState/FromStateFeature.swift) -- the list of movies to show and work with 
-comes from a SwiftData query done in the feature
-* [FromQueryFeature](SwiftDataTCA/Views/FromQuery/FromQueryFeature.swift) -- the list of movies to show and work with 
-comes from a `@Query` macro in the SwiftUI view
+From this view you can:
 
-Both features contain the same interface functionality, including:
-
-* Adding a new "random" movie
-* Sorting movies by title
-* Searching by title content
-* Swiping to mark as a favorite
-* Swiping to delete a movie
-* Selecting a movie to "drill-down" to a list of actors. This view too supports "drilling-down" to see the actor's movies.
+* Add a new "random" movie
+* Sort movies by title
+* Search by title content
+* Swipe to mark as a favorite
+* Swipe to delete a movie
+* Select a movie to "drill-down" to a list of actors. This view too supports "drilling-down" to see the actor's movies. This can
+be done as much as you want, though unwinding gets to be a bit tiring.
 
 Per TCA guidance, all UI activity lead to reducer actions that are performed in the feature's reducer logic, updating
 internal feature state when necessary to cause a UI update.
-
-The two features are quite similar and there is some duplication of code, but this was done to make the features 
-self-contained.
 
 ## Drilling Down
 
