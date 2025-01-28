@@ -1,14 +1,14 @@
-PROJ = -project SwiftDataTCA.xcodeproj -skipPackagePluginValidation -skipMacroValidation -enableCodeCoverage YES
+PROJ = -project SwiftGRDBTCA.xcodeproj -skipPackagePluginValidation -skipMacroValidation -enableCodeCoverage YES
 OUT = -derivedDataPath "$(PWD)/.DerivedData-iOS"
-DEST = -scheme SwiftDataTCA -destination "platform=iOS Simulator,name=iPad mini (6th generation)"
+DEST = -scheme SwiftGRDBTCA -destination "platform=iOS Simulator,name=iPad mini (6th generation)"
 QUIET = -quiet -skipMacroValidation
-TEST = -testPlan SwiftDataTCA -only-test-configuration Sanitizing
+TEST = -testPlan SwiftGRDBTCA -only-test-configuration Sanitizing
 XCCOV = xcrun xccov view --report --only-targets
 
 default: percentage
 
 percentage: coverage
-	awk '/ SwiftDataTCA.app / { print $$4 }' coverage.txt > percentage.txt
+	awk '/ SwiftGRDBTCA.app / { print $$4 }' coverage.txt > percentage.txt
 	cat percentage.txt
 	@if [[ -n "$$GITHUB_ENV" ]]; then \
         echo "PERCENTAGE=$$(< percentage.txt)" >> $$GITHUB_ENV; \
