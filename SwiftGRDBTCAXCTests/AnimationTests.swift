@@ -6,7 +6,7 @@ import SwiftData
 import SwiftUI
 import XCTest
 
-@testable import SwiftDataTCA
+@testable import SwiftGRDBTCA
 
 final class AnimationTests: XCTestCase {
 

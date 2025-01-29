@@ -21,10 +21,8 @@ struct FromStateFeature {
     var isSearchFieldPresented = false
     var scrollTo: Movie?
     var highlight: Movie?
-
-    // These fields affect the contents of the allMovies collection so no need to observer their changes.
-    @ObservationStateIgnored var titleSort: Ordering = .forward
-    @ObservationStateIgnored var searchText: String = ""
+    var titleSort: Ordering = .forward
+    var searchText: String = ""
 
     init() {
       let sort = Ordering.forward

@@ -8,10 +8,10 @@ import SwiftUI
 struct ActorMoviesFeature {
 
   @ObservableState
-  struct State {
+  struct State: Equatable {
     let actor: Actor
     var movies: IdentifiedArrayOf<Movie>
-    @ObservationStateIgnored var titleSort: Ordering
+    var titleSort: Ordering
 
     init(actor: Actor) {
       let sort = Ordering.forward

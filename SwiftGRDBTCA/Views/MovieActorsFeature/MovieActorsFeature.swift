@@ -14,7 +14,7 @@ struct MovieActorsFeature {
     var movie: Movie
     var actors: IdentifiedArrayOf<Actor>
     var animateButton = false
-    @ObservationStateIgnored var nameSort: Ordering
+    var nameSort: Ordering
 
     init(movie: Movie, nameSort: Ordering = .forward) {
       let sort = Ordering.forward

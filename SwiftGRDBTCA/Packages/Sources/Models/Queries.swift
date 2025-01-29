@@ -20,8 +20,6 @@ public struct AllMoviesQuery: FetchKeyRequest {
                     rows.filter { $0.sortableTitle.localizedCaseInsensitiveContains(searchText) }
       )
     }
-
-    print("AllMoviesQuery: \(rows.count)")
     return .init(uncheckedUniqueElements: rows)
   }
 }
@@ -34,9 +32,7 @@ public struct AllActorsQuery: FetchKeyRequest {
   }
 
   public func fetch(_ db: Database) throws -> ActorCollection {
-    let rows = try Actor.all().order(ordering?.by(Actor.Columns.name)).fetchIdentifiedArray(db)
-    print("AllMoviesQuery: \(rows.count)")
-    return rows
+    try Actor.all().order(ordering?.by(Actor.Columns.name)).fetchIdentifiedArray(db)
   }
 }
 
@@ -50,9 +46,7 @@ public struct ActorMoviesQuery: FetchKeyRequest {
   }
 
   public func fetch(_ db: Database) throws -> MovieCollection {
-    let rows = try actor.movies.order(ordering?.by(Movie.Columns.sortableTitle)).fetchIdentifiedArray(db)
-    print("ActorMoviesQuery: \(actor.name): \(rows.count)")
-    return rows
+    try actor.movies.order(ordering?.by(Movie.Columns.sortableTitle)).fetchIdentifiedArray(db)
   }
 }
 
@@ -66,9 +60,7 @@ public struct MovieActorsQuery: FetchKeyRequest {
   }
 
   public func fetch(_ db: Database) throws -> ActorCollection {
-    let rows = try movie.actors.order(ordering?.by(Actor.Columns.name)).fetchIdentifiedArray(db)
-    print("MovieActorssQuery: \(movie.sortableTitle): \(rows.count)")
-    return rows
+    try movie.actors.order(ordering?.by(Actor.Columns.name)).fetchIdentifiedArray(db)
   }
 }
 
