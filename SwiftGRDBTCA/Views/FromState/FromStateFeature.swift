@@ -8,16 +8,16 @@ import SwiftUI
 @Reducer
 struct FromStateFeature {
 
-  @Reducer(state: .equatable)
+  @Reducer
   enum Path {
     case showMovieActors(MovieActorsFeature)
     case showActorMovies(ActorMoviesFeature)
   }
 
   @ObservableState
-  struct State: Equatable, Sendable {
+  struct State {
     var path = StackState<Path.State>()
-    @SharedReader var allMovies: IdentifiedArrayOf<Movie>
+    @SharedReader var allMovies: MovieCollection
     var isSearchFieldPresented = false
     var scrollTo: Movie?
     var highlight: Movie?
@@ -38,7 +38,7 @@ struct FromStateFeature {
     }
   }
 
-  enum Action: Sendable {
+  enum Action {
     case addButtonTapped
     case clearHighlight
     case clearScrollTo

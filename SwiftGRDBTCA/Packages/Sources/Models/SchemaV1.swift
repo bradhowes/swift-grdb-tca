@@ -1,6 +1,7 @@
 import Dependencies
 import Foundation
 import GRDB
+import IdentifiedCollections
 import SharedGRDB
 import Tagged
 
@@ -58,6 +59,7 @@ extension Movie {
 }
 
 extension Movie: Hashable, Sendable {}
+public typealias MovieCollection = IdentifiedArrayOf<Movie>
 
 public struct PendingActor: Codable, FetchableRecord, PersistableRecord {
   public let name: String
@@ -97,6 +99,7 @@ extension Actor {
 }
 
 extension Actor: Hashable, Sendable {}
+public typealias ActorCollection = IdentifiedArrayOf<Actor>
 
 public struct MovieActor: Codable, FetchableRecord, PersistableRecord {
   public let moviesId: Movie.ID

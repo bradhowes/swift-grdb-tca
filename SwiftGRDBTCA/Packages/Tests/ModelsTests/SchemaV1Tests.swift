@@ -151,14 +151,13 @@ func testMovieActorTable() async throws {
   let movies = queue.movies()
   #expect(movies.count == 13)
   #expect(movies[0].title == "Apocalypse Now")
-  let actors = queue.actorsFor(movie: movies[0])
+  let actors = queue.actors(for: movies[0])
   #expect(actors.count == 5)
-  #expect(actors.map(\.name).joined(separator: ", ") ==
-          "Frederic Forrest, Marlon Brando, Martin Sheen, Robert Duvall, Sam Bottoms")
+  #expect(actors.csv == "Frederic Forrest, Marlon Brando, Martin Sheen, Robert Duvall, Sam Bottoms")
 
-  let actorMovies = queue.moviesFor(actor: actors[1])
+  let actorMovies = queue.movies(for: actors[1])
   #expect(actorMovies.count == 8)
-  #expect(actorMovies.map(\.title).joined(separator: ", ") == "Apocalypse Now, Don Juan DeMarco, The Godfather, The Island of Dr. Moreau, On the Waterfront, The Score, A Streetcar Named Desire, Superman")
+  #expect(actorMovies.csv == "Apocalypse Now, Don Juan DeMarco, The Godfather, The Island of Dr. Moreau, On the Waterfront, The Score, A Streetcar Named Desire, Superman")
 }
 
 @Test func testAppDatabase() async throws {
@@ -197,9 +196,9 @@ func testActorMoviesQuery(args: (SortOrder?, String)) async throws {
   let actors = queue.actors(ordering: .forward)
   #expect(actors.count == 21)
   #expect(actors[13].name == "Marlon Brando")
-  let movies = queue.moviesFor(actor: actors[13], ordering: args.0)
+  let movies = queue.movies(for: actors[13], ordering: args.0)
   #expect(movies.count == 5)
-  #expect(String(movies.map(\.title).joined(separator: ", ")) == args.1)
+  #expect(movies.csv == args.1)
 }
 
 @Test(
@@ -215,7 +214,7 @@ func testMovieActorsQuery(args: (SortOrder?, String)) async throws {
   let movies = queue.movies(ordering: .forward)
   #expect(movies.count == 5)
   #expect(movies[0].title == "Apocalypse Now")
-  let actors = queue.actorsFor(movie: movies[0], ordering: args.0)
+  let actors = queue.actors(for: movies[0], ordering: args.0)
   #expect(actors.count == 5)
-  #expect(actors.map(\.name).joined(separator: ", ") == args.1)
+  #expect(actors.csv == args.1)
 }

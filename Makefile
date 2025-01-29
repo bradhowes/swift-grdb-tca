@@ -1,6 +1,6 @@
 PROJ = -project SwiftGRDBTCA.xcodeproj -skipPackagePluginValidation -skipMacroValidation -enableCodeCoverage YES
 OUT = -derivedDataPath "$(PWD)/.DerivedData-iOS"
-DEST = -scheme SwiftGRDBTCA -destination "platform=iOS Simulator,name=iPad mini (6th generation)"
+DEST = -scheme SwiftGRDBTCA -destination "platform=iOS Simulator,name=iPad (10th generation)"
 QUIET = -quiet -skipMacroValidation
 TEST = -testPlan SwiftGRDBTCA -only-test-configuration Sanitizing
 XCCOV = xcrun xccov view --report --only-targets

@@ -8,7 +8,7 @@ import SwiftUI
 struct ActorMoviesFeature {
 
   @ObservableState
-  struct State: Equatable {
+  struct State {
     let actor: Actor
     var movies: IdentifiedArrayOf<Movie>
     @ObservationStateIgnored var titleSort: Ordering
@@ -22,7 +22,7 @@ struct ActorMoviesFeature {
     }
   }
 
-  enum Action: Sendable {
+  enum Action {
     case detailButtonTapped(Movie)
     case favoriteSwiped(Movie)
     case titleSortChanged(Ordering)

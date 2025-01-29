@@ -10,7 +10,7 @@ import SwiftUI
 struct MovieActorsFeature {
 
   @ObservableState
-  struct State: Equatable {
+  struct State {
     var movie: Movie
     var actors: IdentifiedArrayOf<Actor>
     var animateButton = false
@@ -25,7 +25,7 @@ struct MovieActorsFeature {
     }
   }
 
-  enum Action: Sendable {
+  enum Action {
     case detailButtonTapped(Actor)
     case favoriteTapped
     case nameSortChanged(Ordering)

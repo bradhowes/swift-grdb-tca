@@ -1,6 +1,7 @@
 import Dependencies
 import Foundation
 import GRDB
+import IdentifiedCollections
 import Models
 import Sharing
 import Testing
@@ -24,14 +25,14 @@ import Testing
   } operation: {
     struct Foo {
       let actor: Actor
-      var movieTitles: String { movies.map(\.title).joined(separator: ", ") }
+      var movieTitles: String { movies.csv }
       var ordering: SortOrder = .forward {
         didSet {
           _movies = SharedReader(.fetch(ActorMoviesQuery(actor: actor, ordering: ordering)))
         }
       }
 
-      @SharedReader var movies: [Movie]
+      @SharedReader var movies: IdentifiedArrayOf<Movie>
       init() throws {
         @Dependency(\.defaultDatabase) var db
         let actors = try db.read { try Actor.fetchAll($0) }
@@ -54,7 +55,11 @@ import Testing
     #expect(foo.movies.count == 8)
     #expect(foo.movies[0].title == "Superman")
     #expect(foo.movies[1].title == "A Streetcar Named Desire")
-    #expect(foo.movieTitles == "Superman, A Streetcar Named Desire, The Score, On the Waterfront, The Island of Dr. Moreau, The Godfather, Don Juan DeMarco, Apocalypse Now")
+    #expect(foo.movieTitles == """
+Superman, A Streetcar Named Desire, The Score, On the Waterfront, The Island of Dr. Moreau, The Godfather, \
+Don Juan DeMarco, Apocalypse Now
+"""
+    )
   }
 }
 
@@ -65,14 +70,14 @@ import Testing
   } operation: {
     struct Foo {
       let movie: Movie
-      var actorNames: String { actors.map(\.name).joined(separator: ", ") }
+      var actorNames: String { actors.csv }
       var ordering: SortOrder = .forward {
         didSet {
           _actors = SharedReader(.fetch(MovieActorsQuery(movie: movie, ordering: ordering)))
         }
       }
 
-      @SharedReader var actors: [Actor]
+      @SharedReader var actors: ActorCollection
       init() throws {
         @Dependency(\.defaultDatabase) var db
         let movies = try db.read { try Movie.fetchAll($0) }

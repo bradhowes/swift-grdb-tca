@@ -13,7 +13,7 @@ public struct AllMoviesQuery: FetchKeyRequest {
     self.searchText = searchText
   }
 
-  public func fetch(_ db: Database) throws -> IdentifiedArrayOf<Movie> {
+  public func fetch(_ db: Database) throws -> MovieCollection {
     let rows = try Movie.all().order(ordering?.by(Movie.Columns.sortableTitle)).fetchAll(db)
     if let searchText, !searchText.isEmpty {
       return .init(uncheckedUniqueElements:
@@ -33,7 +33,7 @@ public struct AllActorsQuery: FetchKeyRequest {
     self.ordering = ordering
   }
 
-  public func fetch(_ db: Database) throws -> IdentifiedArrayOf<Actor> {
+  public func fetch(_ db: Database) throws -> ActorCollection {
     let rows = try Actor.all().order(ordering?.by(Actor.Columns.name)).fetchIdentifiedArray(db)
     print("AllMoviesQuery: \(rows.count)")
     return rows
@@ -49,7 +49,7 @@ public struct ActorMoviesQuery: FetchKeyRequest {
     self.ordering = ordering
   }
 
-  public func fetch(_ db: Database) throws -> IdentifiedArrayOf<Movie> {
+  public func fetch(_ db: Database) throws -> MovieCollection {
     let rows = try actor.movies.order(ordering?.by(Movie.Columns.sortableTitle)).fetchIdentifiedArray(db)
     print("ActorMoviesQuery: \(actor.name): \(rows.count)")
     return rows
@@ -65,7 +65,7 @@ public struct MovieActorsQuery: FetchKeyRequest {
     self.ordering = ordering
   }
 
-  public func fetch(_ db: Database) throws -> IdentifiedArrayOf<Actor> {
+  public func fetch(_ db: Database) throws -> ActorCollection {
     let rows = try movie.actors.order(ordering?.by(Actor.Columns.name)).fetchIdentifiedArray(db)
     print("MovieActorssQuery: \(movie.sortableTitle): \(rows.count)")
     return rows
@@ -80,15 +80,19 @@ extension FetchRequest where RowDecoder: FetchableRecord & Identifiable {
 
 extension DatabaseReader {
 
-  public func movies(ordering: SortOrder? = .forward) -> IdentifiedArrayOf<Movie> {
+  public func movies(ordering: SortOrder? = .forward) -> MovieCollection {
     (try? read { try AllMoviesQuery(ordering: ordering).fetch($0) }) ?? []
   }
 
-  public func movies(for actor: Actor, ordering: SortOrder? = .forward) -> IdentifiedArrayOf<Movie> {
+  public func movies(for actor: Actor, ordering: SortOrder? = .forward) -> MovieCollection {
     (try? read { try ActorMoviesQuery(actor: actor, ordering: ordering).fetch($0) }) ?? []
   }
 
-  public func actors(for movie: Movie, ordering: SortOrder? = .forward) -> IdentifiedArrayOf<Actor> {
+  public func actors(ordering: SortOrder? = .forward) -> ActorCollection {
+    (try? read { try AllActorsQuery(ordering: ordering).fetch($0) }) ?? []
+  }
+
+  public func actors(for movie: Movie, ordering: SortOrder? = .forward) -> ActorCollection {
     (try? read { try MovieActorsQuery(movie: movie, ordering: ordering).fetch($0) }) ?? []
   }
 }
