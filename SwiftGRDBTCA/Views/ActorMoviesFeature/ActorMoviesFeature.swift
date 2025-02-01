@@ -25,6 +25,7 @@ struct ActorMoviesFeature {
   enum Action {
     case detailButtonTapped(Movie)
     case favoriteSwiped(Movie)
+    case refresh
     case titleSortChanged(Ordering)
     case toggleFavoriteState(Movie)
   }
@@ -33,9 +34,24 @@ struct ActorMoviesFeature {
     Reduce { state, action in
       switch action {
       case .detailButtonTapped: return .none
-      case .favoriteSwiped(let movie): return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
+
+      case .favoriteSwiped(let movie):
+#if os(iOS)
+        return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
+#endif
+#if os(macOS)
+        return Utils.toggleFavoriteState(movie)
+#endif
+
+      case .refresh: return updateQuery(&state)
       case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
-      case .toggleFavoriteState(let movie): return Utils.toggleFavoriteState(movie)
+
+      case .toggleFavoriteState(let movie):
+        let changed = Utils.toggleFavoriteState(movie)
+        if let index = state.movies.index(id: movie.id) {
+          state.movies[index] = changed
+        }
+        return .none.animation(.smooth)
       }
     }
   }

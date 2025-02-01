@@ -80,7 +80,6 @@
 		BD21828D2C4D406D00FCB16E /* XCTest+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTest+Extensions.swift"; sourceTree = "<group>"; };
 		BD2265182C3EBF5E00A975E8 /* FromStateFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromStateFeature.swift; sourceTree = "<group>"; };
 		BD3C7FF02C4686FA00C68195 /* MovieActorsFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieActorsFeature.swift; sourceTree = "<group>"; };
-		BD4345FC2D4A71CA00BFEC83 /* MacrosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacrosTests.swift; sourceTree = "<group>"; };
 		BD7324E82C8799BE0026E1BE /* Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animations.swift; sourceTree = "<group>"; };
 		BD7324E92C8799BE0026E1BE /* Confetti.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Confetti.swift; sourceTree = "<group>"; };
 		BD7324EA2C8799BE0026E1BE /* FadeIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeIn.swift; sourceTree = "<group>"; };
@@ -218,7 +217,6 @@
 		BD0DC1DD2C41779D00821D09 /* SwiftGRDBTCAXCTests */ = {
 			isa = PBXGroup;
 			children = (
-				BD4345FC2D4A71CA00BFEC83 /* MacrosTests.swift */,
 				BDA1820B2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift */,
 				BD1676AA2C98CF13004AA2D2 /* AnimationTests.swift */,
 				BDA1820D2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift */,

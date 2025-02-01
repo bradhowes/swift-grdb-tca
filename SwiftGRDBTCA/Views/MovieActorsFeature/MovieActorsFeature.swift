@@ -29,6 +29,7 @@ struct MovieActorsFeature {
     case detailButtonTapped(Actor)
     case favoriteTapped
     case nameSortChanged(Ordering)
+    case refresh
   }
 
   var body: some Reducer<State, Action> {
@@ -37,12 +38,21 @@ struct MovieActorsFeature {
       case .detailButtonTapped: return .none
       case .favoriteTapped: return toggleFavoriteState(state: &state)
       case .nameSortChanged(let newSort): return setNameSort(newSort, state: &state)
+      case .refresh: return refreshMovie(&state)
       }
     }
   }
 }
 
 extension MovieActorsFeature {
+
+  private func refreshMovie(_ state: inout State) -> Effect<Action> {
+    @Dependency(\.defaultDatabase) var database
+    if let movie = database.movie(id: state.movie.id) {
+      state.movie = movie
+    }
+    return .none
+  }
 
   private func updateQuery(_ state: inout State) -> Effect<Action> {
     @Dependency(\.defaultDatabase) var database

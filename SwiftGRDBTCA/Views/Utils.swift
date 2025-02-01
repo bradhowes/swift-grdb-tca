@@ -18,6 +18,7 @@ enum Ordering: String {
 enum Utils {
 
 #if os(iOS)
+
   static func color(_ tag: UIColor) -> Color { Color(uiColor: tag) }
 
   static let favoriteColor = color(.systemBlue)
@@ -140,7 +141,7 @@ enum Utils {
     var actorName: some View {
       Text(name)
         .font(.headline)
-        .foregroundStyle(Utils.titleColor)
+        .foregroundStyle(titleColor)
     }
 
     var moviesList: some View {
@@ -153,19 +154,25 @@ enum Utils {
   static var chevron: some View {
     Image(systemName: "chevron.forward")
       .font(.footnote.bold())
-      .foregroundColor(Color(UIColor.tertiaryLabel))
+      .foregroundColor(chevronColor)
   }
 
-  static func favoriteSwipeAction(_ movie: Movie, action: @escaping () -> Void) -> some View {
+  static func deleteMovieButton(_ movie: Movie, action: @escaping () -> Void) -> some View {
+    Button(role: .destructive, action: action) {
+      Image(systemName: "trash")
+        .accessibilityLabel(Text("Delete \(movie.title)"))
+    }
+  }
+
+  static func favoriteMovieButton(_ movie: Movie, action: @escaping () -> Void) -> some View {
     Button(action: action) {
-      Label(
-        movie.favorite ? "unfavorite movie" : "favorite movie",
-        systemImage: movie.favorite ? "star.slash" : "star"
-      )
+      Image(systemName: movie.favorite ? "star.slash" : "star")
+        .accessibilityLabel(Text((movie.favorite ? "Unfavorite" : "Favorite") + " movie \(movie.title)"))
     }
     .tint(.blue)
   }
 
+#if os(iOS)
   static func beginFavoriteChange<Action: Sendable>(_ action: Action) -> Effect<Action> {
     @Dependency(\.continuousClock) var clock
     return .run { send in
@@ -174,12 +181,7 @@ enum Utils {
       await send(action, animation: .default)
     }
   }
-
-  static func deleteSwipeAction(_ movie: Movie, action: @escaping () -> Void) -> some View {
-    Button(role: .destructive, action: action) {
-      Label("Delete", systemImage: "trash")
-    }
-  }
+#endif
 
   static func toggleFavoriteState(_ movie: Movie) -> Movie {
     @Dependency(\.defaultDatabase) var database
@@ -187,9 +189,9 @@ enum Utils {
     try? database.write { try changed.toggleFavorite(in: $0) }
     return changed
   }
-
-  static func toggleFavoriteState<State>(_ movie: Movie) -> Effect<State> {
-    _ = toggleFavoriteState(movie)
-    return .none
-  }
+//
+//  static func toggleFavoriteState<State>(_ movie: Movie) -> Effect<State> {
+//    _ = toggleFavoriteState(movie)
+//    return .none
+//  }
 }

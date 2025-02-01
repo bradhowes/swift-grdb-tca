@@ -16,8 +16,8 @@ public struct AllMoviesQuery: FetchKeyRequest {
   public func fetch(_ db: Database) throws -> MovieCollection {
     let rows = try Movie.all().order(ordering?.by(Movie.Columns.sortableTitle)).fetchAll(db)
     if let searchText, !searchText.isEmpty {
-      return .init(uncheckedUniqueElements:
-                    rows.filter { $0.sortableTitle.localizedCaseInsensitiveContains(searchText) }
+      return .init(
+        uncheckedUniqueElements: rows.filter { $0.sortableTitle.localizedCaseInsensitiveContains(searchText) }
       )
     }
     return .init(uncheckedUniqueElements: rows)
@@ -64,6 +64,18 @@ public struct MovieActorsQuery: FetchKeyRequest {
   }
 }
 
+public struct MovieQuery: FetchKeyRequest {
+  let id: Movie.ID
+
+  public init(id: Movie.ID) {
+    self.id = id
+  }
+
+  public func fetch(_ db: Database) throws -> Movie? {
+    try Movie.filter(id: id).fetchOne(db)
+  }
+}
+
 extension FetchRequest where RowDecoder: FetchableRecord & Identifiable {
   public func fetchIdentifiedArray(_ db: Database) throws -> IdentifiedArrayOf<RowDecoder> {
     try IdentifiedArray(fetchCursor(db))
@@ -86,6 +98,10 @@ extension DatabaseReader {
 
   public func actors(for movie: Movie, ordering: SortOrder? = .forward) -> ActorCollection {
     (try? read { try MovieActorsQuery(movie: movie, ordering: ordering).fetch($0) }) ?? []
+  }
+
+  public func movie(id: Movie.ID) -> Movie? {
+    try? read { try MovieQuery(id: id).fetch($0) }
   }
 }
 

@@ -10,7 +10,9 @@ struct ActorMoviesView: View {
   var body: some View {
     MoviesListView(store: store)
       .navigationTitle(store.actor.name)
+#if os(iOS)
       .toolbar(.hidden, for: .tabBar)
+#endif
       .toolbar {
         ToolbarItemGroup(placement: .automatic) {
           Utils.pickerView(title: "movie ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
@@ -26,18 +28,50 @@ private struct MoviesListView: View {
 
   var body: some View {
     List(store.movies, id: \.id) { movie in
-      withSwipeActions(movie: movie) {
-        Button {
-          _ = store.send(.detailButtonTapped(movie))
-        } label: {
-          Utils.MovieView(
-            name: movie.title,
-            favorite: movie.favorite,
-            actorNames: database.actors(for: movie).csv,
-            showChevron: true
-          )
+      MovieListRow(store: store, movie: movie, actorNames: database.actors(for: movie).csv)
+#if os(iOS)
+        .swipeActions(allowsFullSwipe: false) {
+          Utils.favoriteMovieButton(movie) {
+            store.send(.favoriteSwiped(movie), animation: .bouncy)
+          }
         }
+#endif
+    }
+  }
+}
+
+private struct MovieListRow: View {
+  var store: StoreOf<ActorMoviesFeature>
+  let movie: Movie
+  let actorNames: String
+
+#if os(iOS)
+  var body: some View {
+    detailButton
+  }
+#endif
+
+#if os(macOS)
+  var body: some View {
+    HStack {
+      detailButton
+      Utils.favoriteMovieButton(movie) {
+        store.send(.favoriteSwiped(movie), animation: .bouncy)
       }
+    }
+  }
+#endif
+
+  private var detailButton: some View {
+    Button {
+      _ = store.send(.detailButtonTapped(movie))
+    } label: {
+      Utils.MovieView(
+        name: movie.title,
+        favorite: movie.favorite,
+        actorNames: actorNames,
+        showChevron: true
+      )
     }
   }
 }
@@ -47,7 +81,7 @@ extension MoviesListView {
   func withSwipeActions<T>(movie: Movie, @ViewBuilder content: () -> T) -> some View where T: View {
     content()
       .swipeActions {
-        Utils.favoriteSwipeAction(movie) {
+        Utils.favoriteMovieButton(movie) {
           store.send(.favoriteSwiped(movie), animation: .bouncy)
         }
       }
@@ -66,7 +100,10 @@ extension ActorMoviesView {
       ActorMoviesView(store: Store(initialState: .init(actor: actors[1])) {
         ActorMoviesFeature()
       })
-    }.navigationViewStyle(.stack)
+    }
+#if os(iOS)
+    .navigationViewStyle(.stack)
+#endif
   }
 }
 

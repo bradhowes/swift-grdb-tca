@@ -10,7 +10,9 @@ struct MovieActorsView: View {
   var body: some View {
     ActorsListView(store: store)
       .navigationTitle(store.movie.title)
+#if os(iOS)
       .toolbar(.hidden, for: .tabBar)
+#endif
       .toolbar {
         ToolbarItemGroup(placement: .automatic) {
           Utils.pickerView(title: "actor ordering", binding: $store.nameSort.sending(\.nameSortChanged).animation())
@@ -18,6 +20,9 @@ struct MovieActorsView: View {
         }
       }
       .labelsHidden()
+      .onAppear {
+        store.send(.refresh)
+      }
   }
 
   private var favoriteButton: some View {
@@ -63,7 +68,10 @@ extension MovieActorsView {
       MovieActorsView(store: Store(initialState: .init(movie: movies[0])) {
         MovieActorsFeature()
       })
-    }.navigationViewStyle(.stack)
+    }
+#if os(iOS)
+    .navigationViewStyle(.stack)
+#endif
   }
 }
 

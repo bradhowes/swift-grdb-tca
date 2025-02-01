@@ -8,6 +8,7 @@ struct FromStateView: View {
   @Bindable var store: StoreOf<FromStateFeature>
 
   var body: some View {
+    let placement: ToolbarItemPlacement = .automatic
     NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
       MovieListView(store: store)
         .navigationTitle("Movies")
@@ -18,7 +19,7 @@ struct FromStateView: View {
         )
         .toolbar {
           if !store.isSearchFieldPresented {
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: placement) {
               Button("add", systemImage: "plus") { store.send(.addButtonTapped) }
               Utils.pickerView(title: "movie ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
             }
@@ -40,16 +41,18 @@ private struct MovieListView: View {
 
   var body: some View {
     ScrollViewReader { proxy in
-      List(store.allMovies, id: \.id) { movie in
+      List(store.movies, id: \.id) { movie in
         MovieListRow(store: store, movie: movie, actorNames: database.actors(for: movie).csv)
+#if os(iOS)
           .swipeActions(allowsFullSwipe: false) {
-            Utils.deleteSwipeAction(movie) {
+            Utils.deleteMovieButton(movie) {
               store.send(.deleteSwiped(movie), animation: .snappy)
             }
-            Utils.favoriteSwipeAction(movie) {
+            Utils.favoriteMovieButton(movie) {
               store.send(.favoriteSwiped(movie), animation: .bouncy)
             }
           }
+#endif
       }
       .onChange(of: store.scrollTo) { _, movie in
         if let movie {
@@ -74,12 +77,31 @@ private struct MovieListRow: View {
     self.actorNames = actorNames
   }
 
+#if os(iOS)
   var body: some View {
     detailButton
       .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
         store.send(.clearHighlight)
       }
   }
+#endif
+
+#if os(macOS)
+  var body: some View {
+    HStack {
+      detailButton
+        .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
+          store.send(.clearHighlight)
+        }
+      Utils.favoriteMovieButton(movie) {
+        store.send(.favoriteSwiped(movie), animation: .bouncy)
+      }
+      Utils.deleteMovieButton(movie) {
+        store.send(.deleteSwiped(movie), animation: .snappy)
+      }
+    }
+  }
+#endif
 
   private var detailButton: some View {
     Button {

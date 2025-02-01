@@ -17,7 +17,7 @@ struct FromStateFeature {
   @ObservableState
   struct State {
     var path = StackState<Path.State>()
-    @SharedReader var allMovies: MovieCollection
+    @SharedReader var movies: MovieCollection
     var isSearchFieldPresented = false
     var scrollTo: Movie?
     var highlight: Movie?
@@ -27,7 +27,7 @@ struct FromStateFeature {
     init() {
       let sort = Ordering.forward
       self.titleSort = sort
-      _allMovies = SharedReader(
+      _movies = SharedReader(
         .fetch(
           AllMoviesQuery(ordering: sort.sortOrder),
           animation: .smooth
@@ -58,7 +58,7 @@ struct FromStateFeature {
       switch action {
 
       case .addButtonTapped:
-        let next = Support.nextMockMovieEntry(state.allMovies)
+        let next = Support.nextMockMovieEntry(state.movies)
         let movie = try? database.write { try Movie.makeMock(in: $0, entry: next, favorited: false) }
         state.scrollTo = movie
         return .none.animation()
@@ -88,7 +88,12 @@ struct FromStateFeature {
         return .none
 
       case .favoriteSwiped(let movie):
+#if os(iOS)
         return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
+#endif
+#if os(macOS)
+        return Utils.toggleFavoriteState(movie)
+#endif
 
       case .highlight(let movie):
         state.highlight = movie
@@ -117,7 +122,8 @@ struct FromStateFeature {
         return updateQuery(state)
 
       case .toggleFavoriteState(let movie):
-        return Utils.toggleFavoriteState(movie)
+        _ = Utils.toggleFavoriteState(movie)
+        return .none
       }
     }
     .forEach(\.path, action: \.path)
@@ -129,11 +135,11 @@ extension FromStateFeature {
   private func updateQuery(_ state: State) -> Effect<Action> {
     let searchText = state.searchText.isEmpty ? nil : state.searchText
     let titleSort = state.titleSort
-    let allMovies = state.$allMovies
+    let movies = state.$movies
     return .run { _ in
       do {
         print("-- FromStateFeature.updateQuery >>>")
-        try await allMovies.load(
+        try await movies.load(
           .fetch(
             AllMoviesQuery(ordering: titleSort.sortOrder, searchText: searchText),
             animation: .smooth
