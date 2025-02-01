@@ -28,7 +28,7 @@ struct MovieActorsView: View {
         Image(systemName: "star.fill")
           .accessibilityLabel("unfavorite movie")
           .foregroundStyle(Utils.favoriteColor)
-          .transition(.confetti(color: Utils.favoriteColor, size: 3, enabled: true))
+          .transition(.confetti(color: Utils.favoriteColor, size: 3, enabled: store.animateButton))
       } else {
         Image(systemName: "star")
           .accessibilityLabel("favorite movie")

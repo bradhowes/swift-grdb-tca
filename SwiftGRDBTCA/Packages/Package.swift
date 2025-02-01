@@ -10,16 +10,13 @@ let package = Package(
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(name: "SharedGRDB", targets: ["SharedGRDB"]),
-    .library(name: "Models", targets: ["Models"]),
-    .library(name: "MacrosAPI", targets: ["MacrosAPI"]),
-    .executable(name: "MacrosClient", targets: ["MacrosClient"]),
+    .library(name: "Models", targets: ["Models"])
   ],
   dependencies: [
+    .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3"),
-    .package(url: "https://github.com/groue/GRDB.swift", branch: "v7.0.0-beta.7"),
     .package(url: "https://github.com/pointfreeco/swift-sharing", branch: "main"),
-    .package(url: "https://github.com/pointfreeco/swift-tagged", from: "0.10.0"),
-    .package(url: "https://github.com/swiftlang/swift-syntax", from: "600.0.1")
+    .package(url: "https://github.com/pointfreeco/swift-tagged", from: "0.10.0")
   ],
   targets: [
     .target(
@@ -41,15 +38,6 @@ let package = Package(
         .product(name: "Tagged", package: "swift-tagged", condition: nil)
       ]
     ),
-    .macro(
-      name: "Macros",
-      dependencies: [
-        .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-        .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
-      ]
-    ),
-    .target(name: "MacrosAPI", dependencies: ["Macros"]),
-    .executableTarget(name: "MacrosClient", dependencies: ["MacrosAPI"]),
     .testTarget(
       name: "SharedGRDBTests",
       dependencies: [

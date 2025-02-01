@@ -5,6 +5,7 @@ import IdentifiedCollections
 import SharedGRDB
 import Tagged
 
+
 /// Temporary record that represents a Movie prior to being inserted into the database. Saves us from having to play
 /// games with the `Movie.id` attribute.
 public struct PendingMovie: Codable, FetchableRecord, PersistableRecord {

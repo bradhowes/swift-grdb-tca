@@ -157,17 +157,13 @@ enum Utils {
   }
 
   static func favoriteSwipeAction(_ movie: Movie, action: @escaping () -> Void) -> some View {
-    if movie.favorite {
-      Button(action: action) {
-        Label("unfavorite movie", systemImage: "star.fill")
-      }
-      .tint(.blue)
-    } else {
-      Button(action: action) {
-        Label("favorite movie", systemImage: "star")
-      }
-      .tint(.blue)
+    Button(action: action) {
+      Label(
+        movie.favorite ? "unfavorite movie" : "favorite movie",
+        systemImage: movie.favorite ? "star.slash" : "star"
+      )
     }
+    .tint(.blue)
   }
 
   static func beginFavoriteChange<Action: Sendable>(_ action: Action) -> Effect<Action> {

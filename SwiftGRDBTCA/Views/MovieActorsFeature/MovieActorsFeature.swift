@@ -58,7 +58,7 @@ extension MovieActorsFeature {
   func toggleFavoriteState(state: inout State) -> Effect<Action> {
     @Dependency(\.defaultDatabase) var database
     try? database.write { try state.movie.toggleFavorite(in: $0) }
-    // state.animateButton = state.movie.favorite
+    state.animateButton = true
     return .none
   }
 }
