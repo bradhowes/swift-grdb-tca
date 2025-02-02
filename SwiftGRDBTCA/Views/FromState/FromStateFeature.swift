@@ -8,14 +8,14 @@ import SwiftUI
 @Reducer
 struct FromStateFeature {
 
-  @Reducer
+  @Reducer(state: .equatable)
   enum Path {
     case showMovieActors(MovieActorsFeature)
     case showActorMovies(ActorMoviesFeature)
   }
 
   @ObservableState
-  struct State {
+  struct State: Equatable {
     var path = StackState<Path.State>()
     @SharedReader var movies: MovieCollection
     var isSearchFieldPresented = false

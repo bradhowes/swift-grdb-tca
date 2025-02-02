@@ -10,53 +10,53 @@ import XCTest
 
 final class AnimationTests: XCTestCase {
 
-  let recording: SnapshotTestingConfiguration.Record = .failed
+  let recording: SnapshotTestingConfiguration.Record = .missing
 
   @MainActor
   func testFlashDemoPreviewFalse() throws {
-    try withSnapshotTesting(record: recording) {
+    withSnapshotTesting(record: recording) {
       let view = FlashDemoView(isFavorite: false)
-      try assertSnapshot(matching: view)
+      assertSnapshot(of: view, as: .image)
     }
   }
 
   @MainActor
   func testFlashDemoPreviewTrue() throws {
-    try withSnapshotTesting(record: recording) {
+    withSnapshotTesting(record: recording) {
       let view = FlashDemoView(isFavorite: true)
-      try assertSnapshot(matching: view)
+      assertSnapshot(of: view, as: .image)
     }
   }
 
   @MainActor
   func testFadeInDemoPreviewFalse() throws {
-    try withSnapshotTesting(record: recording) {
+    withSnapshotTesting(record: recording) {
       let view = FadeInDemoView(isFavorite: false)
-      try assertSnapshot(matching: view)
+      assertSnapshot(of: view, as: .image)
     }
   }
 
   @MainActor
   func testFadeInDemoPreviewTrue() throws {
-    try withSnapshotTesting(record: recording) {
+    withSnapshotTesting(record: recording) {
       let view = FadeInDemoView(isFavorite: true)
-      try assertSnapshot(matching: view)
+      assertSnapshot(of: view, as: .image)
     }
   }
 
   @MainActor
   func testConfettiDemoPreviewFalse() throws {
-    try withSnapshotTesting(record: recording) {
+    withSnapshotTesting(record: recording) {
       let view = ConfettiDemoView(isFavorite: false)
-      try assertSnapshot(matching: view)
+      assertSnapshot(of: view, as: .image)
     }
   }
 
   @MainActor
   func testConfettiDemoPreviewTrue() throws {
-    try withSnapshotTesting(record: recording) {
+    withSnapshotTesting(record: recording) {
       let view = ConfettiDemoView(isFavorite: true)
-      try assertSnapshot(matching: view)
+      assertSnapshot(of: view, as: .image)
     }
   }
 }

@@ -130,6 +130,7 @@ extension Movie {
   static let movieActors = hasMany(MovieActor.self)
   static let actors = hasMany(Actor.self, through: movieActors, using: MovieActor.actor)
   static let fullText = hasOne(Table("movie_ft"), using: ForeignKey([.rowID], to: [.rowID]))
+
   public var actors: QueryInterfaceRequest<Actor> { request(for: Movie.actors) }
 }
 

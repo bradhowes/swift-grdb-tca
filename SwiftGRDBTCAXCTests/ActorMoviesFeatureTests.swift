@@ -3,8 +3,8 @@ import Dependencies
 import Foundation
 import IdentifiedCollections
 import GRDB
+import Models
 import SnapshotTesting
-import SwiftData
 import SwiftUI
 import XCTest
 
@@ -15,14 +15,14 @@ private final class Context {
   let store: TestStoreOf<ActorMoviesFeature>
 
   init() throws {
-    store = try withDependencies {
-      $0.defaultDatabase = try DatabaseQueue.appDatabase()
+    store = withDependencies {
+      $0.defaultDatabase = try! DatabaseQueue.appDatabase(mockCount: 13) // swiftlint:disable:this force_try
       $0.continuousClock = ImmediateClock()
     } operation: {
       @Dependency(\.defaultDatabase) var database
-      let movies = try database.movies()
-      let actor = try database.actors(for: movies[0])[0]
-      return TestStore(initialState: ActorMoviesFeature.State(actor: actor)) {
+      let movies = database.movies()
+      let actors = database.actors(for: movies[0])
+      return TestStore(initialState: ActorMoviesFeature.State(actor: actors[1])) {
         ActorMoviesFeature()
       }
     }
@@ -44,17 +44,17 @@ final class ActorMoviesFeatureTests: XCTestCase {
   @MainActor
   func testFavoriteSwiped() async throws {
     let movieIndex = 2
-    XCTAssertEqual(ctx.store.state.movies[movieIndex].title, "Superman")
+    XCTAssertEqual(ctx.store.state.movies[movieIndex].title, "The Godfather")
 
     XCTAssertFalse(ctx.store.state.movies[movieIndex].favorite)
     await ctx.store.send(.favoriteSwiped(ctx.store.state.movies[movieIndex]))
     await ctx.store.receive(\.toggleFavoriteState) {
-      $0.movies[movieIndex] = $0.movies[movieIndex].toggleFavorite()
+      $0.movies[movieIndex].favorite.toggle()
     }
     XCTAssertTrue(ctx.store.state.movies[movieIndex].favorite)
     await ctx.store.send(.favoriteSwiped(ctx.store.state.movies[movieIndex]))
     await ctx.store.receive(\.toggleFavoriteState) {
-      $0.movies[movieIndex] = $0.movies[movieIndex].toggleFavorite()
+      $0.movies[movieIndex].favorite.toggle()
     }
     XCTAssertFalse(ctx.store.state.movies[movieIndex].favorite)
   }
@@ -67,7 +67,7 @@ final class ActorMoviesFeatureTests: XCTestCase {
   @MainActor
   func testTitleSortChanged() async throws {
     XCTAssertEqual(ctx.store.state.actor.name, "Marlon Brando")
-    XCTAssertEqual(ctx.store.state.movies.count, 3)
+    XCTAssertEqual(ctx.store.state.movies.count, 8)
 
     await ctx.store.send(.titleSortChanged(.reverse)) {
       $0.titleSort = .reverse
@@ -81,26 +81,28 @@ final class ActorMoviesFeatureTests: XCTestCase {
 
     ctx.store.exhaustivity = .off
     await ctx.store.send(.titleSortChanged(.none)) {
-      $0.titleSort = nil
+      $0.titleSort = .none
     }
 
-    let titles = Set(ctx.store.state.movies.map(\.name))
-    XCTAssertEqual(titles.count, 3)
+    let titles = Set(ctx.store.state.movies.map(\.title))
+    XCTAssertEqual(titles.count, 8)
     for movie in ctx.store.state.movies {
-      XCTAssertTrue(titles.contains(movie.name))
+      XCTAssertTrue(titles.contains(movie.title))
+    }
+  }
+
+  @MainActor
+  func testToggleFavoriteState() async throws {
+    await ctx.store.send(.toggleFavoriteState(ctx.store.state.movies[0])) {
+      $0.movies[0].favorite.toggle()
     }
   }
 
   @MainActor
   func testPreviewRender() throws {
-    try withDependencies {
-      $0.modelContextProvider = ModelContextKey.previewValue
-      $0.viewLinkType = .button
-    } operation: {
-      try withSnapshotTesting(record: .missing) {
-        let view = ActorMoviesView.preview
-        try assertSnapshot(matching: view)
-      }
+    withSnapshotTesting(record: .missing) {
+      let view = ActorMoviesView.preview
+      assertSnapshot(of: view, as: .image)
     }
   }
 }

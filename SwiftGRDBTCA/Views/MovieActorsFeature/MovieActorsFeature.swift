@@ -10,7 +10,7 @@ import SwiftUI
 struct MovieActorsFeature {
 
   @ObservableState
-  struct State {
+  struct State: Equatable {
     var movie: Movie
     var actors: IdentifiedArrayOf<Actor>
     var animateButton = false
