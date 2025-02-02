@@ -29,6 +29,7 @@
       }
     },
     {
+      "enabled" : false,
       "target" : {
         "containerPath" : "container:SwiftGRDBTCA.xcodeproj",
         "identifier" : "BD1676B02C98DC64004AA2D2",
