@@ -55,6 +55,8 @@ extension Movie {
       table.column(Columns.sortableTitle, .text).notNull().unique()
       table.column(Columns.favorite, .boolean).defaults(to: false)
     }
+
+    // Create associated table used for full-text searching of the movie titles
     try db.create(virtualTable: "movie_ft", using: FTS5()) { table in
       table.synchronize(withTable: Movie.databaseTableName)
       table.column(Movie.Columns.title.name)
