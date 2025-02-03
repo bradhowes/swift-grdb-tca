@@ -29,6 +29,12 @@ private final class Context {
   }
 }
 
+extension XCTestCase {
+  var isOnGithub: Bool {
+    ProcessInfo.processInfo.environment["CFFIXED_USER_HOME"]?.contains("/Users/runner/Library") ?? false
+  }
+}
+
 final class ActorMoviesFeatureTests: XCTestCase {
   private var ctx: Context!
 
@@ -100,12 +106,11 @@ final class ActorMoviesFeatureTests: XCTestCase {
 
   @MainActor
   func testPreviewRender() throws {
-    let isOnGithub = ProcessInfo.processInfo.environment["CFFIXED_USER_HOME"]?.contains("/Users/runner/Library") ?? false
     guard !isOnGithub else {
-      XCTSkip("Not working on Github")
+      _ = XCTSkip("Not working on Github")
       return
     }
-    withSnapshotTesting(record: .missing) {
+    withSnapshotTesting(record: .failed) {
       let view = ActorMoviesView.preview
       assertSnapshot(of: view, as: .image)
     }

@@ -54,13 +54,6 @@
 			remoteGlobalIDString = 23A64E852ACC5312005B6344;
 			remoteInfo = SwiftDataTCA;
 		};
-		BD73380E2C4118CA001D0E04 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 23A64E7E2ACC5312005B6344 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 23A64E852ACC5312005B6344;
-			remoteInfo = SwiftDataTCA;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -83,7 +76,6 @@
 		BD7324EA2C8799BE0026E1BE /* FadeIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeIn.swift; sourceTree = "<group>"; };
 		BD7324EB2C8799BE0026E1BE /* Flash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flash.swift; sourceTree = "<group>"; };
 		BD7324EC2C8799BE0026E1BE /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		BD73380A2C4118CA001D0E04 /* SwiftGRDBTCATests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftGRDBTCATests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD7338152C4158A0001D0E04 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
 		BD7338162C4158A0001D0E04 /* LICENSE.MD */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.MD; sourceTree = "<group>"; };
 		BD7338172C4158A0001D0E04 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -131,13 +123,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BD7338072C4118CA001D0E04 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -151,7 +136,6 @@
 				BDE3C3052C53DF88007C3AB8 /* Configs */,
 				BDA64E152C4A3E0F00B04E3A /* SwiftGRDBTCA.xctestplan */,
 				23A64E882ACC5312005B6344 /* SwiftGRDBTCA */,
-				BD73380B2C4118CA001D0E04 /* SwiftGRDBTCATests */,
 				BD0DC1DD2C41779D00821D09 /* SwiftGRDBTCAXCTests */,
 				BD1676B22C98DC64004AA2D2 /* SwiftGRDBTCAUITests */,
 				23A64E872ACC5312005B6344 /* Products */,
@@ -163,7 +147,6 @@
 			isa = PBXGroup;
 			children = (
 				23A64E862ACC5312005B6344 /* SwiftGRDBTCA.app */,
-				BD73380A2C4118CA001D0E04 /* SwiftGRDBTCATests.xctest */,
 				BD0DC1DC2C41779D00821D09 /* SwiftGRDBTCAXCTests.xctest */,
 				BD1676B12C98DC64004AA2D2 /* SwiftGRDBTCAUITests.xctest */,
 			);
@@ -269,13 +252,6 @@
 			path = Animations;
 			sourceTree = "<group>";
 		};
-		BD73380B2C4118CA001D0E04 /* SwiftGRDBTCATests */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = SwiftGRDBTCATests;
-			sourceTree = "<group>";
-		};
 		BD8F4DB12C46C7D4004ACF0B /* ActorMoviesFeature */ = {
 			isa = PBXGroup;
 			children = (
@@ -363,26 +339,6 @@
 			productReference = BD1676B12C98DC64004AA2D2 /* SwiftGRDBTCAUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		BD7338092C4118CA001D0E04 /* SwiftGRDBTCATests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BD7338102C4118CA001D0E04 /* Build configuration list for PBXNativeTarget "SwiftGRDBTCATests" */;
-			buildPhases = (
-				BD7338062C4118CA001D0E04 /* Sources */,
-				BD7338072C4118CA001D0E04 /* Frameworks */,
-				BD7338082C4118CA001D0E04 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				BD73380F2C4118CA001D0E04 /* PBXTargetDependency */,
-			);
-			name = SwiftGRDBTCATests;
-			packageProductDependencies = (
-			);
-			productName = SwiftDataTCATests;
-			productReference = BD73380A2C4118CA001D0E04 /* SwiftGRDBTCATests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -402,10 +358,6 @@
 					};
 					BD1676B02C98DC64004AA2D2 = {
 						CreatedOnToolsVersion = 15.4;
-						TestTargetID = 23A64E852ACC5312005B6344;
-					};
-					BD7338092C4118CA001D0E04 = {
-						CreatedOnToolsVersion = 16.0;
 						TestTargetID = 23A64E852ACC5312005B6344;
 					};
 				};
@@ -433,7 +385,6 @@
 			projectRoot = "";
 			targets = (
 				23A64E852ACC5312005B6344 /* SwiftGRDBTCA */,
-				BD7338092C4118CA001D0E04 /* SwiftGRDBTCATests */,
 				BD0DC1DB2C41779D00821D09 /* SwiftGRDBTCAXCTests */,
 				BD1676B02C98DC64004AA2D2 /* SwiftGRDBTCAUITests */,
 			);
@@ -458,13 +409,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BD1676AF2C98DC64004AA2D2 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BD7338082C4118CA001D0E04 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -515,13 +459,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BD7338062C4118CA001D0E04 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -538,11 +475,6 @@
 			isa = PBXTargetDependency;
 			target = 23A64E852ACC5312005B6344 /* SwiftGRDBTCA */;
 			targetProxy = BD1676B72C98DC65004AA2D2 /* PBXContainerItemProxy */;
-		};
-		BD73380F2C4118CA001D0E04 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 23A64E852ACC5312005B6344 /* SwiftGRDBTCA */;
-			targetProxy = BD73380E2C4118CA001D0E04 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -828,50 +760,6 @@
 			};
 			name = Release;
 		};
-		BD7338112C4118CA001D0E04 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UP6SS5ES7E;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.braysoftware.SwiftDataTCATests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftGRDBTCA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftGRDBTCA";
-				XROS_DEPLOYMENT_TARGET = 2.0;
-			};
-			name = Debug;
-		};
-		BD7338122C4118CA001D0E04 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UP6SS5ES7E;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.braysoftware.SwiftDataTCATests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftGRDBTCA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SwiftGRDBTCA";
-				XROS_DEPLOYMENT_TARGET = 2.0;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -907,15 +795,6 @@
 			buildConfigurations = (
 				BD1676BA2C98DC65004AA2D2 /* Debug */,
 				BD1676BB2C98DC65004AA2D2 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		BD7338102C4118CA001D0E04 /* Build configuration list for PBXNativeTarget "SwiftGRDBTCATests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BD7338112C4118CA001D0E04 /* Debug */,
-				BD7338122C4118CA001D0E04 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
