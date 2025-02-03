@@ -196,10 +196,6 @@ final class FromStateFeatureTests: XCTestCase {
 
   @MainActor
   func testPreviewRenderWithButtons() throws {
-    guard !isOnGithub else {
-      _ = XCTSkip("Not working on Github")
-      return
-    }
     withSnapshotTesting(record: .failed) {
       let view = FromStateView.previewWithButtons
       assertSnapshot(of: view, as: .image)

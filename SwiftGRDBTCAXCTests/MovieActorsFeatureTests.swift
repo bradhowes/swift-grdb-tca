@@ -91,10 +91,6 @@ final class MovieActorsFeatureTests: XCTestCase {
 
   @MainActor
   func testPreviewRenderWithButtons() throws {
-//    guard !isOnGithub else {
-//      _ = XCTSkip("Not working on Github")
-//      return
-//    }
     withSnapshotTesting(record: .failed) {
       let view = MovieActorsView.preview
       assertSnapshot(of: view, as: .image)
