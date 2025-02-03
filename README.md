@@ -68,10 +68,11 @@ The app communicates to its GRDB database by means of a DatabaseQueue instance t
 ## Schemas
 
 Unlike the SwiftDataTCA app, there is currently just 1 schema defined in the `Models` package in the file
-[Schemav1.swift](SwiftGRDBTCA/Packages/Sources/Models/SchemaV1.swift) file. the next. The schema contains the GRDB Swift
-structs that map to SQL table definitions. Although this is not as concise is the case with SwiftData, it is also much
+[Schemav1.swift](SwiftGRDBTCA/Packages/Sources/Models/SchemaV1.swift) file. The schema contains the GRDB Swift
+structs that map to SQL table definitions. Although this is not as concise as the case with SwiftData, it is also much
 less mysterious -- properties and relationships are spelled out in very readable form, and there is always the option to
-drop down into raw SQL if need be.
+drop down into raw SQL if need be. For instance, this schema supports searching of the movie titles using the full-text 
+search facility in the FTS5 extension.
 
 ## Tests
 
