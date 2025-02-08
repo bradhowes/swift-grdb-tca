@@ -10,7 +10,7 @@ This is a simple app that uses SwiftUI for views, [The Composable Architecture v
 [SwiftDataTCA](https://github.com/bradhowes/SwiftDataTCA) app that I used for experimenting with SwiftData, but
 switching the branches was a pain with Xcode, so a new repo it is.
 
-[!](media/demo.gif)
+![Demo GIF](media/demo.gif)
 
 The code here is using the `@SharedReader` feature described in [Point•Free](https://pointfree.co) episodes about GRDB
 -- a version of this macro can be found in the
