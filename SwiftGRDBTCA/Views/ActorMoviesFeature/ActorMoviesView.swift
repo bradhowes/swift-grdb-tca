@@ -19,6 +19,7 @@ struct ActorMoviesView: View {
         }
       }
       .labelsHidden()
+      .task { await store.send(.refresh).finish() }
   }
 }
 
