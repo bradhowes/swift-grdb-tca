@@ -21,7 +21,7 @@ struct FromStateFeature {
     var isSearchFieldPresented = false
     var scrollTo: Movie?
     var highlight: Movie?
-    var titleSort: Ordering = .forward
+    var titleSort: Ordering
     var searchText: String = ""
 
     init() {
@@ -156,26 +156,14 @@ extension FromStateFeature {
   private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
     switch pathAction {
 
-      // Detect when the MovieActorsFeature list button is tapped, and show a new ActorMoviesView for the actor that was
-      // tapped.
     case .element(id: _, action: .showMovieActors(.detailButtonTapped(let actor))):
-      print("pushing .showActorMovies(.init(actor: \(actor)))")
       state.path.append(.showActorMovies(.init(actor: actor)))
 
-      // Detect when the ActorMoviesFeature list button is tapped, and show a new MoveActorsView for the movie that was
-      // tapped.
     case .element(id: _, action: .showActorMovies(.detailButtonTapped(let movie))):
-      print("pushing .showMovieActors(.init(movie: \(movie)))")
       state.path.append(.showMovieActors(.init(movie: movie)))
 
-      // If we will have popped off all of the detail views, we must refresh our Movies in case it was changed in one
-      // of the detail views.
-    case .popFrom:
-      let count = state.path.count
-      print("popFrom: \(count)")
-      if count == 1 {
-        // return updateQuery(state)
-      }
+    case .popFrom(let id):
+      break
 
     default:
       break

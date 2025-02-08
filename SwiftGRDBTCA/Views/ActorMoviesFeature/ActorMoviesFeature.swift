@@ -1,7 +1,8 @@
+import Combine
 import ComposableArchitecture
 import Foundation
-import IdentifiedCollections
 import Models
+import Sharing
 import SwiftUI
 
 @Reducer
@@ -10,22 +11,25 @@ struct ActorMoviesFeature {
   @ObservableState
   struct State: Equatable {
     let actor: Actor
-    var movies: IdentifiedArrayOf<Movie>
+    @SharedReader var movies: MovieCollection
     var titleSort: Ordering
 
     init(actor: Actor) {
       let sort = Ordering.forward
       self.titleSort = sort
       self.actor = actor
-      @Dependency(\.defaultDatabase) var database
-      movies = database.movies(for: actor, ordering: sort.sortOrder)
+      _movies = SharedReader(
+        .fetch(
+          ActorMoviesQuery(actor: actor, ordering: sort.sortOrder),
+          animation: .smooth
+        )
+      )
     }
   }
 
   enum Action {
     case detailButtonTapped(Movie)
     case favoriteSwiped(Movie)
-    case refresh
     case titleSortChanged(Ordering)
     case toggleFavoriteState(Movie)
   }
@@ -43,14 +47,10 @@ struct ActorMoviesFeature {
         return Utils.toggleFavoriteState(movie)
 #endif
 
-      case .refresh: return updateQuery(&state)
       case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
 
       case .toggleFavoriteState(let movie):
-        let changed = Utils.toggleFavoriteState(movie)
-        if let index = state.movies.index(id: movie.id) {
-          state.movies[index] = changed
-        }
+        _ = Utils.toggleFavoriteState(movie)
         return .none.animation(.smooth)
       }
     }
@@ -59,15 +59,29 @@ struct ActorMoviesFeature {
 
 extension ActorMoviesFeature {
 
-  private func updateQuery(_ state: inout State) -> Effect<Action> {
+  private func updateQuery(_ state: State) -> Effect<Action> {
     @Dependency(\.defaultDatabase) var database
-    state.movies = database.movies(for: state.actor, ordering: state.titleSort.sortOrder)
-    return .none.animation(.smooth)
+    let titleSort = state.titleSort
+    let actor = state.actor
+    let movies = state.$movies
+    return .run { _ in
+      do {
+        try await movies.load(
+          .fetch(
+            ActorMoviesQuery(actor: actor, ordering: titleSort.sortOrder),
+            animation: .smooth
+          )
+        )
+      } catch {
+        reportIssue(error)
+      }
+    }
+    .cancellable(id: "FromStateFeature.updateQuery", cancelInFlight: true)
   }
 
   private func setTitleSort(_ newSort: Ordering, state: inout State) -> Effect<Action> {
     state.titleSort = newSort
-    return updateQuery(&state)
+    return updateQuery(state)
   }
 }
 
