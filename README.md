@@ -24,8 +24,8 @@ From this view you can:
 * Search by title content
 * Swipe to mark as a favorite
 * Swipe to delete a movie
-* Select a movie to "drill-down" to a list of actors. This view too supports "drilling-down" to see the actor's movies. This can
-be done as much as you want, though unwinding gets to be a bit tiring.
+* Select a movie to "drill-down" to a list of actors. This view too supports "drilling-down" to see the actor's movies.
+This can be done as much as you want, though unwinding gets to be a bit tiring.
 
 Per TCA guidance, all UI activity lead to reducer actions that are performed in the feature's reducer logic, updating
 internal feature state when necessary to cause a UI update.
@@ -51,9 +51,9 @@ The SwiftUI previews operate pretty much like in the simulator or on a physical 
 ## GRDB Use
 
 All GRDB activity is driven by activity the feature reducers. Each state uses a `@SharedReader` property wrapper for a
-container. This property is initialized with a GRDB query that will return a value for the container. When properties change that
-affect the query, state activity will invoke `updateQuery` to update the `@SharedReader` query. This in turn will cause the view to 
-refresh if there are any updates.
+container. This property is initialized with a GRDB query that will return a value for the container. When properties
+change that affect the query, state activity will invoke `updateQuery` to update the `@SharedReader` query. This in turn
+will cause the view to refresh if there are any updates.
 
 The app communicates to its GRDB database by means of a DatabaseQueue instance that is available via the
 `@Dependency(\.defaultDatabase)` attribute.
@@ -61,11 +61,10 @@ The app communicates to its GRDB database by means of a DatabaseQueue instance t
 ## Schemas
 
 Unlike the SwiftDataTCA app, there is currently just 1 schema defined in the `Models` package in the file
-[Schemav1.swift][11] file. The schema contains the GRDB Swift
-structs that map to SQL table definitions. Although this is not as concise as the case with SwiftData, it is also much
-less mysterious -- properties and relationships are spelled out in very readable form, and there is always the option to
-drop down into raw SQL if need be. For instance, this schema supports searching of the movie titles using the full-text 
-search facility in the FTS5 extension.
+[Schemav1.swift][11] file. The schema contains the GRDB Swift structs that map to SQL table definitions. Although this
+is not as concise as the case with SwiftData, it is also much less mysterious -- properties and relationships are
+spelled out in very readable form, and there is always the option to drop down into raw SQL if need be. For instance,
+this schema supports searching of the movie titles using the full-text search facility in the FTS5 extension.
 
 ## Tests
 
