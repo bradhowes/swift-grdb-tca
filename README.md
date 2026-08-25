@@ -10,8 +10,7 @@ for experimenting with SwiftData, but switching the branches was a pain with Xco
 
 ![Demo GIF][demo]
 
-The code here is using the `@SharedReader` feature described in [Point•Free](https://pointfree.co) episodes about GRDB
--- a version of this macro can be found in the [GRDBDemo][4] app of their [swift-sharing][5] package. Works pretty well!
+The code here is using the `@SharedReader` feature described in [Point•Free](https://pointfree.co) episodes about GRDB.
 
 # Overview
 
@@ -81,7 +80,7 @@ There are some...
 [7]: SwiftGRDBTCA/Views/FromState/FromStateView.swift
 [8]: SwiftGRDBTCA/Views/ActorMoviesFeature/ActorMoviesView.swift
 [9]: SwiftGRDBTCA/Views/MovieActorsFeature/MovieActorsView.swift
-[10]: https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/stackbasednavigation#Pushing-features-onto-the-stack
+[10]: https://swiftpackageindex.com/pointfreeco/swift-composable-architecture/main/documentation/composablearchitecture/stackbasednavigation#Pushing-features-onto-the-stack
 [11]: swiftui-grdb-tca/Packages/Sources/Models/SchemaV1.swift
 
 [demo]: media/demo.gif
