@@ -54,6 +54,7 @@ private struct ActorsListView: View {
         Utils.ActorView(name: actor.name, movieTitles: database.movies(for: actor).csv, showChevron: true)
       }
     }
+    .animation(.smooth, value: store.actors)
   }
 }
 

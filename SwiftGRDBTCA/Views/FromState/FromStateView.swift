@@ -63,6 +63,8 @@ private struct MovieListView: View {
         }
       }
     }
+    .animation(.smooth, value: store.scrollTo)
+    .animation(.smooth, value: store.movies)
   }
 }
 

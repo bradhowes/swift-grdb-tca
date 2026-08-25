@@ -1,13 +1,23 @@
-PROJ = -project SwiftGRDBTCA.xcodeproj -skipPackagePluginValidation -skipMacroValidation -enableCodeCoverage YES
+PLATFORM_IOS = iOS Simulator,name=iPad mini (A17 Pro)
+PLATFORM_MACOS = macOS
+SCHEME = SwiftGRDBTCA
+WORKSPACE = $(PWD)/.workspace
+BUILD_FLAGS = -skipPackagePluginValidation \
+			  -skipMacroValidation \
+			  -enableCodeCoverage YES \
+			  -project SwiftGRDBTCA.xcodeproj \
+			  -scheme $(SCHEME) \
+			  -clonedSourcePackagesDirPath "$(WORKSPACE)"
+XCB = | xcbeautify --renderer github-actions
+
 OUT = -derivedDataPath "$(PWD)/.DerivedData-iOS"
-DEST = -scheme SwiftGRDBTCA -destination "platform=iOS Simulator,name=iPad (10th generation),OS=18.1"
-QUIET = -quiet -skipMacroValidation
+DEST = -destination platform="$(PLATFORM_IOS)"
 TEST = -testPlan SwiftGRDBTCA -only-test-configuration Sanitizing
 XCCOV = xcrun xccov view --report --only-targets
 
-default: percentage
+default: report
 
-percentage: coverage
+report: coverage
 	awk '/ SwiftGRDBTCA.app / { print $$4 }' coverage.txt > percentage.txt
 	cat percentage.txt
 	@if [[ -n "$$GITHUB_ENV" ]]; then \
@@ -18,14 +28,10 @@ coverage: test
 	$(XCCOV) $(PWD)/.DerivedData-iOS/Logs/Test/*.xcresult > coverage.txt
 	cat coverage.txt
 
-test: build
-	xcodebuild -skipMacroValidation $(PROJ) $(OUT) test-without-building $(DEST) $(TEST)
-
-build: clean
-	xcodebuild $(QUIET) $(PROJ) $(OUT) build-for-testing $(DEST)
+test: clean
+	xcodebuild test $(BUILD_FLAGS) $(OUT) $(DEST) $(XCB)
 
 clean:
-	xcodebuild $(QUIET) clean ${DEST}
-	rm -rf "$(PWD)/.DerivedData-iOS"
+	rm -rf "$(PWD)/.DerivedData-iOS" "$(WORKSPACE)" coverage.txt percentage.txt
 
-.PHONY: build test coverage clean
+.PHONY: report coverage test clean

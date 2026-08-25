@@ -183,11 +183,11 @@ enum Utils {
   }
 #endif
 
-  static func toggleFavoriteState(_ movie: Movie) -> Movie {
+  static func toggleFavoriteState<Action>(_ movie: Movie) -> Effect<Action> {
     @Dependency(\.defaultDatabase) var database
     var changed: Movie = movie
     try? database.write { try changed.toggleFavorite(in: $0) }
-    return changed
+    return .none
   }
 //
 //  static func toggleFavoriteState<State>(_ movie: Movie) -> Effect<State> {

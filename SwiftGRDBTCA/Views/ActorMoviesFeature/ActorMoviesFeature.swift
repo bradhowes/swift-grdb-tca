@@ -50,8 +50,7 @@ struct ActorMoviesFeature {
       case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
 
       case .toggleFavoriteState(let movie):
-        _ = Utils.toggleFavoriteState(movie)
-        return .none.animation(.smooth)
+        return Utils.toggleFavoriteState(movie)
       }
     }
   }

@@ -37,6 +37,7 @@ private struct MoviesListView: View {
         }
 #endif
     }
+    .animation(.smooth, value: store.movies)
   }
 }
 

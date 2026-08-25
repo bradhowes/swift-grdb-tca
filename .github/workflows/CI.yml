@@ -1,9 +1,11 @@
 name: CI
+
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
 env:
   SNAPSHOT_ARTIFACTS: ${{ github.workspace }}/snapshots
   TEST_RUNNER_SNAPSHOT_ARTIFACTS: ${{ github.workspace }}/snapshots
@@ -12,10 +14,14 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
+    - name: Clean Derived Data
+      run: |
+        rm -rf ~/Library/Developer/Xcode/DerivedData/*
+        rm -rf .DerivedData-iOS      
     - name: Checkout
       uses: actions/checkout@v4
-    - name: Select Xcode 16.1
-      run: ls -l /Applications && sudo xcode-select -s /Applications/Xcode_16.1.app
+    - name: Select Xcode
+      run: ls -l /Applications # && sudo xcode-select -s /Applications/Xcode_16.1.app
     - name: Build, test, and code coverage
       run: env && make
     - name: Archive test artifacts

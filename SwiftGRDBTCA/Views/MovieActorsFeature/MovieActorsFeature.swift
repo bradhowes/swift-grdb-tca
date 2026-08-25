@@ -57,7 +57,7 @@ extension MovieActorsFeature {
   private func updateQuery(_ state: inout State) -> Effect<Action> {
     @Dependency(\.defaultDatabase) var database
     state.actors = database.actors(for: state.movie, ordering: state.nameSort.sortOrder)
-    return .none.animation(.smooth)
+    return .none
   }
 
   private func setNameSort(_ newSort: Ordering, state: inout State) -> Effect<Action> {

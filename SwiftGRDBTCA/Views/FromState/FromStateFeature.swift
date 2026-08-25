@@ -8,7 +8,7 @@ import SwiftUI
 @Reducer
 struct FromStateFeature {
 
-  @Reducer(state: .equatable)
+  @Reducer
   enum Path {
     case showMovieActors(MovieActorsFeature)
     case showActorMovies(ActorMoviesFeature)
@@ -61,7 +61,7 @@ struct FromStateFeature {
         let next = Support.nextMockMovieEntry(state.movies)
         let movie = try? database.write { try Movie.makeMock(in: $0, entry: next, favorited: false) }
         state.scrollTo = movie
-        return .none.animation()
+        return .none // .animation()
 
       case .clearHighlight:
         state.highlight = nil
@@ -122,13 +122,14 @@ struct FromStateFeature {
         return updateQuery(state)
 
       case .toggleFavoriteState(let movie):
-        _ = Utils.toggleFavoriteState(movie)
-        return .none
+        return Utils.toggleFavoriteState(movie)
       }
     }
     .forEach(\.path, action: \.path)
   }
 }
+
+extension FromStateFeature.Path.State: Equatable {}
 
 extension FromStateFeature {
 
@@ -162,7 +163,7 @@ extension FromStateFeature {
     case .element(id: _, action: .showActorMovies(.detailButtonTapped(let movie))):
       state.path.append(.showMovieActors(.init(movie: movie)))
 
-    case .popFrom(let id):
+    case .popFrom:
       break
 
     default:
