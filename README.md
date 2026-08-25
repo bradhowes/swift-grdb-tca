@@ -81,7 +81,7 @@ There are some...
 [8]: SwiftGRDBTCA/Views/ActorMoviesFeature/ActorMoviesView.swift
 [9]: SwiftGRDBTCA/Views/MovieActorsFeature/MovieActorsView.swift
 [10]: https://swiftpackageindex.com/pointfreeco/swift-composable-architecture/main/documentation/composablearchitecture/stackbasednavigation#Pushing-features-onto-the-stack
-[11]: swiftui-grdb-tca/Packages/Sources/Models/SchemaV1.swift
+[11]: SwiftGRDBTCA/Packages/Sources/Models/SchemaV1.swift
 [12]: https://www.pointfree.co/collections/sqlite
 
 [demo]: media/demo.gif
