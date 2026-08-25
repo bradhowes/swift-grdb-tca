@@ -1,27 +1,22 @@
-[![CI](https://github.com/bradhowes/swift-grdb-tca/actions/workflows/CI.yml/badge.svg)](https://github.com/bradhowes/swift-grdb-tca/actions/workflows/CI.yml)
-[![COV](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/bradhowes/b867d408459c766f8b95027edbcfd47d/raw/swift-grdb-tca-coverage.json)](https://github.com/bradhowes/swift-grdb-tca/actions/workflows/CI.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-A31F34.svg)](https://opensource.org/licenses/MIT)
+[![CI][status]][ci]
+[![COV][cov]][ci]
+[![License: MIT][mit]][license]
 
 # Introduction
 
-This is a simple app that uses SwiftUI for views, [The Composable Architecture v1.11.2
-(TCA)](https://github.com/pointfreeco/swift-composable-architecture) framework for managing logic and state, and
-[GRDB](https://github.com/groue/GRDB.swift) for backend storage. This was originally a branch of my
-[SwiftDataTCA](https://github.com/bradhowes/SwiftDataTCA) app that I used for experimenting with SwiftData, but
-switching the branches was a pain with Xcode, so a new repo it is.
+This is a simple app that uses SwiftUI for views, [The Composable Architecture v1.26.1 (TCA)][1] framework for managing
+logic and state, and [GRDB][2] for backend storage. This was originally a branch of my [SwiftDataTCA][3] app that I used
+for experimenting with SwiftData, but switching the branches was a pain with Xcode, so a new repo it is.
 
-![Demo GIF](media/demo.gif)
+![Demo GIF][demo]
 
 The code here is using the `@SharedReader` feature described in [Point•Free](https://pointfree.co) episodes about GRDB
--- a version of this macro can be found in the
-[GRDBDemo](https://github.com/pointfreeco/swift-sharing/tree/main/Examples/GRDBDemo) app of their
-[swift-sharing](https://github.com/pointfreeco/swift-sharing) package. Works pretty well!
+-- a version of this macro can be found in the [GRDBDemo][4] app of their [swift-sharing][5] package. Works pretty well!
 
 # Overview
 
-The code contains a top-level TCA "feature" (combination of a reducer and a SwiftUI view) called
-[FromStateFeature](swiftui-grdb-tca/Views/FromState/FromStateFeature.swift). It shows a list of movies
-and the names of the actors associated with the movie.
+The code contains a top-level TCA "feature" (combination of a reducer and a SwiftUI view) called [FromStateFeature][6].
+It shows a list of movies and the names of the actors associated with the movie.
 
 From this view you can:
 
@@ -38,16 +33,13 @@ internal feature state when necessary to cause a UI update.
 
 ## Drilling Down
 
-The top-level view [FromStateView](SwiftGRDBTCA/Views/FromState/FromStateView.swift) start with a TCA `NavigationStack`
-view builder. The subsequent `List` views define `NavigationLink` elements for each movie or actor in the view. These
-drive the transitions into the next view, and record the path for the `Back` button to follow when moving back up.
+The top-level view [FromStateView][7] start with a TCA `NavigationStack` view builder. The subsequent `List` views
+define `NavigationLink` elements for each movie or actor in the view. These drive the transitions into the next view,
+and record the path for the `Back` button to follow when moving back up.
 
 The top-level reducer in `FromtStateView` monitors for `path` actions and handles the selections made by the child
-views, [ActorMoviesView](SwiftGRDBTCA/Views/ActorMoviesFeature/ActorMoviesView.swift) and
-[MovieActorsView](SwiftGRDBTCA/Views/MovieActorsFeature/MovieActorsView.swift). This is pretty much as what is
-documented on TCA's [Pushing Features onto the
-Stack](https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/stackbasednavigation#Pushing-features-onto-the-stack)
-page.
+views, [ActorMoviesView][8] and [MovieActorsView][9]. This is pretty much as what is documented on TCA's [Pushing
+Features onto the Stack][10] page.
 
 Each of the drill-down views can also change the favorite state of a movie, either via toolbar button in the
 `MovieActorsView` view, or by swiping in the `ActorMoviesView` view. When a parent view comes back into view, it should
@@ -70,7 +62,7 @@ The app communicates to its GRDB database by means of a DatabaseQueue instance t
 ## Schemas
 
 Unlike the SwiftDataTCA app, there is currently just 1 schema defined in the `Models` package in the file
-[Schemav1.swift](SwiftGRDBTCA/Packages/Sources/Models/SchemaV1.swift) file. The schema contains the GRDB Swift
+[Schemav1.swift][11] file. The schema contains the GRDB Swift
 structs that map to SQL table definitions. Although this is not as concise as the case with SwiftData, it is also much
 less mysterious -- properties and relationships are spelled out in very readable form, and there is always the option to
 drop down into raw SQL if need be. For instance, this schema supports searching of the movie titles using the full-text 
@@ -79,3 +71,23 @@ search facility in the FTS5 extension.
 ## Tests
 
 There are some...
+
+[1]: https://github.com/pointfreeco/swift-composable-architecture
+[2]: https://github.com/groue/GRDB.swift
+[3]: https://github.com/bradhowes/SwiftDataTCA
+[4]: https://github.com/pointfreeco/swift-sharing/tree/main/Examples/GRDBDemo
+[5]: https://github.com/pointfreeco/swift-sharing
+[6]: SwiftGRDBTCA/Views/FromState/FromStateFeature.swift
+[7]: SwiftGRDBTCA/Views/FromState/FromStateView.swift
+[8]: SwiftGRDBTCA/Views/ActorMoviesFeature/ActorMoviesView.swift
+[9]: SwiftGRDBTCA/Views/MovieActorsFeature/MovieActorsView.swift
+[10]: https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/stackbasednavigation#Pushing-features-onto-the-stack
+[11]: swiftui-grdb-tca/Packages/Sources/Models/SchemaV1.swift
+
+[demo]: media/demo.gif
+
+[ci]: https://github.com/bradhowes/swift-grdb-tca/actions/workflows/CI.yml
+[status]: https://github.com/bradhowes/swift-grdb-tca/actions/workflows/CI.yml/badge.svg
+[cov]: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/bradhowes/b867d408459c766f8b95027edbcfd47d/raw/swift-grdb-tca-coverage.json
+[mit]: https://img.shields.io/badge/License-MIT-A31F34.svg
+[license]: https://opensource.org/licenses/MIT
