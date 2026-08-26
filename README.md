@@ -44,16 +44,21 @@ Each of the drill-down views can also change the favorite state of a movie, eith
 `MovieActorsView` view, or by swiping in the `ActorMoviesView` view. When a parent view comes back into view, it should
 already show any changaes that were made in a child view.
 
+The `ActorMoviesView` supports searching of movie titles, and the `MovieActorsView` supports searching of actor names.
+Both of these (and the `RootView` as well) use the FTS5 SQLite plugin to perform full-text searching of content in the
+movies and actors tables. Typing into the search field regenerates the SQL query that the views use to populate their
+corresponding rows of actors and movies.
+
 ## Previews
 
 The SwiftUI previews operate pretty much like in the simulator or on a physical device.
 
 ## GRDB Use
 
-All GRDB activity is driven by activity the feature reducers. Each state uses a `@SharedReader` property wrapper for a
-container. This property is initialized with a GRDB query that will return a value for the container. When properties
+All GRDB activity is driven by activity in the feature reducers. Each state uses a `@SharedReader` property wrapper for
+a container. This property is initialized with a GRDB query that will return a value for the container. When properties
 change that affect the query, state activity will invoke `updateQuery` to update the `@SharedReader` query. This in turn
-will cause the view to refresh if there are any updates.
+will cause the view to refresh when there are any updates.
 
 The app communicates to its GRDB database by means of a DatabaseQueue instance that is available via the
 `@Dependency(\.defaultDatabase)` attribute.
@@ -64,6 +69,9 @@ Unlike the SwiftDataTCA app, there is currently just 1 schema defined in the `Mo
 [Schemav1.swift][11] file. The schema contains the GRDB Swift structs that map to SQL table definitions. Although this
 is not as concise as the case with SwiftData, it is also much less mysterious -- properties and relationships are
 spelled out in very readable form, and there is always the option to drop down into raw SQL if need be.
+
+As mentioned above, the `movies` and `actors` tables have a related full-text search table. The GRDB intergration
+creates the appropriate triggers to keep the full-text tables up-to-date when their source table changes.
 
 ## Tests
 
