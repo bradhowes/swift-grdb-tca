@@ -9,7 +9,7 @@ struct MovieActorsView: View {
 
   var body: some View {
     ActorsListView(store: store)
-      .navigationTitle(store.movie.title)
+      .navigationTitle(store.movie.title + " [\(store.actors.count)]")
 #if os(iOS)
       .toolbar(.hidden, for: .tabBar)
 #endif
@@ -57,7 +57,7 @@ private struct ActorsListView: View {
 extension MovieActorsView {
   static var preview: some View {
     let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
-      $0.defaultDatabase = try! DatabaseQueue.appDatabase(mockCount: 13) // swiftlint:disable:this force_try
+      $0.defaultDatabase = try! DatabaseQueue.appDatabase(rowCount: 13) // swiftlint:disable:this force_try
     }
     @Dependency(\.defaultDatabase) var queue
     let movies = queue.movies()

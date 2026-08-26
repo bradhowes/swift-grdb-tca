@@ -11,15 +11,15 @@ import XCTest
 
 @MainActor
 private final class Context {
-  let store: TestStoreOf<FromStateFeature>
+  let store: TestStoreOf<RootFeature>
 
   init() throws {
     store = withDependencies {
-      $0.defaultDatabase = try! DatabaseQueue.appDatabase(mockCount: 13) // swiftlint:disable:this force_try
+      $0.defaultDatabase = try! DatabaseQueue.appDatabase(rowCount: 13) // swiftlint:disable:this force_try
       $0.continuousClock = ImmediateClock()
     } operation: {
-      TestStore(initialState: FromStateFeature.State()) {
-        FromStateFeature()
+      TestStore(initialState: RootFeature.State()) {
+        RootFeature()
       }
     }
   }
@@ -199,7 +199,7 @@ final class FromStateFeatureTests: XCTestCase {
   @MainActor
   func testPreviewRenderWithButtons() throws {
     withSnapshotTesting(record: .failed) {
-      let view = FromStateView.previewWithButtons
+      let view = RootView.previewWithButtons
       TestSupport.assertSnapshot(matching: view)
     }
   }

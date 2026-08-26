@@ -19,7 +19,7 @@ struct SwiftDataTCAApp: App {
 
   var body: some Scene {
     WindowGroup {
-      FromStateView(store: Store(initialState: .init()) { FromStateFeature() })
+      RootView(store: Store(initialState: .init()) { RootFeature() })
     }
   }
 }

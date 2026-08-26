@@ -4,14 +4,13 @@ import GRDB
 import Models
 import SwiftUI
 
-struct FromStateView: View {
-  @Bindable var store: StoreOf<FromStateFeature>
+struct RootView: View {
+  @Bindable var store: StoreOf<RootFeature>
 
   var body: some View {
-    let placement: ToolbarItemPlacement = .automatic
     NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
       MovieListView(store: store)
-        .navigationTitle("Movies")
+        .navigationTitle("Movies [\(store.movies.count)]")
         .searchable(
           text: $store.searchText.sending(\.searchTextChanged),
           isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
@@ -19,7 +18,7 @@ struct FromStateView: View {
         )
         .toolbar {
           if !store.isSearchFieldPresented {
-            ToolbarItemGroup(placement: placement) {
+            ToolbarItemGroup(placement: .automatic) {
               Button("add", systemImage: "plus") { store.send(.addButtonTapped) }
               Utils.pickerView(title: "movie ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
             }
@@ -37,7 +36,7 @@ struct FromStateView: View {
 }
 
 private struct MovieListView: View {
-  var store: StoreOf<FromStateFeature>
+  var store: StoreOf<RootFeature>
   @Dependency(\.defaultDatabase) var database
 
   var body: some View {
@@ -70,11 +69,11 @@ private struct MovieListView: View {
 }
 
 private struct MovieListRow: View {
-  var store: StoreOf<FromStateFeature>
+  var store: StoreOf<RootFeature>
   let movie: Movie
   let actorNames: String
 
-  init(store: StoreOf<FromStateFeature>, movie: Movie, actorNames: String) {
+  init(store: StoreOf<RootFeature>, movie: Movie, actorNames: String) {
     self.store = store
     self.movie = movie
     self.actorNames = actorNames
@@ -120,16 +119,16 @@ private struct MovieListRow: View {
   }
 }
 
-extension FromStateView {
+extension RootView {
   static var previewWithButtons: some View {
     let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
-      $0.defaultDatabase = try! DatabaseQueue.appDatabase(mockCount: 5) // swiftlint:disable:this force_try
+      $0.defaultDatabase = try! DatabaseQueue.appDatabase(rowCount: 5) // swiftlint:disable:this force_try
     }
-    let store = Store(initialState: .init()) { FromStateFeature() }
-    return FromStateView(store: store)
+    let store = Store(initialState: .init()) { RootFeature() }
+    return RootView(store: store)
   }
 }
 
 #Preview {
-  FromStateView.previewWithButtons
+  RootView.previewWithButtons
 }

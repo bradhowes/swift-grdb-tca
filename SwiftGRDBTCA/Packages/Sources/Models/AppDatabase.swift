@@ -8,7 +8,7 @@ extension DatabaseWriter where Self == DatabaseQueue {
   public static func appDatabase(
     path: URL? = nil,
     configuration: Configuration? = nil,
-    mockCount: Int = 0
+    rowCount: Int = 100
   ) throws -> Self {
     let config = configuration ?? Configuration()
 //#if DEBUG
@@ -27,11 +27,7 @@ extension DatabaseWriter where Self == DatabaseQueue {
       databaseQueue = try DatabaseQueue(configuration: config)
     }
 
-    try databaseQueue.migrate()
-
-    if mockCount > 0 {
-      try databaseQueue.write { try Support.generateMocks(db: $0, count: mockCount) }
-    }
+    try databaseQueue.migrate(rowCount: rowCount)
 
     return databaseQueue
   }

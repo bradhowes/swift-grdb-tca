@@ -155,15 +155,16 @@ extension Movie {
   }
 }
 
-func migration(_ db: Database) throws {
+func migration(_ db: Database, rowCount: Int) throws {
   try Movie.createTable(in: db)
   try Actor.createTable(in: db)
   try MovieActor.createTable(in: db)
+  try Support.generateMocks(db: db, count: rowCount)
 }
 
 extension DatabaseWriter {
 
-  func migrate() throws {
+  func migrate(rowCount: Int) throws {
     var migrator = DatabaseMigrator()
 
 #if DEBUG
@@ -171,13 +172,13 @@ extension DatabaseWriter {
 #endif
 
     migrator.registerMigration("SchemaV1") { db in
-      try migration(db)
+      try migration(db, rowCount: rowCount)
 
 #if targetEnvironment(simulator)
       if !isTesting {
         try Movie.deleteAll(db)
         try Actor.deleteAll(db)
-        try MovieActor.deleteAll(db) // just to be safe
+        try MovieActor.deleteAll(db)
       }
 #endif
     }

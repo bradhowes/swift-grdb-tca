@@ -14,7 +14,7 @@ The code here is using the `@SharedReader` feature described in [Point•Free ep
 
 # Overview
 
-The code contains a top-level TCA "feature" (combination of a reducer and a SwiftUI view) called [FromStateFeature][6].
+The code contains a top-level TCA "feature" (combination of a reducer and a SwiftUI view) called [RootFeature][6].
 It shows a list of movies and the names of the actors associated with the movie.
 
 From this view you can:
@@ -32,13 +32,13 @@ internal feature state when necessary to cause a UI update.
 
 ## Drilling Down
 
-The top-level view [FromStateView][7] start with a TCA `NavigationStack` view builder. The subsequent `List` views
-define `NavigationLink` elements for each movie or actor in the view. These drive the transitions into the next view,
-and record the path for the `Back` button to follow when moving back up.
+The top-level view [RootView][7] starts with a TCA `NavigationStack` view builder. The subsequent `List` views define
+`NavigationLink` elements for each movie or actor in the view. These drive the transitions into the next view, and
+record the path for the `Back` button to follow when moving back up.
 
-The top-level reducer in `FromtStateView` monitors for `path` actions and handles the selections made by the child
-views, [ActorMoviesView][8] and [MovieActorsView][9]. This is pretty much as what is documented on TCA's [Pushing
-Features onto the Stack][10] page.
+The top-level reducer in `RootFeature` monitors for `path` actions and handles the selections made by the child views,
+[ActorMoviesView][8] and [MovieActorsView][9]. This is pretty much as what is documented on TCA's [Pushing Features onto
+the Stack][10] page.
 
 Each of the drill-down views can also change the favorite state of a movie, either via toolbar button in the
 `MovieActorsView` view, or by swiping in the `ActorMoviesView` view. When a parent view comes back into view, it should

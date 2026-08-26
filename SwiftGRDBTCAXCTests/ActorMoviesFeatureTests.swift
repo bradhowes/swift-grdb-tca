@@ -16,7 +16,7 @@ private final class Context {
 
   init() throws {
     store = withDependencies {
-      $0.defaultDatabase = try! DatabaseQueue.appDatabase(mockCount: 13) // swiftlint:disable:this force_try
+      $0.defaultDatabase = try! DatabaseQueue.appDatabase(rowCount: 13) // swiftlint:disable:this force_try
       $0.continuousClock = ImmediateClock()
     } operation: {
       @Dependency(\.defaultDatabase) var database

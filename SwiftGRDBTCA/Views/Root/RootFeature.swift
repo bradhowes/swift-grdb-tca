@@ -6,7 +6,7 @@ import Sharing
 import SwiftUI
 
 @Reducer
-struct FromStateFeature {
+struct RootFeature {
 
   @Reducer
   enum Path {
@@ -129,9 +129,9 @@ struct FromStateFeature {
   }
 }
 
-extension FromStateFeature.Path.State: Equatable {}
+extension RootFeature.Path.State: Equatable {}
 
-extension FromStateFeature {
+extension RootFeature {
 
   private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
     switch pathAction {
@@ -168,23 +168,6 @@ extension FromStateFeature {
   }
 }
 
-extension FromStateFeature {
-//
-//  @MainActor
-//  static func link(_ movie: Movie) -> some View {
-//    @Dependency(\.defaultDatabase) var database
-//    return NavigationLink(state: Path.State.showMovieActors(.init(movie: movie))) {
-//      // Fetch the actor names while we know that the Movie is valid.
-//      Utils.MovieView(
-//        name: movie.title,
-//        favorite: movie.favorite,
-//        actorNames: database.actors(for: movie).csv,
-//        showChevron: false
-//      )
-//    }
-//  }
-}
-
 #Preview {
-  FromStateView.previewWithButtons
+  RootView.previewWithButtons
 }

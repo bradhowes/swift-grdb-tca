@@ -4,7 +4,6 @@ import GRDB
 import Sharing
 import SwiftUI
 
-
 public extension SharedReaderKey {
   /// A key that can query for a collection of data in a SQLite database.
   static func fetch<Value: RangeReplaceableCollection>(

@@ -11,13 +11,13 @@
 		23A64E902ACC5313005B6344 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23A64E8F2ACC5313005B6344 /* Assets.xcassets */; };
 		23A64E942ACC5313005B6344 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23A64E932ACC5313005B6344 /* Preview Assets.xcassets */; };
 		23A64E9D2ACC5DFE005B6344 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 23A64E9C2ACC5DFE005B6344 /* ComposableArchitecture */; };
-		23A64E9F2ACC5E16005B6344 /* FromStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64E9E2ACC5E16005B6344 /* FromStateView.swift */; };
+		23A64E9F2ACC5E16005B6344 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64E9E2ACC5E16005B6344 /* RootView.swift */; };
 		BD0DC1DF2C41779D00821D09 /* FromStateFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0DC1DE2C41779D00821D09 /* FromStateFeatureTests.swift */; };
 		BD1676AB2C98CF13004AA2D2 /* AnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1676AA2C98CF13004AA2D2 /* AnimationTests.swift */; };
 		BD1676AC2C98D006004AA2D2 /* Flash.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7324EB2C8799BE0026E1BE /* Flash.swift */; };
 		BD1676B62C98DC65004AA2D2 /* SwiftDataTCAUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1676B52C98DC65004AA2D2 /* SwiftDataTCAUITestsLaunchTests.swift */; };
 		BD21828A2C4D35DA00FCB16E /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = BD2182892C4D35DA00FCB16E /* SnapshotTesting */; };
-		BD2265192C3EBF6500A975E8 /* FromStateFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265182C3EBF5E00A975E8 /* FromStateFeature.swift */; };
+		BD2265192C3EBF6500A975E8 /* RootFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2265182C3EBF5E00A975E8 /* RootFeature.swift */; };
 		BD7324EE2C8799BE0026E1BE /* Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7324E82C8799BE0026E1BE /* Animations.swift */; };
 		BD7324EF2C8799BE0026E1BE /* Confetti.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7324E92C8799BE0026E1BE /* Confetti.swift */; };
 		BD7324F02C8799BE0026E1BE /* FadeIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7324EA2C8799BE0026E1BE /* FadeIn.swift */; };
@@ -64,13 +64,13 @@
 		23A64E912ACC5313005B6344 /* SwiftGRDBTCA.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftGRDBTCA.entitlements; sourceTree = "<group>"; };
 		23A64E932ACC5313005B6344 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		23A64E952ACC5313005B6344 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		23A64E9E2ACC5E16005B6344 /* FromStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromStateView.swift; sourceTree = "<group>"; };
+		23A64E9E2ACC5E16005B6344 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		BD0DC1DC2C41779D00821D09 /* SwiftGRDBTCAXCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftGRDBTCAXCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD0DC1DE2C41779D00821D09 /* FromStateFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromStateFeatureTests.swift; sourceTree = "<group>"; };
 		BD1676AA2C98CF13004AA2D2 /* AnimationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationTests.swift; sourceTree = "<group>"; };
 		BD1676B12C98DC64004AA2D2 /* SwiftGRDBTCAUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftGRDBTCAUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD1676B52C98DC65004AA2D2 /* SwiftDataTCAUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTCAUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		BD2265182C3EBF5E00A975E8 /* FromStateFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromStateFeature.swift; sourceTree = "<group>"; };
+		BD2265182C3EBF5E00A975E8 /* RootFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootFeature.swift; sourceTree = "<group>"; };
 		BD3C7FF02C4686FA00C68195 /* MovieActorsFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieActorsFeature.swift; sourceTree = "<group>"; };
 		BD7324E82C8799BE0026E1BE /* Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animations.swift; sourceTree = "<group>"; };
 		BD7324E92C8799BE0026E1BE /* Confetti.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Confetti.swift; sourceTree = "<group>"; };
@@ -190,7 +190,7 @@
 			children = (
 				BD8F4DB12C46C7D4004ACF0B /* ActorMoviesFeature */,
 				BD3C7FF12C4688CC00C68195 /* MovieActorsFeature */,
-				BD22651A2C3FC31700A975E8 /* FromState */,
+				BD22651A2C3FC31700A975E8 /* Root */,
 				BD7324ED2C8799BE0026E1BE /* Animations */,
 				BD7324EC2C8799BE0026E1BE /* Utils.swift */,
 			);
@@ -227,13 +227,13 @@
 			path = SwiftGRDBTCAUITests;
 			sourceTree = "<group>";
 		};
-		BD22651A2C3FC31700A975E8 /* FromState */ = {
+		BD22651A2C3FC31700A975E8 /* Root */ = {
 			isa = PBXGroup;
 			children = (
-				BD2265182C3EBF5E00A975E8 /* FromStateFeature.swift */,
-				23A64E9E2ACC5E16005B6344 /* FromStateView.swift */,
+				BD2265182C3EBF5E00A975E8 /* RootFeature.swift */,
+				23A64E9E2ACC5E16005B6344 /* RootView.swift */,
 			);
-			path = FromState;
+			path = Root;
 			sourceTree = "<group>";
 		};
 		BD3C7FF12C4688CC00C68195 /* MovieActorsFeature */ = {
@@ -424,7 +424,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23A64E9F2ACC5E16005B6344 /* FromStateView.swift in Sources */,
+				23A64E9F2ACC5E16005B6344 /* RootView.swift in Sources */,
 				BD8F4DAE2C4688FC004ACF0B /* MovieActorsFeature.swift in Sources */,
 				23A64E8A2ACC5312005B6344 /* SwiftGRDBTCAApp.swift in Sources */,
 				BD7324EE2C8799BE0026E1BE /* Animations.swift in Sources */,
@@ -432,7 +432,7 @@
 				BD7324F02C8799BE0026E1BE /* FadeIn.swift in Sources */,
 				BD7324F22C8799BE0026E1BE /* Utils.swift in Sources */,
 				BD8F4DB52C46C7F9004ACF0B /* ActorMoviesView.swift in Sources */,
-				BD2265192C3EBF6500A975E8 /* FromStateFeature.swift in Sources */,
+				BD2265192C3EBF6500A975E8 /* RootFeature.swift in Sources */,
 				BDD57C2C2C9DAB370082178E /* ViewLinkType.swift in Sources */,
 				BD8F4DB32C46C7E7004ACF0B /* ActorMoviesFeature.swift in Sources */,
 				BD8F4DB02C4689A4004ACF0B /* MovieActorsView.swift in Sources */,
