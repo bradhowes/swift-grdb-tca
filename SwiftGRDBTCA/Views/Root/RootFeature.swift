@@ -39,7 +39,6 @@ struct RootFeature {
   enum Action {
     case addButtonTapped
     case clearHighlight
-    case clearScrollTo
     case deleteSwiped(Movie)
     case favoriteSwiped(Movie)
     case highlight(Movie)
@@ -47,6 +46,7 @@ struct RootFeature {
     case path(StackActionOf<Path>)
     case searchButtonTapped(Bool)
     case searchTextChanged(String)
+    case scrollToMovie(Movie)
     case titleSortChanged(Ordering)
     case toggleFavoriteState(Movie)
   }
@@ -59,23 +59,17 @@ struct RootFeature {
 
       case .addButtonTapped:
         let next = Support.nextMockMovieEntry(state.movies)
-        let movie = try? database.write { try Movie.makeMock(in: $0, entry: next, favorited: false) }
-        state.scrollTo = movie
-        return .none // .animation()
+        guard let movie = try? database.write({ try Movie.make(in: $0, entry: next) }) else {
+          return .none
+        }
+        return .run { send in
+          await send(.scrollToMovie(movie))
+          await send(.highlight(movie))
+        }
 
       case .clearHighlight:
         state.highlight = nil
         return .none
-
-      case .clearScrollTo:
-        guard let movie = state.scrollTo else {
-          return .none
-        }
-
-        state.scrollTo = nil
-        return .run { @MainActor send in
-          send(.highlight(movie), animation: .default)
-        }
 
       case .deleteSwiped(let movie):
         _ = try? database.write { db in
@@ -108,6 +102,10 @@ struct RootFeature {
           state.searchText = ""
           return updateQuery(state)
         }
+        return .none
+
+      case .scrollToMovie(let movie):
+        state.scrollTo = movie
         return .none
 
       case .searchTextChanged(let query):

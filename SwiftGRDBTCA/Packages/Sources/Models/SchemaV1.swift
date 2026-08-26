@@ -145,7 +145,7 @@ extension Actor {
 
 extension Movie {
 
-  public static func makeMock(in db: Database, entry: (String, [String]), favorited: Bool) throws -> Movie {
+  public static func make(in db: Database, entry: (String, [String])) throws -> Movie {
     let movie = try PendingMovie(title: entry.0).insertAndFetch(db, as: Movie.self)
     for name in entry.1 {
       let actor = try Actor.fetchOrCreate(in: db, name: name)
@@ -159,7 +159,7 @@ func migration(_ db: Database, rowCount: Int) throws {
   try Movie.createTable(in: db)
   try Actor.createTable(in: db)
   try MovieActor.createTable(in: db)
-  try Support.generateMocks(db: db, count: rowCount)
+  try Support.generateRows(db: db, count: rowCount)
 }
 
 extension DatabaseWriter {
@@ -173,14 +173,6 @@ extension DatabaseWriter {
 
     migrator.registerMigration("SchemaV1") { db in
       try migration(db, rowCount: rowCount)
-
-#if targetEnvironment(simulator)
-      if !isTesting {
-        try Movie.deleteAll(db)
-        try Actor.deleteAll(db)
-        try MovieActor.deleteAll(db)
-      }
-#endif
     }
 
     try migrator.migrate(self)

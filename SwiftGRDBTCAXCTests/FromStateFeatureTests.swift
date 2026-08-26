@@ -33,12 +33,6 @@ final class FromStateFeatureTests: XCTestCase {
   }
 
   @MainActor
-  func testClearScrollToWithNil() async throws {
-    XCTAssertNil(ctx.store.state.scrollTo)
-    await ctx.store.send(\.clearScrollTo)
-  }
-
-  @MainActor
   func testAddButtonTapped() async throws {
     @Dependency(\.defaultDatabase) var database
 
@@ -48,9 +42,6 @@ final class FromStateFeatureTests: XCTestCase {
     }
 
     let added = ctx.store.state.scrollTo
-    await ctx.store.send(.clearScrollTo) {
-      $0.scrollTo = nil
-    }
 
     await ctx.store.receive(\.highlight) {
       $0.highlight = added

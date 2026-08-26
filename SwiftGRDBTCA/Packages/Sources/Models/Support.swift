@@ -36,9 +36,9 @@ public enum Support {
     fatalError("ran out of mock data!")
   }
 
-  public static func generateMocks(db: Database, count: Int) throws {
+  public static func generateRows(db: Database, count: Int) throws {
     for index in 0..<count {
-      _ = try Movie.makeMock(in: db, entry: mockData[index], favorited: index % 5 == 0)
+      _ = try Movie.make(in: db, entry: mockData[index])
     }
   }
 }

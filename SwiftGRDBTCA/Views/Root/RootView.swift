@@ -40,34 +40,27 @@ private struct MovieListView: View {
   @Dependency(\.defaultDatabase) var database
 
   var body: some View {
-    if store.movies.isEmpty {
-      Text("No matches.")
-      Spacer()
-    } else {
-      ScrollViewReader { proxy in
-        List(store.movies, id: \.id) { movie in
-          MovieListRow(store: store, movie: movie, actorNames: database.actors(for: movie).csv)
+    ScrollViewReader { proxy in
+      List(store.movies, id: \.id) { movie in
+        MovieListRow(store: store, movie: movie, actorNames: database.actors(for: movie).csv)
 #if os(iOS)
-            .swipeActions(allowsFullSwipe: false) {
-              Utils.deleteMovieButton(movie) {
-                store.send(.deleteSwiped(movie), animation: .snappy)
-              }
-              Utils.favoriteMovieButton(movie) {
-                store.send(.favoriteSwiped(movie), animation: .bouncy)
-              }
+          .swipeActions(allowsFullSwipe: false) {
+            Utils.deleteMovieButton(movie) {
+              store.send(.deleteSwiped(movie), animation: .snappy)
             }
-#endif
-        }
-        .onChange(of: store.scrollTo) { _, movie in
-          if let movie {
-            withAnimation {
-              proxy.scrollTo(movie.id)
+            Utils.favoriteMovieButton(movie) {
+              store.send(.favoriteSwiped(movie), animation: .bouncy)
             }
-            store.send(.clearScrollTo)
+          }
+#endif // os(iOS)
+      }
+      .onChange(of: store.scrollTo) { _, movie in
+        if let movie {
+          withAnimation(.smooth) {
+            proxy.scrollTo(movie.id, anchor: .center)
           }
         }
       }
-      .animation(.smooth, value: store.scrollTo)
       .animation(.smooth, value: store.movies)
     }
   }
@@ -87,19 +80,13 @@ private struct MovieListRow: View {
 #if os(iOS)
   var body: some View {
     detailButton
-      .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
-        store.send(.clearHighlight)
-      }
   }
-#endif
+#endif // os(iOS)
 
 #if os(macOS)
   var body: some View {
     HStack {
       detailButton
-        .fadeIn(enabled: store.highlight == movie, duration: 1.25) {
-          store.send(.clearHighlight)
-        }
       Utils.favoriteMovieButton(movie) {
         store.send(.favoriteSwiped(movie), animation: .bouncy)
       }
@@ -108,7 +95,7 @@ private struct MovieListRow: View {
       }
     }
   }
-#endif
+#endif // os(macOS)
 
   private var detailButton: some View {
     Button {
@@ -120,6 +107,9 @@ private struct MovieListRow: View {
         actorNames: actorNames,
         showChevron: true
       )
+    }
+    .fadeIn(enabled: store.highlight == movie, duration: 3.0) {
+      store.send(.clearHighlight)
     }
   }
 }
