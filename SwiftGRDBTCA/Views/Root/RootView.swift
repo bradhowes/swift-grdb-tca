@@ -17,11 +17,11 @@ struct RootView: View {
           prompt: "Title"
         )
         .toolbar {
-          if !store.isSearchFieldPresented {
-            ToolbarItemGroup(placement: .automatic) {
+          ToolbarItemGroup(placement: .automatic) {
+            if !store.isSearchFieldPresented {
               Button("add", systemImage: "plus") { store.send(.addButtonTapped) }
-              Utils.pickerView(title: "movie ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
             }
+            Utils.pickerView(title: "movie ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
           }
         }
         .labelsHidden()

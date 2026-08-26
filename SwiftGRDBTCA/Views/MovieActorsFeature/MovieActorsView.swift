@@ -13,6 +13,11 @@ struct MovieActorsView: View {
 #if os(iOS)
       .toolbar(.hidden, for: .tabBar)
 #endif
+      .searchable(
+        text: $store.searchText.sending(\.searchTextChanged),
+        isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
+        prompt: "Title"
+      )
       .toolbar {
         ToolbarItemGroup(placement: .automatic) {
           Utils.pickerView(title: "actor ordering", binding: $store.nameSort.sending(\.nameSortChanged).animation())

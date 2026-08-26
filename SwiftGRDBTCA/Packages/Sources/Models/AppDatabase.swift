@@ -10,11 +10,9 @@ extension DatabaseWriter where Self == DatabaseQueue {
     configuration: Configuration? = nil,
     rowCount: Int = 100
   ) throws -> Self {
-    let config = configuration ?? Configuration()
-//#if DEBUG
-//    config.publicStatementArguments = true
-//    config.prepareDatabase { db in db.trace { print($0) }}
-//#endif
+    var config = configuration ?? Configuration()
+    config.publicStatementArguments = true
+    config.prepareDatabase { db in db.trace { print($0) }}
 
     let databaseQueue: DatabaseQueue
 

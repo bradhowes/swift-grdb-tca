@@ -36,12 +36,12 @@ final class FromStateFeatureTests: XCTestCase {
   func testAddButtonTapped() async throws {
     @Dependency(\.defaultDatabase) var database
 
-    await ctx.store.send(.addButtonTapped) {
-      let added = $0.movies[11]
+    await ctx.store.send(.addButtonTapped)
+
+    let added = ctx.store.state.movies[11]
+    await ctx.store.receive(\.scrollToMovie) {
       $0.scrollTo = added
     }
-
-    let added = ctx.store.state.scrollTo
 
     await ctx.store.receive(\.highlight) {
       $0.highlight = added
@@ -116,6 +116,10 @@ final class FromStateFeatureTests: XCTestCase {
   @MainActor
   func testSearching() async throws {
     XCTAssertEqual(ctx.store.state.movies.count, 13)
+    for m in ctx.store.state.movies {
+      print(m.title)
+    }
+
     await ctx.store.send(.searchButtonTapped(true)) {
       $0.isSearchFieldPresented = true
     }
@@ -128,18 +132,21 @@ final class FromStateFeatureTests: XCTestCase {
 
     await ctx.store.send(.searchTextChanged("zzz")) // No change
 
-    await ctx.store.send(.searchTextChanged("g")) {
-      $0.searchText = "g"
+    await ctx.store.send(.searchTextChanged("s")) {
+      $0.searchText = "s"
     }
 
-    XCTAssertEqual(ctx.store.state.movies.count, 2)
+    XCTAssertEqual(ctx.store.state.movies.count, 5)
+    for m in ctx.store.state.movies {
+      print(m.title)
+    }
 
-    await ctx.store.send(.searchTextChanged("go")) {
-      $0.searchText = "go"
+    await ctx.store.send(.searchTextChanged("sc")) {
+      $0.searchText = "sc"
     }
 
     XCTAssertEqual(ctx.store.state.movies.count, 1)
-    XCTAssertEqual(ctx.store.state.movies.first?.title, "The Godfather")
+    XCTAssertEqual(ctx.store.state.movies.first?.title, "The Score")
 
     await ctx.store.send(.searchTextChanged("goo")) {
       $0.searchText = "goo"

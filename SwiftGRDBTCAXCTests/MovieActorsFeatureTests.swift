@@ -56,18 +56,23 @@ final class MovieActorsFeatureTests: XCTestCase {
 
   @MainActor
   func testNameSortChanged() async throws {
+    let database = ctx.store.dependencies.defaultDatabase
     XCTAssertEqual(ctx.store.state.movie.title, "Apocalypse Now")
     XCTAssertEqual(ctx.store.state.actors.count, 5)
 
     await ctx.store.send(.nameSortChanged(.reverse)) {
       $0.nameSort = .reverse
-      $0.actors = IdentifiedArrayOf<Actor>(uncheckedUniqueElements: $0.actors.elements.reversed())
     }
+
+    var actors = database.actors(for: ctx.store.state.movie, ordering: .reverse)
+    XCTAssertEqual(ctx.store.state.actors, actors)
 
     await ctx.store.send(.nameSortChanged(.forward)) {
       $0.nameSort = .forward
-      $0.actors = IdentifiedArrayOf<Actor>(uncheckedUniqueElements: $0.actors.elements.reversed())
     }
+
+    actors = database.actors(for: ctx.store.state.movie, ordering: .forward)
+    XCTAssertEqual(ctx.store.state.actors, actors)
 
     ctx.store.exhaustivity = .off
     await ctx.store.send(.nameSortChanged(.none)) {

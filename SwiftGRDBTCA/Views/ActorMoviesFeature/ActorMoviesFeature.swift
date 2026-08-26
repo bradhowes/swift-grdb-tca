@@ -16,13 +16,12 @@ struct ActorMoviesFeature {
     var titleSort: Ordering
     var searchText: String = ""
 
-    init(actor: Actor) {
-      let sort = Ordering.forward
-      self.titleSort = sort
+    init(actor: Actor, titleSort: Ordering = .forward) {
       self.actor = actor
+      self.titleSort = titleSort
       _movies = SharedReader(
         .fetch(
-          ActorMoviesQuery(actor: actor, ordering: sort.sortOrder),
+          ActorMoviesQuery(actor: actor, ordering: titleSort.sortOrder),
           animation: .smooth
         )
       )
@@ -77,6 +76,11 @@ struct ActorMoviesFeature {
 
 extension ActorMoviesFeature {
 
+  private func setTitleSort(_ newSort: Ordering, state: inout State) -> Effect<Action> {
+    state.titleSort = newSort
+    return updateQuery(state)
+  }
+
   private func updateQuery(_ state: State) -> Effect<Action> {
     let searchText = state.searchText.isEmpty ? nil : state.searchText
     let titleSort = state.titleSort
@@ -95,11 +99,6 @@ extension ActorMoviesFeature {
       }
     }
     .cancellable(id: "ActorMoviesFeature.updateQuery", cancelInFlight: true)
-  }
-
-  private func setTitleSort(_ newSort: Ordering, state: inout State) -> Effect<Action> {
-    state.titleSort = newSort
-    return updateQuery(state)
   }
 }
 

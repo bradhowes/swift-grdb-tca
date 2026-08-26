@@ -67,14 +67,25 @@ public struct ActorMoviesQuery: FetchKeyRequest {
 public struct MovieActorsQuery: FetchKeyRequest {
   let movie: Movie
   let ordering: SortOrder?
+  let searchText: String?
 
-  public init(movie: Movie, ordering: SortOrder? = .forward) {
+  public init(movie: Movie, ordering: SortOrder? = .forward, searchText: String? = nil) {
     self.movie = movie
     self.ordering = ordering
+    self.searchText = searchText
   }
 
   public func fetch(_ db: Database) throws -> ActorCollection {
-    try movie.actors.order(ordering?.by(Actor.Columns.name)).fetchIdentifiedArray(db)
+    if let searchText, !searchText.isEmpty {
+      return try movie.actors
+        .matching(FTS5Pattern(matchingAllPrefixesIn: searchText))
+        .order(ordering?.by(Actor.Columns.name))
+        .fetchIdentifiedArray(db)
+    } else {
+      return try movie.actors
+        .order(ordering?.by(Actor.Columns.name))
+        .fetchIdentifiedArray(db)
+    }
   }
 }
 

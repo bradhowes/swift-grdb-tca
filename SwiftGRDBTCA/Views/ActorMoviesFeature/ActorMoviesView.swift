@@ -19,10 +19,8 @@ struct ActorMoviesView: View {
         prompt: "Title"
       )
       .toolbar {
-        if !store.isSearchFieldPresented {
-          ToolbarItemGroup(placement: .automatic) {
-            Utils.pickerView(title: "movie ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
-          }
+        ToolbarItemGroup(placement: .automatic) {
+          Utils.pickerView(title: "movie ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
         }
       }
       .labelsHidden()

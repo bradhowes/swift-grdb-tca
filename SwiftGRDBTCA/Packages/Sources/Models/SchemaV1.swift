@@ -101,6 +101,12 @@ extension Actor {
       table.autoIncrementedPrimaryKey(Columns.id)
       table.column(Columns.name, .text).notNull().unique()
     }
+
+    // Create associated table used for full-text searching of the actor names
+    try db.create(virtualTable: "actor_ft", using: FTS5()) { table in
+      table.synchronize(withTable: Actor.databaseTableName)
+      table.column(Actor.Columns.name.name)
+    }
   }
 }
 
@@ -139,6 +145,7 @@ extension Movie {
 extension Actor {
   static let movieArtists = hasMany(MovieActor.self)
   static let movies = hasMany(Movie.self, through: movieArtists, using: MovieActor.movie)
+  static let fullText = hasOne(Table("actor_ft"), using: ForeignKey([.rowID], to: [.rowID]))
 
   public var movies: QueryInterfaceRequest<Movie> { request(for: Actor.movies) }
 }
@@ -182,6 +189,12 @@ extension DatabaseWriter {
 extension DerivableRequest<Movie> {
   public func matching(_ pattern: FTS5Pattern?) -> Self {
     joining(required: Movie.fullText.matching(pattern))
+  }
+}
+
+extension DerivableRequest<Actor> {
+  public func matching(_ pattern: FTS5Pattern?) -> Self {
+    joining(required: Actor.fullText.matching(pattern))
   }
 }
 
