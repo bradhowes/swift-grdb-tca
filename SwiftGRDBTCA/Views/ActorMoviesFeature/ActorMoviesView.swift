@@ -5,10 +5,49 @@ import Models
 import SwiftUI
 
 struct ActorMoviesView: View {
-  @Bindable var store: StoreOf<ActorMoviesFeature>
+  @Bindable private var store: StoreOf<ActorMoviesFeature>
+  @Dependency(\.defaultDatabase) private var database
+
+  init(store: StoreOf<ActorMoviesFeature>) {
+    self.store = store
+  }
 
   var body: some View {
-    MoviesListView(store: store)
+    List(store.movies, id: \.id) { movie in
+#if os(iOS)
+      Button {
+        _ = store.send(.detailButtonTapped(movie))
+      } label: {
+        Utils.MovieView(
+          name: movie.title,
+          favorite: movie.favorite,
+          actorNames: database.actors(for: movie).csv
+        )
+      }
+      .swipeActions(allowsFullSwipe: false) {
+        Utils.favoriteMovieButton(movie) {
+          store.send(.favoriteSwiped(movie), animation: .bouncy)
+        }
+      }
+#endif
+#if os(macOS)
+      HStack {
+        Button {
+          _ = store.send(.detailButtonTapped(movie))
+        } label: {
+          Utils.MovieView(
+            name: movie.title,
+            favorite: movie.favorite,
+            actorNames: database.actors(for: movie).csv
+          )
+        }
+        Utils.favoriteMovieButton(movie) {
+          store.send(.favoriteSwiped(movie), animation: .bouncy)
+        }
+      }
+#endif
+    }
+    .animation(.smooth, value: store.movies)
       .navigationTitle(store.actor.name + " [\(store.movies.count)]")
 #if os(iOS)
       .toolbar(.hidden, for: .tabBar)
@@ -24,67 +63,9 @@ struct ActorMoviesView: View {
         }
       }
       .labelsHidden()
-  }
-}
-
-private struct MoviesListView: View {
-  var store: StoreOf<ActorMoviesFeature>
-  @Dependency(\.defaultDatabase) var database
-
-  var body: some View {
-    List(store.movies, id: \.id) { movie in
-      MovieListRow(store: store, movie: movie, actorNames: database.actors(for: movie).csv)
-#if os(iOS)
-        .swipeActions(allowsFullSwipe: false) {
-          Utils.favoriteMovieButton(movie) {
-            store.send(.favoriteSwiped(movie), animation: .bouncy)
-          }
-        }
-#endif
-    }
-    .animation(.smooth, value: store.movies)
-  }
-}
-
-private struct MovieListRow: View {
-  var store: StoreOf<ActorMoviesFeature>
-  let movie: Movie
-  let actorNames: String
-
-#if os(iOS)
-  var body: some View {
-    DetailButton(store: store, movie: movie, actorNames: actorNames)
-  }
-#endif
-
-#if os(macOS)
-  var body: some View {
-    HStack {
-      DetailButton(store: store, movie: movie, actorNames: actorNames)
-      Utils.favoriteMovieButton(movie) {
-        store.send(.favoriteSwiped(movie), animation: .bouncy)
+      .onAppear {
+        store.send(.refresh)
       }
-    }
-  }
-#endif
-}
-
-private struct DetailButton: View {
-  var store: StoreOf<ActorMoviesFeature>
-  let movie: Movie
-  let actorNames: String
-
-  var body: some View {
-    Button {
-      _ = store.send(.detailButtonTapped(movie))
-    } label: {
-      Utils.MovieView(
-        name: movie.title,
-        favorite: movie.favorite,
-        actorNames: actorNames,
-        showChevron: true
-      )
-    }
   }
 }
 

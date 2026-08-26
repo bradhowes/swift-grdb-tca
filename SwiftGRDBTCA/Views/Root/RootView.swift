@@ -5,7 +5,11 @@ import Models
 import SwiftUI
 
 struct RootView: View {
-  @Bindable var store: StoreOf<RootFeature>
+  @Bindable private var store: StoreOf<RootFeature>
+
+  init(store: StoreOf<RootFeature>) {
+    self.store = store
+  }
 
   var body: some View {
     NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
@@ -104,8 +108,7 @@ private struct MovieListRow: View {
       Utils.MovieView(
         name: movie.title,
         favorite: movie.favorite,
-        actorNames: actorNames,
-        showChevron: true
+        actorNames: actorNames
       )
     }
     .fadeIn(enabled: store.highlight == movie, duration: 3.0) {

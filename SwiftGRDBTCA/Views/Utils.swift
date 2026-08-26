@@ -56,105 +56,63 @@ enum Utils {
     let name: String
     let favorite: Bool
     let actorNames: String
-    let showChevron: Bool
     var titleColor: Color { favorite ? favoriteColor : Utils.titleColor }
 
-    init(name: String, favorite: Bool, actorNames: String, showChevron: Bool) {
+    init(name: String, favorite: Bool, actorNames: String) {
       self.name = name
       self.favorite = favorite
       self.actorNames = actorNames
-      self.showChevron = showChevron
     }
 
     var body: some View {
-      if showChevron {
-        withChevron
-      } else {
-        movieEntry
-      }
-    }
-
-    private var withChevron: some View {
       HStack(spacing: 8) {
-        movieEntry
+        VStack(alignment: .leading) {
+          Text(name)
+            .font(.headline)
+            .foregroundStyle(titleColor)
+            .animation(.easeInOut)
+            .accessibilityLabel((favorite ? "Favorited " : "") + name)
+          Text(actorNames)
+            .font(.caption2)
+            .foregroundStyle(infoColor)
+        }
         Spacer()
-        Utils.chevron
+        Utils.Chevron()
       }
-    }
-
-    private var movieEntry: some View {
-      VStack(alignment: .leading) {
-        movieName
-          .accessibilityLabel((favorite ? "Favorited " : "") + name)
-        actorsList
-      }
-    }
-
-    private var movieName: some View {
-      Text(name)
-        .font(.headline)
-        .foregroundStyle(titleColor)
-        .animation(.easeInOut)
-    }
-
-    private var actorsList: some View {
-      Text(actorNames)
-        .font(.caption2)
-        .foregroundStyle(infoColor)
     }
   }
 
   struct ActorView: View {
     let name: String
     let movieTitles: String
-    let showChevron: Bool
 
-    init(name: String, movieTitles: String, showChevron: Bool) {
+    init(name: String, movieTitles: String) {
       self.name = name
       self.movieTitles = movieTitles
-      self.showChevron = showChevron
     }
 
     var body: some View {
-      if showChevron {
-        withChevron
-      } else {
-        actorEntry
-      }
-    }
-
-    private var withChevron: some View {
       HStack(spacing: 8) {
-        actorEntry
+        VStack(alignment: .leading) {
+          Text(name)
+            .font(.headline)
+            .foregroundStyle(titleColor)
+          Text(movieTitles)
+            .font(.caption2)
+            .foregroundStyle(infoColor)
+        }
         Spacer()
-        Utils.chevron
+        Utils.Chevron()
       }
-    }
-
-    private var actorEntry: some View {
-      VStack(alignment: .leading) {
-        actorName
-        moviesList
-      }
-    }
-
-    var actorName: some View {
-      Text(name)
-        .font(.headline)
-        .foregroundStyle(titleColor)
-    }
-
-    var moviesList: some View {
-      Text(movieTitles)
-        .font(.caption2)
-        .foregroundStyle(infoColor)
     }
   }
 
-  static var chevron: some View {
-    Image(systemName: "chevron.forward")
-      .font(.footnote.bold())
-      .foregroundColor(chevronColor)
+  struct Chevron: View {
+    var body: some View {
+      Image(systemName: "chevron.forward")
+        .font(.footnote.bold())
+        .foregroundColor(chevronColor)
+    }
   }
 
   static func deleteMovieButton(_ movie: Movie, action: @escaping () -> Void) -> some View {

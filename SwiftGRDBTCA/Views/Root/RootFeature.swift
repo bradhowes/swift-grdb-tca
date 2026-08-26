@@ -132,6 +132,7 @@ extension RootFeature.Path.State: Equatable {}
 extension RootFeature {
 
   private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
+    print("pathAction:", pathAction)
     switch pathAction {
     case .element(id: _, action: .showMovieActors(.detailButtonTapped(let actor))):
       state.path.append(.showActorMovies(.init(actor: actor)))

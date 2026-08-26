@@ -45,7 +45,7 @@ struct MovieActorsFeature {
       case .detailButtonTapped: return .none
       case .favoriteTapped: return toggleFavoriteState(state: &state)
       case .nameSortChanged(let newSort): return setNameSort(newSort, state: &state)
-      case .refresh: return refreshMovie(&state)
+      case .refresh: return refresh(&state)
 
       case .searchButtonTapped(let enabled):
         state.isSearchFieldPresented = enabled
@@ -68,9 +68,10 @@ struct MovieActorsFeature {
 
 extension MovieActorsFeature {
 
-  private func refreshMovie(_ state: inout State) -> Effect<Action> {
+  private func refresh(_ state: inout State) -> Effect<Action> {
     @Dependency(\.defaultDatabase) var database
     if let movie = database.movie(id: state.movie.id) {
+      print("MovieActorsFeature.refresh: ", movie.favorite)
       state.movie = movie
     }
     return .none

@@ -10,7 +10,7 @@ struct ActorMoviesFeature {
 
   @ObservableState
   struct State: Equatable {
-    let actor: Actor
+    var actor: Actor
     @SharedReader var movies: MovieCollection
     var isSearchFieldPresented = false
     var titleSort: Ordering
@@ -32,6 +32,7 @@ struct ActorMoviesFeature {
     case detailButtonTapped(Movie)
     case favoriteSwiped(Movie)
     case searchButtonTapped(Bool)
+    case refresh
     case searchTextChanged(String)
     case titleSortChanged(Ordering)
     case toggleFavoriteState(Movie)
@@ -49,6 +50,8 @@ struct ActorMoviesFeature {
 #if os(macOS)
         return Utils.toggleFavoriteState(movie)
 #endif
+
+      case .refresh: return refresh(&state)
 
       case .searchButtonTapped(let enabled):
         state.isSearchFieldPresented = enabled
@@ -75,6 +78,14 @@ struct ActorMoviesFeature {
 }
 
 extension ActorMoviesFeature {
+
+  private func refresh(_ state: inout State) -> Effect<Action> {
+    @Dependency(\.defaultDatabase) var database
+    if let actor = database.actor(id: state.actor.id) {
+      state.actor = actor
+    }
+    return .none
+  }
 
   private func setTitleSort(_ newSort: Ordering, state: inout State) -> Effect<Action> {
     state.titleSort = newSort

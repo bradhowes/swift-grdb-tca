@@ -101,6 +101,18 @@ public struct MovieQuery: FetchKeyRequest {
   }
 }
 
+public struct ActorQuery: FetchKeyRequest {
+  let id: Actor.ID
+
+  public init(id: Actor.ID) {
+    self.id = id
+  }
+
+  public func fetch(_ db: Database) throws -> Actor? {
+    try Actor.filter(id: id).fetchOne(db)
+  }
+}
+
 extension FetchRequest where RowDecoder: FetchableRecord & Identifiable {
   public func fetchIdentifiedArray(_ db: Database) throws -> IdentifiedArrayOf<RowDecoder> {
     try IdentifiedArray(fetchCursor(db))
@@ -127,6 +139,10 @@ extension DatabaseReader {
 
   public func movie(id: Movie.ID) -> Movie? {
     try? read { try MovieQuery(id: id).fetch($0) }
+  }
+
+  public func actor(id: Actor.ID) -> Actor? {
+    try? read { try ActorQuery(id: id).fetch($0) }
   }
 }
 
