@@ -1,7 +1,6 @@
 import Foundation
 import GRDB
 
-
 extension SortOrder {
 
   public func by(_ column: Column) -> SQLOrdering {

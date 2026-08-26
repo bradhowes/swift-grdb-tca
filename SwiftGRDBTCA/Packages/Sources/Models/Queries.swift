@@ -14,13 +14,16 @@ public struct AllMoviesQuery: FetchKeyRequest {
   }
 
   public func fetch(_ db: Database) throws -> MovieCollection {
-    let rows = try Movie.all().order(ordering?.by(Movie.Columns.sortableTitle)).fetchAll(db)
     if let searchText, !searchText.isEmpty {
-      return .init(
-        uncheckedUniqueElements: rows.filter { $0.sortableTitle.localizedCaseInsensitiveContains(searchText) }
-      )
+      return try Movie.all()
+        .matching(FTS5Pattern(matchingAllPrefixesIn: searchText))
+        .order(ordering?.by(Movie.Columns.sortableTitle))
+        .fetchIdentifiedArray(db)
+    } else {
+      return try Movie.all()
+        .order(ordering?.by(Movie.Columns.sortableTitle))
+        .fetchIdentifiedArray(db)
     }
-    return .init(uncheckedUniqueElements: rows)
   }
 }
 
@@ -39,14 +42,25 @@ public struct AllActorsQuery: FetchKeyRequest {
 public struct ActorMoviesQuery: FetchKeyRequest {
   let actor: Actor
   let ordering: SortOrder?
+  let searchText: String?
 
-  public init(actor: Actor, ordering: SortOrder? = .forward) {
+  public init(actor: Actor, ordering: SortOrder? = .forward, searchText: String? = nil) {
     self.actor = actor
     self.ordering = ordering
+    self.searchText = searchText
   }
 
   public func fetch(_ db: Database) throws -> MovieCollection {
-    try actor.movies.order(ordering?.by(Movie.Columns.sortableTitle)).fetchIdentifiedArray(db)
+    if let searchText, !searchText.isEmpty {
+      return try actor.movies
+        .matching(FTS5Pattern(matchingAllPrefixesIn: searchText))
+        .order(ordering?.by(Movie.Columns.sortableTitle))
+        .fetchIdentifiedArray(db)
+    } else {
+      return try actor.movies
+        .order(ordering?.by(Movie.Columns.sortableTitle))
+        .fetchIdentifiedArray(db)
+    }
   }
 }
 

@@ -40,31 +40,36 @@ private struct MovieListView: View {
   @Dependency(\.defaultDatabase) var database
 
   var body: some View {
-    ScrollViewReader { proxy in
-      List(store.movies, id: \.id) { movie in
-        MovieListRow(store: store, movie: movie, actorNames: database.actors(for: movie).csv)
+    if store.movies.isEmpty {
+      Text("No matches.")
+      Spacer()
+    } else {
+      ScrollViewReader { proxy in
+        List(store.movies, id: \.id) { movie in
+          MovieListRow(store: store, movie: movie, actorNames: database.actors(for: movie).csv)
 #if os(iOS)
-          .swipeActions(allowsFullSwipe: false) {
-            Utils.deleteMovieButton(movie) {
-              store.send(.deleteSwiped(movie), animation: .snappy)
+            .swipeActions(allowsFullSwipe: false) {
+              Utils.deleteMovieButton(movie) {
+                store.send(.deleteSwiped(movie), animation: .snappy)
+              }
+              Utils.favoriteMovieButton(movie) {
+                store.send(.favoriteSwiped(movie), animation: .bouncy)
+              }
             }
-            Utils.favoriteMovieButton(movie) {
-              store.send(.favoriteSwiped(movie), animation: .bouncy)
-            }
-          }
 #endif
-      }
-      .onChange(of: store.scrollTo) { _, movie in
-        if let movie {
-          withAnimation {
-            proxy.scrollTo(movie.id)
+        }
+        .onChange(of: store.scrollTo) { _, movie in
+          if let movie {
+            withAnimation {
+              proxy.scrollTo(movie.id)
+            }
+            store.send(.clearScrollTo)
           }
-          store.send(.clearScrollTo)
         }
       }
+      .animation(.smooth, value: store.scrollTo)
+      .animation(.smooth, value: store.movies)
     }
-    .animation(.smooth, value: store.scrollTo)
-    .animation(.smooth, value: store.movies)
   }
 }
 

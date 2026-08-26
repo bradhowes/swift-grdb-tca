@@ -162,7 +162,7 @@ extension RootFeature {
         reportIssue(error)
       }
     }
-    .cancellable(id: "FromStateFeature.updateQuery", cancelInFlight: true)
+    .cancellable(id: "RootFeature.updateQuery", cancelInFlight: true)
   }
 }
 

@@ -12,7 +12,9 @@ struct ActorMoviesFeature {
   struct State: Equatable {
     let actor: Actor
     @SharedReader var movies: MovieCollection
+    var isSearchFieldPresented = false
     var titleSort: Ordering
+    var searchText: String = ""
 
     init(actor: Actor) {
       let sort = Ordering.forward
@@ -30,6 +32,8 @@ struct ActorMoviesFeature {
   enum Action {
     case detailButtonTapped(Movie)
     case favoriteSwiped(Movie)
+    case searchButtonTapped(Bool)
+    case searchTextChanged(String)
     case titleSortChanged(Ordering)
     case toggleFavoriteState(Movie)
   }
@@ -47,6 +51,21 @@ struct ActorMoviesFeature {
         return Utils.toggleFavoriteState(movie)
 #endif
 
+      case .searchButtonTapped(let enabled):
+        state.isSearchFieldPresented = enabled
+        if !enabled {
+          state.searchText = ""
+          return updateQuery(state)
+        }
+        return .none
+
+      case .searchTextChanged(let query):
+        if query != state.searchText {
+          state.searchText = query
+          return updateQuery(state)
+        }
+        return .none
+
       case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
 
       case .toggleFavoriteState(let movie):
@@ -59,7 +78,7 @@ struct ActorMoviesFeature {
 extension ActorMoviesFeature {
 
   private func updateQuery(_ state: State) -> Effect<Action> {
-    @Dependency(\.defaultDatabase) var database
+    let searchText = state.searchText.isEmpty ? nil : state.searchText
     let titleSort = state.titleSort
     let actor = state.actor
     let movies = state.$movies
@@ -67,7 +86,7 @@ extension ActorMoviesFeature {
       do {
         try await movies.load(
           .fetch(
-            ActorMoviesQuery(actor: actor, ordering: titleSort.sortOrder),
+            ActorMoviesQuery(actor: actor, ordering: titleSort.sortOrder, searchText: searchText),
             animation: .smooth
           )
         )
@@ -75,7 +94,7 @@ extension ActorMoviesFeature {
         reportIssue(error)
       }
     }
-    .cancellable(id: "FromStateFeature.updateQuery", cancelInFlight: true)
+    .cancellable(id: "ActorMoviesFeature.updateQuery", cancelInFlight: true)
   }
 
   private func setTitleSort(_ newSort: Ordering, state: inout State) -> Effect<Action> {
