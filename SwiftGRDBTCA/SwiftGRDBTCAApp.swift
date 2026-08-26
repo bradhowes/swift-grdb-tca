@@ -6,18 +6,18 @@ import SwiftUI
 
 struct SwiftDataTCAApp: App {
 
-#if os(iOS)
   init() {
-    UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
-      .lineBreakMode = .byTruncatingMiddle
-  }
-#endif
-
-  var body: some Scene {
-    let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
+    prepareDependencies {
       $0.defaultDatabase = try! DatabaseQueue.appDatabase() // swiftlint:disable:this force_try
       // $0.viewLinkType = .button // ProcessInfo.processInfo.arguments.contains("NAVLINKS") ? .navLink : .button
     }
+#if os(iOS)
+    UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self])
+      .lineBreakMode = .byTruncatingMiddle
+#endif
+  }
+
+  var body: some Scene {
     WindowGroup {
       FromStateView(store: Store(initialState: .init()) { FromStateFeature() })
     }

@@ -32,6 +32,7 @@ struct FromStateView: View {
       case .showActorMovies(let child): ActorMoviesView(store: child)
       }
     }
+    .animation(.smooth, value: store.path)
   }
 }
 

@@ -13,10 +13,7 @@ public struct FetchKey<Value: Sendable>: SharedReaderKey {
   let database: any DatabaseReader
   let request: any FetchKeyRequest<Value>
   let scheduler: any ValueObservationScheduler
-
-#if DEBUG
   let isDefaultDatabase: Bool
-#endif
 
   public var id: ID { ID(rawValue: request) }
 
@@ -25,19 +22,15 @@ public struct FetchKey<Value: Sendable>: SharedReaderKey {
     self.scheduler = .animation(animation)
     self.database = database ?? defaultDatabase
     self.request = request
-#if DEBUG
     self.isDefaultDatabase = self.database.configuration.label == .defaultDatabaseLabel
-#endif
   }
 
   public func load(context: LoadContext<Value>, continuation: LoadContinuation<Value>) {
     print("FetchKey.load")
-#if DEBUG
     guard !isDefaultDatabase else {
       print("FetchKey isDefaultDatabase")
       return continuation.resumeReturningInitialValue()
     }
-#endif
 
     guard case .userInitiated = context else {
       print("FetchKey userInitiated")
@@ -58,11 +51,9 @@ public struct FetchKey<Value: Sendable>: SharedReaderKey {
   }
 
   public func subscribe(context: LoadContext<Value>, subscriber: SharedSubscriber<Value>) -> SharedSubscription {
-#if DEBUG
     guard !isDefaultDatabase else {
       return SharedSubscription {}
     }
-#endif
 
     let observation = ValueObservation.tracking(request.fetch)
 
@@ -88,8 +79,6 @@ public struct FetchKey<Value: Sendable>: SharedReaderKey {
   }
 }
 
-#if DEBUG
 extension String {
   static let defaultDatabaseLabel = "co.pointfree.SharingGRDB.testValue"
 }
-#endif

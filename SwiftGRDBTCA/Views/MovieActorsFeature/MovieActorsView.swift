@@ -16,29 +16,25 @@ struct MovieActorsView: View {
       .toolbar {
         ToolbarItemGroup(placement: .automatic) {
           Utils.pickerView(title: "actor ordering", binding: $store.nameSort.sending(\.nameSortChanged).animation())
-          favoriteButton
+          Button {
+            store.send(.favoriteTapped)
+          } label: {
+            if store.movie.favorite {
+              Image(systemName: "star.fill")
+                .accessibilityLabel("unfavorite movie")
+                .foregroundStyle(Utils.favoriteColor)
+                .transition(.confetti(color: Utils.favoriteColor, size: 3, enabled: store.animateButton))
+            } else {
+              Image(systemName: "star")
+                .accessibilityLabel("favorite movie")
+            }
+          }
         }
       }
       .labelsHidden()
       .onAppear {
         store.send(.refresh)
       }
-  }
-
-  private var favoriteButton: some View {
-    Button {
-      store.send(.favoriteTapped)
-    } label: {
-      if store.movie.favorite {
-        Image(systemName: "star.fill")
-          .accessibilityLabel("unfavorite movie")
-          .foregroundStyle(Utils.favoriteColor)
-          .transition(.confetti(color: Utils.favoriteColor, size: 3, enabled: store.animateButton))
-      } else {
-        Image(systemName: "star")
-          .accessibilityLabel("favorite movie")
-      }
-    }
   }
 }
 

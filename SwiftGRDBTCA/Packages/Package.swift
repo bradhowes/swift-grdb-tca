@@ -14,8 +14,8 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0"),
-    .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3"),
-    .package(url: "https://github.com/pointfreeco/swift-sharing", branch: "main"),
+    .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.17.0"),
+    .package(url: "https://github.com/pointfreeco/swift-sharing", from: "2.9.1"),
     .package(url: "https://github.com/pointfreeco/swift-tagged", from: "0.10.0")
   ],
   targets: [

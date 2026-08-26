@@ -31,11 +31,12 @@
 		BD92A3FA2D3FF83600649D33 /* Tagged in Frameworks */ = {isa = PBXBuildFile; productRef = BD92A3F92D3FF83600649D33 /* Tagged */; };
 		BDA1820C2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA1820B2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift */; };
 		BDA1820E2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA1820D2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift */; };
+		BDBAC01C303DDB64007BDF4E /* TestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBAC01B303DDB5F007BDF4E /* TestSupport.swift */; };
+		BDBAC01E303DE234007BDF4E /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBAC01D303DE231007BDF4E /* Logger.swift */; };
 		BDD57C242C9D82BC0082178E /* FromStateUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C232C9D82BC0082178E /* FromStateUITests.swift */; };
 		BDD57C282C9D982E0082178E /* XCUIElement+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C272C9D981E0082178E /* XCUIElement+Extensions.swift */; };
 		BDD57C2C2C9DAB370082178E /* ViewLinkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C2B2C9DAB370082178E /* ViewLinkType.swift */; };
 		BDD776AB2D3F89AB003DEA2F /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = BDD776AA2D3F89AB003DEA2F /* GRDB */; };
-		BDD776B02D3F982A003DEA2F /* Sharing in Frameworks */ = {isa = PBXBuildFile; productRef = BDD776AF2D3F982A003DEA2F /* Sharing */; };
 		BDF59DD02CA1E18E00DC7D00 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */; };
 /* End PBXBuildFile section */
 
@@ -86,6 +87,8 @@
 		BDA1820B2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorMoviesFeatureTests.swift; sourceTree = "<group>"; };
 		BDA1820D2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieActorsFeatureTests.swift; sourceTree = "<group>"; };
 		BDA64E152C4A3E0F00B04E3A /* SwiftGRDBTCA.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SwiftGRDBTCA.xctestplan; sourceTree = "<group>"; };
+		BDBAC01B303DDB5F007BDF4E /* TestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSupport.swift; sourceTree = "<group>"; };
+		BDBAC01D303DE231007BDF4E /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		BDD57C232C9D82BC0082178E /* FromStateUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FromStateUITests.swift; sourceTree = "<group>"; };
 		BDD57C272C9D981E0082178E /* XCUIElement+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIElement+Extensions.swift"; sourceTree = "<group>"; };
 		BDD57C2B2C9DAB370082178E /* ViewLinkType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewLinkType.swift; sourceTree = "<group>"; };
@@ -104,7 +107,6 @@
 				23A64E9D2ACC5DFE005B6344 /* ComposableArchitecture in Frameworks */,
 				BDF59DD02CA1E18E00DC7D00 /* IdentifiedCollections in Frameworks */,
 				BD90438F2D4974B4000D66B0 /* SharedGRDB in Frameworks */,
-				BDD776B02D3F982A003DEA2F /* Sharing in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,6 +200,8 @@
 		BD0DC1DD2C41779D00821D09 /* SwiftGRDBTCAXCTests */ = {
 			isa = PBXGroup;
 			children = (
+				BDBAC01B303DDB5F007BDF4E /* TestSupport.swift */,
+				BDBAC01D303DE231007BDF4E /* Logger.swift */,
 				BDA1820B2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift */,
 				BD1676AA2C98CF13004AA2D2 /* AnimationTests.swift */,
 				BDA1820D2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift */,
@@ -291,7 +295,6 @@
 				23A64E9C2ACC5DFE005B6344 /* ComposableArchitecture */,
 				BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */,
 				BDD776AA2D3F89AB003DEA2F /* GRDB */,
-				BDD776AF2D3F982A003DEA2F /* Sharing */,
 				BD92A3F92D3FF83600649D33 /* Tagged */,
 				BD90438C2D4974B4000D66B0 /* Models */,
 				BD90438E2D4974B4000D66B0 /* SharedGRDB */,
@@ -347,7 +350,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					23A64E852ACC5312005B6344 = {
 						CreatedOnToolsVersion = 15.0;
@@ -377,7 +380,6 @@
 				BD1DE7C72C9635F100F3E85F /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 				BDF59DCE2CA1E18E00DC7D00 /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
 				BDD776A92D3F89AB003DEA2F /* XCRemoteSwiftPackageReference "GRDB" */,
-				BDD776AE2D3F982A003DEA2F /* XCRemoteSwiftPackageReference "swift-sharing" */,
 				BD92A3F82D3FF83600649D33 /* XCRemoteSwiftPackageReference "swift-tagged" */,
 			);
 			productRefGroup = 23A64E872ACC5312005B6344 /* Products */;
@@ -443,8 +445,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				BDA1820E2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift in Sources */,
+				BDBAC01E303DE234007BDF4E /* Logger.swift in Sources */,
 				BD1676AB2C98CF13004AA2D2 /* AnimationTests.swift in Sources */,
 				BDA1820C2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift in Sources */,
+				BDBAC01C303DDB64007BDF4E /* TestSupport.swift in Sources */,
 				BD0DC1DF2C41779D00821D09 /* FromStateFeatureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -516,6 +520,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = UP6SS5ES7E;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -537,6 +542,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRINT_CHANGES $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -581,6 +587,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = UP6SS5ES7E;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -595,6 +602,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 6.0;
@@ -611,7 +619,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftGRDBTCA/Preview Content\"";
-				DEVELOPMENT_TEAM = UP6SS5ES7E;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SwiftGRDBTCA/Info.plist;
@@ -649,7 +656,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftGRDBTCA/Preview Content\"";
-				DEVELOPMENT_TEAM = UP6SS5ES7E;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SwiftGRDBTCA/Info.plist;
@@ -683,7 +689,6 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UP6SS5ES7E;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
@@ -705,7 +710,6 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UP6SS5ES7E;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
@@ -726,7 +730,6 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UP6SS5ES7E;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
@@ -745,7 +748,6 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UP6SS5ES7E;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
@@ -807,8 +809,10 @@
 			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.17.0;
+				minimumVersion = 1.26.1;
 			};
+			traits = (
+			);
 		};
 		BD0DC1E52C43A77400821D09 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -830,8 +834,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
 			requirement = {
-				kind = exactVersion;
-				version = 1.18.0;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.18.0;
 			};
 		};
 		BD92A3F82D3FF83600649D33 /* XCRemoteSwiftPackageReference "swift-tagged" */ = {
@@ -846,16 +850,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/groue/GRDB.swift";
 			requirement = {
-				branch = "v7.0.0-beta.7";
-				kind = branch;
-			};
-		};
-		BDD776AE2D3F982A003DEA2F /* XCRemoteSwiftPackageReference "swift-sharing" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-sharing";
-			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
 			};
 		};
 		BDF59DCE2CA1E18E00DC7D00 /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
@@ -901,11 +897,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BDD776A92D3F89AB003DEA2F /* XCRemoteSwiftPackageReference "GRDB" */;
 			productName = GRDB;
-		};
-		BDD776AF2D3F982A003DEA2F /* Sharing */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BDD776AE2D3F982A003DEA2F /* XCRemoteSwiftPackageReference "swift-sharing" */;
-			productName = Sharing;
 		};
 		BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */ = {
 			isa = XCSwiftPackageProductDependency;

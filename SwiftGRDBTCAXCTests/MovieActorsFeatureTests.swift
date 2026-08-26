@@ -93,7 +93,7 @@ final class MovieActorsFeatureTests: XCTestCase {
   func testPreviewRenderWithButtons() throws {
     withSnapshotTesting(record: .failed) {
       let view = MovieActorsView.preview
-      assertSnapshot(of: view, as: .image)
+      TestSupport.assertSnapshot(matching: view)
     }
   }
 }

@@ -16,7 +16,7 @@ final class AnimationTests: XCTestCase {
   func testFlashDemoPreviewFalse() throws {
     withSnapshotTesting(record: recording) {
       let view = FlashDemoView(isFavorite: false)
-      assertSnapshot(of: view, as: .image)
+      TestSupport.assertSnapshot(matching: view)
     }
   }
 
@@ -24,7 +24,7 @@ final class AnimationTests: XCTestCase {
   func testFlashDemoPreviewTrue() throws {
     withSnapshotTesting(record: recording) {
       let view = FlashDemoView(isFavorite: true)
-      assertSnapshot(of: view, as: .image)
+      TestSupport.assertSnapshot(matching: view)
     }
   }
 
@@ -32,7 +32,7 @@ final class AnimationTests: XCTestCase {
   func testFadeInDemoPreviewFalse() throws {
     withSnapshotTesting(record: recording) {
       let view = FadeInDemoView(isFavorite: false)
-      assertSnapshot(of: view, as: .image)
+      TestSupport.assertSnapshot(matching: view)
     }
   }
 
@@ -40,7 +40,7 @@ final class AnimationTests: XCTestCase {
   func testFadeInDemoPreviewTrue() throws {
     withSnapshotTesting(record: recording) {
       let view = FadeInDemoView(isFavorite: true)
-      assertSnapshot(of: view, as: .image)
+      TestSupport.assertSnapshot(matching: view)
     }
   }
 
@@ -48,7 +48,7 @@ final class AnimationTests: XCTestCase {
   func testConfettiDemoPreviewFalse() throws {
     withSnapshotTesting(record: recording) {
       let view = ConfettiDemoView(isFavorite: false)
-      assertSnapshot(of: view, as: .image)
+      TestSupport.assertSnapshot(matching: view)
     }
   }
 
@@ -56,7 +56,7 @@ final class AnimationTests: XCTestCase {
   func testConfettiDemoPreviewTrue() throws {
     withSnapshotTesting(record: recording) {
       let view = ConfettiDemoView(isFavorite: true)
-      assertSnapshot(of: view, as: .image)
+      TestSupport.assertSnapshot(matching: view)
     }
   }
 }

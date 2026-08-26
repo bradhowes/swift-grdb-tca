@@ -53,10 +53,14 @@ final class ActorMoviesFeatureTests: XCTestCase {
     XCTAssertEqual(ctx.store.state.movies[movieIndex].title, "The Godfather")
     XCTAssertFalse(ctx.store.state.movies[movieIndex].favorite)
     await ctx.store.send(.favoriteSwiped(ctx.store.state.movies[movieIndex]))
+#if os(iOS)
     await ctx.store.receive(\.toggleFavoriteState)
+#endif
     XCTAssertTrue(ctx.store.state.movies[movieIndex].favorite)
     await ctx.store.send(.favoriteSwiped(ctx.store.state.movies[movieIndex]))
+#if os(iOS)
     await ctx.store.receive(\.toggleFavoriteState)
+#endif
     XCTAssertFalse(ctx.store.state.movies[movieIndex].favorite)
   }
 
@@ -98,7 +102,7 @@ final class ActorMoviesFeatureTests: XCTestCase {
   func testPreviewRender() throws {
     withSnapshotTesting(record: .failed) {
       let view = ActorMoviesView.preview
-      assertSnapshot(of: view, as: .image)
+      TestSupport.assertSnapshot(matching: view)
     }
   }
 }

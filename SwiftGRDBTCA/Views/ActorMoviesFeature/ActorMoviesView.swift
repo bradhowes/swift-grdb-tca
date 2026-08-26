@@ -48,22 +48,28 @@ private struct MovieListRow: View {
 
 #if os(iOS)
   var body: some View {
-    detailButton
+    DetailButton(store: store, movie: movie, actorNames: actorNames)
   }
 #endif
 
 #if os(macOS)
   var body: some View {
     HStack {
-      detailButton
+      DetailButton(store: store, movie: movie, actorNames: actorNames)
       Utils.favoriteMovieButton(movie) {
         store.send(.favoriteSwiped(movie), animation: .bouncy)
       }
     }
   }
 #endif
+}
 
-  private var detailButton: some View {
+private struct DetailButton: View {
+  var store: StoreOf<ActorMoviesFeature>
+  let movie: Movie
+  let actorNames: String
+
+  var body: some View {
     Button {
       _ = store.send(.detailButtonTapped(movie))
     } label: {
@@ -74,18 +80,6 @@ private struct MovieListRow: View {
         showChevron: true
       )
     }
-  }
-}
-
-extension MoviesListView {
-
-  func withSwipeActions<T>(movie: Movie, @ViewBuilder content: () -> T) -> some View where T: View {
-    content()
-      .swipeActions {
-        Utils.favoriteMovieButton(movie) {
-          store.send(.favoriteSwiped(movie), animation: .bouncy)
-        }
-      }
   }
 }
 

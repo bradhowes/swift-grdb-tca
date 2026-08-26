@@ -133,6 +133,19 @@ extension FromStateFeature.Path.State: Equatable {}
 
 extension FromStateFeature {
 
+  private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
+    switch pathAction {
+    case .element(id: _, action: .showMovieActors(.detailButtonTapped(let actor))):
+      state.path.append(.showActorMovies(.init(actor: actor)))
+
+    case .element(id: _, action: .showActorMovies(.detailButtonTapped(let movie))):
+      state.path.append(.showMovieActors(.init(movie: movie)))
+
+    default: break
+    }
+    return .none
+  }
+
   private func updateQuery(_ state: State) -> Effect<Action> {
     let searchText = state.searchText.isEmpty ? nil : state.searchText
     let titleSort = state.titleSort
@@ -152,24 +165,6 @@ extension FromStateFeature {
       }
     }
     .cancellable(id: "FromStateFeature.updateQuery", cancelInFlight: true)
-  }
-
-  private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
-    switch pathAction {
-
-    case .element(id: _, action: .showMovieActors(.detailButtonTapped(let actor))):
-      state.path.append(.showActorMovies(.init(actor: actor)))
-
-    case .element(id: _, action: .showActorMovies(.detailButtonTapped(let movie))):
-      state.path.append(.showMovieActors(.init(movie: movie)))
-
-    case .popFrom:
-      break
-
-    default:
-      break
-    }
-    return .none
   }
 }
 

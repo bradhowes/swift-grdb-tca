@@ -83,7 +83,9 @@ final class FromStateFeatureTests: XCTestCase {
   @MainActor
   func testFavoriteSwiped() async throws {
     await ctx.store.send(.favoriteSwiped(ctx.store.state.movies[1]))
+#if os(iOS)
     await ctx.store.receive(\.toggleFavoriteState)
+#endif
   }
 
   @MainActor
@@ -198,7 +200,7 @@ final class FromStateFeatureTests: XCTestCase {
   func testPreviewRenderWithButtons() throws {
     withSnapshotTesting(record: .failed) {
       let view = FromStateView.previewWithButtons
-      assertSnapshot(of: view, as: .image)
+      TestSupport.assertSnapshot(matching: view)
     }
   }
 }
