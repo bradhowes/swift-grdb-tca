@@ -152,14 +152,12 @@ extension RootFeature {
     let movies = state.$movies
     return .run { _ in
       do {
-        print("-- FromStateFeature.updateQuery >>>")
         try await movies.load(
           .fetch(
             AllMoviesQuery(ordering: titleSort.sortOrder, searchText: searchText),
             animation: .smooth
           )
         )
-        print("-- FromStateFeature.updateQuery <<<")
       } catch {
         reportIssue(error)
       }
