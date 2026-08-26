@@ -75,8 +75,8 @@ There are some...
 [3]: https://github.com/bradhowes/SwiftDataTCA
 [4]: https://github.com/pointfreeco/swift-sharing/tree/main/Examples/GRDBDemo
 [5]: https://github.com/pointfreeco/swift-sharing
-[6]: SwiftGRDBTCA/Views/FromState/FromStateFeature.swift
-[7]: SwiftGRDBTCA/Views/FromState/FromStateView.swift
+[6]: SwiftGRDBTCA/Views/Root/RootFeature.swift
+[7]: SwiftGRDBTCA/Views/Root/RootView.swift
 [8]: SwiftGRDBTCA/Views/ActorMoviesFeature/ActorMoviesView.swift
 [9]: SwiftGRDBTCA/Views/MovieActorsFeature/MovieActorsView.swift
 [10]: https://swiftpackageindex.com/pointfreeco/swift-composable-architecture/main/documentation/composablearchitecture/stackbasednavigation#Pushing-features-onto-the-stack
