@@ -3,6 +3,14 @@ import GRDB
 import IdentifiedCollections
 import SharedGRDB
 
+//  select title, sortableTitle, favorite, group_concat(name, ', ' order by name)
+//  from (
+//    select movies.title, movies.sortableTitle, movies.favorite, actors.name
+//    from movies
+//    join movieActors on movies.id = movieActors.moviesId
+//    join actors on actors.id = movieActors.actorsId
+//  )
+//  group by title;
 
 public struct AllMoviesQuery: FetchKeyRequest {
   public let ordering: SortOrder?
