@@ -21,7 +21,7 @@ struct ActorMoviesView: View {
         Utils.MovieView(
           name: movie.title,
           favorite: movie.favorite,
-          actorNames: database.actors(for: movie).csv
+          actorNames: movie.actorNames
         )
       }
       .swipeActions(allowsFullSwipe: false) {
@@ -38,7 +38,7 @@ struct ActorMoviesView: View {
           Utils.MovieView(
             name: movie.title,
             favorite: movie.favorite,
-            actorNames: database.actors(for: movie).csv
+            actorNames: movie.actorNames
           )
         }
         Utils.favoriteMovieButton(movie) {
@@ -48,37 +48,37 @@ struct ActorMoviesView: View {
 #endif
     }
     .animation(.smooth, value: store.movies)
-      .navigationTitle(store.actor.name + " [\(store.movies.count)]")
+    .navigationTitle(store.actor.name + " [\(store.movies.count)]")
 #if os(iOS)
-      .toolbar(.hidden, for: .tabBar)
+    .toolbar(.hidden, for: .tabBar)
 #endif
-      .searchable(
-        text: $store.searchText.sending(\.searchTextChanged),
-        isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
-        prompt: "Title"
-      )
-      .toolbar {
-        ToolbarItemGroup(placement: .automatic) {
-          Utils.pickerView(title: "movie ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
-        }
-      }
-      .labelsHidden()
-      .onAppear {
-        store.send(.refresh)
-      }
+//    .searchable(
+//      text: $store.searchText.sending(\.searchTextChanged),
+//      isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
+//      prompt: "Title"
+//    )
+//    .toolbar {
+//      ToolbarItemGroup(placement: .automatic) {
+//        Utils.pickerView(title: "movie ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
+//      }
+//    }
+    .labelsHidden()
+    .onAppear {
+      store.send(.refresh)
+    }
   }
 }
 
 extension ActorMoviesView {
   static var preview: some View {
-    let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
-      $0.defaultDatabase = try! DatabaseQueue.appDatabase(rowCount: 13) // swiftlint:disable:this force_try
+    let actors = prepareDependencies {
+      $0.defaultDatabase = try! appDatabase(rowCount: 13) // swiftlint:disable:this force_try
+      return try! $0.defaultDatabase.read { // swiftlint:disable:this force_try
+        try Actor.all.fetchAll($0)
+      }
     }
-    @Dependency(\.defaultDatabase) var queue
-    let movies = queue.movies()
-    let actors = queue.actors(for: movies[0])
     return NavigationView {
-      ActorMoviesView(store: Store(initialState: .init(actor: actors[1])) {
+      ActorMoviesView(store: Store(initialState: .init(actor: actors[0])) {
         ActorMoviesFeature()
       })
     }

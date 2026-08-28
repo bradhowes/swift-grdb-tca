@@ -40,13 +40,16 @@ struct RootView: View {
 }
 
 private struct MovieListView: View {
-  var store: StoreOf<RootFeature>
-  @Dependency(\.defaultDatabase) var database
+  private let store: StoreOf<RootFeature>
+
+  init(store: StoreOf<RootFeature>) {
+    self.store = store
+  }
 
   var body: some View {
     ScrollViewReader { proxy in
       List(store.movies, id: \.id) { movie in
-        MovieListRow(store: store, movie: movie, actorNames: database.actors(for: movie).csv)
+        MovieListRow(store: store, movie: movie, actorNames: movie.actorNames)
 #if os(iOS)
           .swipeActions(allowsFullSwipe: false) {
             Utils.deleteMovieButton(movie) {
@@ -120,7 +123,7 @@ private struct MovieListRow: View {
 extension RootView {
   static var previewWithButtons: some View {
     let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
-      $0.defaultDatabase = try! DatabaseQueue.appDatabase(rowCount: 5) // swiftlint:disable:this force_try
+      $0.defaultDatabase = try! appDatabase(rowCount: 5) // swiftlint:disable:this force_try
     }
     let store = Store(initialState: .init()) { RootFeature() }
     return RootView(store: store)

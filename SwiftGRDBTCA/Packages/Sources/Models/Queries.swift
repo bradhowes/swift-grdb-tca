@@ -1,7 +1,48 @@
 import Foundation
-import GRDB
-import IdentifiedCollections
-import SharedGRDB
+import SQLiteData
+
+public struct AllMoviesQuery: FetchKeyRequest {
+  public let ordering: SortOrder?
+  public let searchText: String?
+  
+  public init(ordering: SortOrder? = .forward, searchText: String? = nil) {
+    self.ordering = ordering
+    self.searchText = searchText
+  }
+
+  public func fetch(_ db: Database) throws -> MovieCollection {
+    let found: [Movie]
+    if let searchText, !searchText.isEmpty {
+      found = try MovieText.where {
+        $0.match(searchText)
+      }
+      .join(Movie.all) { $0.rowid.eq($1.rowid) }
+      .order {
+        if ordering == .forward {
+          $1.sortableTitle
+        } else if ordering == .reverse {
+          $1.sortableTitle.desc()
+        }
+      }
+      .select {
+        $1
+      }
+      .fetchAll(db)
+    } else {
+      found = try Movie.all
+        .order {
+          if ordering == .forward {
+            $0.sortableTitle
+          } else if ordering == .reverse {
+            $0.sortableTitle.desc()
+          }
+        }
+        .fetchAll(db)
+    }
+
+    return .init(uniqueElements: found)
+  }
+}
 
 //  select title, sortableTitle, favorite, group_concat(name, ', ' order by name)
 //  from (
@@ -11,41 +52,6 @@ import SharedGRDB
 //    join actors on actors.id = movieActors.actorsId
 //  )
 //  group by title;
-
-public struct AllMoviesQuery: FetchKeyRequest {
-  public let ordering: SortOrder?
-  public let searchText: String?
-
-  public init(ordering: SortOrder? = .forward, searchText: String? = nil) {
-    self.ordering = ordering
-    self.searchText = searchText
-  }
-
-  public func fetch(_ db: Database) throws -> MovieCollection {
-    if let searchText, !searchText.isEmpty {
-      return try Movie.all()
-        .matching(FTS5Pattern(matchingAllPrefixesIn: searchText))
-        .order(ordering?.by(Movie.Columns.sortableTitle))
-        .fetchIdentifiedArray(db)
-    } else {
-      return try Movie.all()
-        .order(ordering?.by(Movie.Columns.sortableTitle))
-        .fetchIdentifiedArray(db)
-    }
-  }
-}
-
-public struct AllActorsQuery: FetchKeyRequest {
-  let ordering: SortOrder?
-
-  public init(ordering: SortOrder? = .forward) {
-    self.ordering = ordering
-  }
-
-  public func fetch(_ db: Database) throws -> ActorCollection {
-    try Actor.all().order(ordering?.by(Actor.Columns.name)).fetchIdentifiedArray(db)
-  }
-}
 
 public struct ActorMoviesQuery: FetchKeyRequest {
   let actor: Actor
@@ -59,16 +65,48 @@ public struct ActorMoviesQuery: FetchKeyRequest {
   }
 
   public func fetch(_ db: Database) throws -> MovieCollection {
+    let found: [Movie]
     if let searchText, !searchText.isEmpty {
-      return try actor.movies
-        .matching(FTS5Pattern(matchingAllPrefixesIn: searchText))
-        .order(ordering?.by(Movie.Columns.sortableTitle))
-        .fetchIdentifiedArray(db)
+      let movieIds = try MovieActor
+        .where { $0.actorId.eq(actor.id) }
+        .select(\.movieId)
+        .fetchAll(db)
+      guard !movieIds.isEmpty else { return [] }
+
+      found = try MovieText.where {
+        $0.match(searchText)
+      }
+      .join(Movie.all) { $0.movieId.eq($1.id) }
+      .where { $1.id.in(movieIds) }
+      .order {
+        if ordering == .forward {
+          $1.sortableTitle
+        } else if ordering == .reverse {
+          $1.sortableTitle.desc()
+        }
+      }
+      .select {
+        $1
+      }
+      .fetchAll(db)
     } else {
-      return try actor.movies
-        .order(ordering?.by(Movie.Columns.sortableTitle))
-        .fetchIdentifiedArray(db)
+      found = try MovieActor
+        .where { $0.actorId.eq(actor.id) }
+        .join(Movie.all) { $0.movieId.eq($1.id) }
+        .order { _, movie in
+          if ordering == .forward {
+            movie.sortableTitle
+          } else if ordering == .reverse {
+            movie.sortableTitle.desc()
+          }
+        }
+        .select { _, movie in
+          movie
+        }
+        .fetchAll(db)
     }
+
+    return .init(uniqueElements: found)
   }
 }
 
@@ -84,80 +122,44 @@ public struct MovieActorsQuery: FetchKeyRequest {
   }
 
   public func fetch(_ db: Database) throws -> ActorCollection {
+    let found: [Actor]
     if let searchText, !searchText.isEmpty {
-      return try movie.actors
-        .matching(FTS5Pattern(matchingAllPrefixesIn: searchText))
-        .order(ordering?.by(Actor.Columns.name))
-        .fetchIdentifiedArray(db)
+      let actorIds = try MovieActor
+        .where { $0.movieId.eq(movie.id) }
+        .select(\.actorId)
+        .fetchAll(db)
+      guard !actorIds.isEmpty else { return [] }
+
+      found = try ActorText.where {
+        $0.match(searchText)
+      }
+      .join(Actor.all) { $0.actorId.eq($1.id) }
+      .where { $1.id.in(actorIds) }
+      .order {
+        if ordering == .forward {
+          $1.name
+        } else if ordering == .reverse {
+          $1.name.desc()
+        }
+      }
+      .select { $1 }
+      .fetchAll(db)
     } else {
-      return try movie.actors
-        .order(ordering?.by(Actor.Columns.name))
-        .fetchIdentifiedArray(db)
+      found = try MovieActor
+        .where { $0.movieId.eq(movie.id) }
+        .join(Actor.all) { $0.actorId.eq($1.id) }
+        .order { _, actor in
+          if ordering == .forward {
+            actor.name
+          } else if ordering == .reverse {
+            actor.name.desc()
+          }
+        }
+        .select { _, actor in
+          actor
+        }
+        .fetchAll(db)
     }
+    return .init(uniqueElements: found)
   }
-}
-
-public struct MovieQuery: FetchKeyRequest {
-  let id: Movie.ID
-
-  public init(id: Movie.ID) {
-    self.id = id
-  }
-
-  public func fetch(_ db: Database) throws -> Movie? {
-    try Movie.filter(id: id).fetchOne(db)
-  }
-}
-
-public struct ActorQuery: FetchKeyRequest {
-  let id: Actor.ID
-
-  public init(id: Actor.ID) {
-    self.id = id
-  }
-
-  public func fetch(_ db: Database) throws -> Actor? {
-    try Actor.filter(id: id).fetchOne(db)
-  }
-}
-
-extension FetchRequest where RowDecoder: FetchableRecord & Identifiable {
-  public func fetchIdentifiedArray(_ db: Database) throws -> IdentifiedArrayOf<RowDecoder> {
-    try IdentifiedArray(fetchCursor(db))
-  }
-}
-
-extension DatabaseReader {
-
-  public func movies(ordering: SortOrder? = .forward) -> MovieCollection {
-    (try? read { try AllMoviesQuery(ordering: ordering).fetch($0) }) ?? []
-  }
-
-  public func movies(for actor: Actor, ordering: SortOrder? = .forward) -> MovieCollection {
-    (try? read { try ActorMoviesQuery(actor: actor, ordering: ordering).fetch($0) }) ?? []
-  }
-
-  public func actors(ordering: SortOrder? = .forward) -> ActorCollection {
-    (try? read { try AllActorsQuery(ordering: ordering).fetch($0) }) ?? []
-  }
-
-  public func actors(for movie: Movie, ordering: SortOrder? = .forward) -> ActorCollection {
-    (try? read { try MovieActorsQuery(movie: movie, ordering: ordering).fetch($0) }) ?? []
-  }
-
-  public func movie(id: Movie.ID) -> Movie? {
-    try? read { try MovieQuery(id: id).fetch($0) }
-  }
-
-  public func actor(id: Actor.ID) -> Actor? {
-    try? read { try ActorQuery(id: id).fetch($0) }
-  }
-}
-
-public extension IdentifiedArray where Element == Actor {
-  var csv: String { self.map(\.name).joined(separator: ", ") }
-}
-
-public extension IdentifiedArray where Element == Movie {
-  var csv: String { self.map(\.title).joined(separator: ", ") }
 }

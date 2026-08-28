@@ -1,32 +1,62 @@
 import Dependencies
 import Foundation
 import GRDB
+import Sharing
+import SQLite3
+import SQLiteData
 
+// swiftlint:disable:next function_body_length
+public func appDatabase(
+  rowCount: Int = 100,
+  seeder: (@Sendable (Database) throws -> Void)? = nil
+) throws -> any DatabaseWriter {
+  @Dependency(\.context) var context
 
-extension DatabaseWriter where Self == DatabaseQueue {
-
-  public static func appDatabase(
-    path: URL? = nil,
-    configuration: Configuration? = nil,
-    rowCount: Int = 100
-  ) throws -> Self {
-    var config = configuration ?? Configuration()
-    config.publicStatementArguments = true
-    config.prepareDatabase { db in db.trace { print($0) }}
-
-    let databaseQueue: DatabaseQueue
-
-    @Dependency(\.context) var context
-    if context == .live {
-      let dbPath = (path ?? URL.documentsDirectory.appending(component: "db.sqlite")).path()
-      print("open", dbPath)
-      databaseQueue = try DatabaseQueue(path: dbPath, configuration: config)
-    } else {
-      databaseQueue = try DatabaseQueue(configuration: config)
+  var configuration = GRDB.Configuration()
+  configuration.foreignKeysEnabled = true
+  configuration.prepareDatabase { db in
+    db.trace(options: .profile) {
+      print("\($0.expandedDescription)")
     }
-
-    try databaseQueue.migrate(rowCount: rowCount)
-
-    return databaseQueue
   }
+
+  let database = try SQLiteData.defaultDatabase(configuration: configuration)
+  print("App database:\nopen \(database.path)")
+
+  try performMigrations(
+    database,
+    rowCount: rowCount,
+    seeder: seeder
+  )
+
+  return database
+}
+
+private func performMigrations(
+  _ database: any DatabaseWriter,
+  rowCount: Int,
+  seeder: (@Sendable (Database) throws -> Void)?
+) throws {
+  @Dependency(\.context) var context
+  var migrator = DatabaseMigrator()
+
+#if DEBUG
+  migrator.eraseDatabaseOnSchemaChange = true
+#endif // DEBUG
+
+  // NOTE: order is important here.
+  Movie.registerMigration(&migrator)
+  MovieText.registerMigration(&migrator)
+  Actor.registerMigration(&migrator)
+  ActorText.registerMigration(&migrator)
+  MovieActor.registerMigration(&migrator)
+
+  migrator.registerMigration("seeding") { db in
+    try Support.generateRows(db: db, count: rowCount)
+    if let seeder {
+      try seeder(db)
+    }
+  }
+
+  try migrator.migrate(database)
 }

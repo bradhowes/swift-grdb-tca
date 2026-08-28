@@ -12,7 +12,7 @@
 		23A64E942ACC5313005B6344 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23A64E932ACC5313005B6344 /* Preview Assets.xcassets */; };
 		23A64E9D2ACC5DFE005B6344 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 23A64E9C2ACC5DFE005B6344 /* ComposableArchitecture */; };
 		23A64E9F2ACC5E16005B6344 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A64E9E2ACC5E16005B6344 /* RootView.swift */; };
-		BD0DC1DF2C41779D00821D09 /* FromStateFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0DC1DE2C41779D00821D09 /* FromStateFeatureTests.swift */; };
+		BD0DC1DF2C41779D00821D09 /* RootFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0DC1DE2C41779D00821D09 /* RootFeatureTests.swift */; };
 		BD1676AB2C98CF13004AA2D2 /* AnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1676AA2C98CF13004AA2D2 /* AnimationTests.swift */; };
 		BD1676AC2C98D006004AA2D2 /* Flash.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7324EB2C8799BE0026E1BE /* Flash.swift */; };
 		BD1676B62C98DC65004AA2D2 /* SwiftDataTCAUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1676B52C98DC65004AA2D2 /* SwiftDataTCAUITestsLaunchTests.swift */; };
@@ -27,7 +27,6 @@
 		BD8F4DB32C46C7E7004ACF0B /* ActorMoviesFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8F4DB22C46C7E7004ACF0B /* ActorMoviesFeature.swift */; };
 		BD8F4DB52C46C7F9004ACF0B /* ActorMoviesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8F4DB42C46C7F9004ACF0B /* ActorMoviesView.swift */; };
 		BD90438D2D4974B4000D66B0 /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = BD90438C2D4974B4000D66B0 /* Models */; };
-		BD90438F2D4974B4000D66B0 /* SharedGRDB in Frameworks */ = {isa = PBXBuildFile; productRef = BD90438E2D4974B4000D66B0 /* SharedGRDB */; };
 		BD92A3FA2D3FF83600649D33 /* Tagged in Frameworks */ = {isa = PBXBuildFile; productRef = BD92A3F92D3FF83600649D33 /* Tagged */; };
 		BDA1820C2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA1820B2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift */; };
 		BDA1820E2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA1820D2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift */; };
@@ -36,7 +35,6 @@
 		BDD57C242C9D82BC0082178E /* FromStateUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C232C9D82BC0082178E /* FromStateUITests.swift */; };
 		BDD57C282C9D982E0082178E /* XCUIElement+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C272C9D981E0082178E /* XCUIElement+Extensions.swift */; };
 		BDD57C2C2C9DAB370082178E /* ViewLinkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C2B2C9DAB370082178E /* ViewLinkType.swift */; };
-		BDD776AB2D3F89AB003DEA2F /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = BDD776AA2D3F89AB003DEA2F /* GRDB */; };
 		BDF59DD02CA1E18E00DC7D00 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */; };
 /* End PBXBuildFile section */
 
@@ -66,7 +64,7 @@
 		23A64E952ACC5313005B6344 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23A64E9E2ACC5E16005B6344 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		BD0DC1DC2C41779D00821D09 /* SwiftGRDBTCAXCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftGRDBTCAXCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		BD0DC1DE2C41779D00821D09 /* FromStateFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromStateFeatureTests.swift; sourceTree = "<group>"; };
+		BD0DC1DE2C41779D00821D09 /* RootFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootFeatureTests.swift; sourceTree = "<group>"; };
 		BD1676AA2C98CF13004AA2D2 /* AnimationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationTests.swift; sourceTree = "<group>"; };
 		BD1676B12C98DC64004AA2D2 /* SwiftGRDBTCAUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftGRDBTCAUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD1676B52C98DC65004AA2D2 /* SwiftDataTCAUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTCAUITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -103,10 +101,8 @@
 			files = (
 				BD90438D2D4974B4000D66B0 /* Models in Frameworks */,
 				BD92A3FA2D3FF83600649D33 /* Tagged in Frameworks */,
-				BDD776AB2D3F89AB003DEA2F /* GRDB in Frameworks */,
 				23A64E9D2ACC5DFE005B6344 /* ComposableArchitecture in Frameworks */,
 				BDF59DD02CA1E18E00DC7D00 /* IdentifiedCollections in Frameworks */,
-				BD90438F2D4974B4000D66B0 /* SharedGRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,7 +201,7 @@
 				BDA1820B2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift */,
 				BD1676AA2C98CF13004AA2D2 /* AnimationTests.swift */,
 				BDA1820D2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift */,
-				BD0DC1DE2C41779D00821D09 /* FromStateFeatureTests.swift */,
+				BD0DC1DE2C41779D00821D09 /* RootFeatureTests.swift */,
 			);
 			path = SwiftGRDBTCAXCTests;
 			sourceTree = "<group>";
@@ -294,10 +290,8 @@
 			packageProductDependencies = (
 				23A64E9C2ACC5DFE005B6344 /* ComposableArchitecture */,
 				BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */,
-				BDD776AA2D3F89AB003DEA2F /* GRDB */,
 				BD92A3F92D3FF83600649D33 /* Tagged */,
 				BD90438C2D4974B4000D66B0 /* Models */,
-				BD90438E2D4974B4000D66B0 /* SharedGRDB */,
 			);
 			productName = SwiftDataTCA;
 			productReference = 23A64E862ACC5312005B6344 /* SwiftGRDBTCA.app */;
@@ -379,7 +373,6 @@
 				BD2182882C4D357700FCB16E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				BD1DE7C72C9635F100F3E85F /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 				BDF59DCE2CA1E18E00DC7D00 /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
-				BDD776A92D3F89AB003DEA2F /* XCRemoteSwiftPackageReference "GRDB" */,
 				BD92A3F82D3FF83600649D33 /* XCRemoteSwiftPackageReference "swift-tagged" */,
 			);
 			productRefGroup = 23A64E872ACC5312005B6344 /* Products */;
@@ -449,7 +442,7 @@
 				BD1676AB2C98CF13004AA2D2 /* AnimationTests.swift in Sources */,
 				BDA1820C2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift in Sources */,
 				BDBAC01C303DDB64007BDF4E /* TestSupport.swift in Sources */,
-				BD0DC1DF2C41779D00821D09 /* FromStateFeatureTests.swift in Sources */,
+				BD0DC1DF2C41779D00821D09 /* RootFeatureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -846,14 +839,6 @@
 				minimumVersion = 0.10.0;
 			};
 		};
-		BDD776A92D3F89AB003DEA2F /* XCRemoteSwiftPackageReference "GRDB" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/groue/GRDB.swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 7.0.0;
-			};
-		};
 		BDF59DCE2CA1E18E00DC7D00 /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-identified-collections";
@@ -884,19 +869,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Models;
 		};
-		BD90438E2D4974B4000D66B0 /* SharedGRDB */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SharedGRDB;
-		};
 		BD92A3F92D3FF83600649D33 /* Tagged */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BD92A3F82D3FF83600649D33 /* XCRemoteSwiftPackageReference "swift-tagged" */;
 			productName = Tagged;
-		};
-		BDD776AA2D3F89AB003DEA2F /* GRDB */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BDD776A92D3F89AB003DEA2F /* XCRemoteSwiftPackageReference "GRDB" */;
-			productName = GRDB;
 		};
 		BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */ = {
 			isa = XCSwiftPackageProductDependency;

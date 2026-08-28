@@ -139,12 +139,15 @@ enum Utils {
       await send(action, animation: .default)
     }
   }
-#endif
+#endif // os(iOS)
 
-  static func toggleFavoriteState<Action>(_ movie: Movie) -> Effect<Action> {
+  static func toggleFavoriteState<Action>(_ movie: inout Movie) -> Effect<Action> {
     @Dependency(\.defaultDatabase) var database
-    var changed: Movie = movie
-    try? database.write { try changed.toggleFavorite(in: $0) }
+    try? database.write { db in
+      movie.favorite.toggle()
+      try Movie.update(movie)
+        .execute(db)
+    }
     return .none
   }
 //

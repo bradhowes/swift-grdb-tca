@@ -8,41 +8,23 @@ let package = Package(
   name: "Packages",
   platforms: [.iOS(.v17), .macOS(.v14)],
   products: [
-    // Products define the executables and libraries a package produces, making them visible to other packages.
-    .library(name: "SharedGRDB", targets: ["SharedGRDB"]),
     .library(name: "Models", targets: ["Models"])
   ],
   dependencies: [
-    .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0"),
+    .package(url: "https://github.com/pointfreeco/sqlite-data", from: "1.6.2"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.17.0"),
     .package(url: "https://github.com/pointfreeco/swift-sharing", from: "2.9.1"),
+    .package(url: "https://github.com/pointfreeco/swift-structured-queries", from: "0.33.0"),
     .package(url: "https://github.com/pointfreeco/swift-tagged", from: "0.10.0")
   ],
   targets: [
     .target(
       name: "Models",
       dependencies: [
-        "SharedGRDB",
+        .product(name: "SQLiteData", package: "sqlite-data", condition: nil),
         .product(name: "Dependencies", package: "swift-dependencies", condition: nil),
-        .product(name: "GRDB", package: "GRDB.swift", condition: nil),
         .product(name: "Sharing", package: "swift-sharing", condition: nil),
         .product(name: "Tagged", package: "swift-tagged", condition: nil)
-      ]
-    ),
-    .target(
-      name: "SharedGRDB",
-      dependencies: [
-        .product(name: "Dependencies", package: "swift-dependencies", condition: nil),
-        .product(name: "GRDB", package: "GRDB.swift", condition: nil),
-        .product(name: "Sharing", package: "swift-sharing", condition: nil),
-        .product(name: "Tagged", package: "swift-tagged", condition: nil)
-      ]
-    ),
-    .testTarget(
-      name: "SharedGRDBTests",
-      dependencies: [
-        "Models",
-        "SharedGRDB"
       ]
     ),
     .testTarget(
@@ -50,7 +32,6 @@ let package = Package(
       dependencies: [
         "Models",
         .product(name: "Dependencies", package: "swift-dependencies", condition: nil),
-        .product(name: "GRDB", package: "GRDB.swift", condition: nil),
         .product(name: "Sharing", package: "swift-sharing", condition: nil),
         .product(name: "Tagged", package: "swift-tagged", condition: nil)
       ]

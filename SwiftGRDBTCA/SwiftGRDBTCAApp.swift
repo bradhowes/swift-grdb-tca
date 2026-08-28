@@ -8,7 +8,7 @@ struct SwiftDataTCAApp: App {
 
   init() {
     prepareDependencies {
-      $0.defaultDatabase = try! DatabaseQueue.appDatabase() // swiftlint:disable:this force_try
+      $0.defaultDatabase = try! appDatabase() // swiftlint:disable:this force_try
       // $0.viewLinkType = .button // ProcessInfo.processInfo.arguments.contains("NAVLINKS") ? .navLink : .button
     }
 #if os(iOS)

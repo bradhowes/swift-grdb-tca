@@ -3,7 +3,7 @@ import Dependencies
 import Foundation
 import IdentifiedCollections
 import Models
-import SharedGRDB
+import SQLiteData
 import SwiftUI
 
 @Reducer
@@ -12,7 +12,8 @@ struct MovieActorsFeature {
   @ObservableState
   struct State: Equatable {
     var movie: Movie
-    @SharedReader var actors: ActorCollection
+    @ObservationStateIgnored
+    @Fetch var actors: ActorCollection
     var isSearchFieldPresented = false
     var animateButton = false
     var nameSort: Ordering
@@ -21,12 +22,7 @@ struct MovieActorsFeature {
     init(movie: Movie, nameSort: Ordering = .forward) {
       self.movie = movie
       self.nameSort = nameSort
-      _actors = SharedReader(
-        .fetch(
-          MovieActorsQuery(movie: movie, ordering: nameSort.sortOrder),
-          animation: .smooth
-        )
-      )
+      self._actors = .init(wrappedValue: [], MovieActorsQuery(movie: movie, ordering: nameSort.sortOrder))
     }
   }
 
@@ -43,7 +39,11 @@ struct MovieActorsFeature {
     Reduce { state, action in
       switch action {
       case .detailButtonTapped: return .none
-      case .favoriteTapped: return toggleFavoriteState(state: &state)
+
+      case .favoriteTapped:
+        state.animateButton = !state.movie.favorite
+        return Utils.toggleFavoriteState(&state.movie)
+
       case .nameSortChanged(let newSort): return setNameSort(newSort, state: &state)
       case .refresh: return refresh(&state)
 
@@ -70,8 +70,9 @@ extension MovieActorsFeature {
 
   private func refresh(_ state: inout State) -> Effect<Action> {
     @Dependency(\.defaultDatabase) var database
-    if let movie = database.movie(id: state.movie.id) {
-      print("MovieActorsFeature.refresh: ", movie.favorite)
+    if let movie = (try? database.read { db in
+      try Movie.all.where { $0.id.eq(state.movie.id) }.fetchAll(db)[0]
+    }) {
       state.movie = movie
     }
     return .none
@@ -82,13 +83,6 @@ extension MovieActorsFeature {
     return updateQuery(state)
   }
 
-  func toggleFavoriteState(state: inout State) -> Effect<Action> {
-    @Dependency(\.defaultDatabase) var database
-    try? database.write { try state.movie.toggleFavorite(in: $0) }
-    state.animateButton = true
-    return .none
-  }
-
   private func updateQuery(_ state: State) -> Effect<Action> {
     let searchText = state.searchText.isEmpty ? nil : state.searchText
     let nameSort = state.nameSort
@@ -97,10 +91,8 @@ extension MovieActorsFeature {
     return .run { _ in
       do {
         try await actors.load(
-          .fetch(
-            MovieActorsQuery(movie: movie, ordering: nameSort.sortOrder, searchText: searchText),
-            animation: .smooth
-          )
+          MovieActorsQuery(movie: movie, ordering: nameSort.sortOrder, searchText: searchText),
+          animation: .smooth
         )
       } catch {
         reportIssue(error)

@@ -17,7 +17,7 @@ struct MovieActorsView: View {
       Button {
         store.send(.detailButtonTapped(actor))
       } label: {
-        Utils.ActorView(name: actor.name, movieTitles: database.movies(for: actor).csv)
+        Utils.ActorView(name: actor.name, movieTitles: actor.movieTitles)
       }
     }
     .animation(.smooth, value: store.actors)
@@ -40,7 +40,8 @@ struct MovieActorsView: View {
             Image(systemName: "star.fill")
               .accessibilityLabel("unfavorite movie")
               .foregroundStyle(Utils.favoriteColor)
-              .transition(.confetti(color: Utils.favoriteColor, size: 3, enabled: store.animateButton))
+              .flash(enabled: store.animateButton, count: 3, duration: 0.05)
+              // .transition(.confetti(color: Utils.favoriteColor, size: 3, enabled: store.animateButton))
           } else {
             Image(systemName: "star")
               .accessibilityLabel("favorite movie")
@@ -57,11 +58,12 @@ struct MovieActorsView: View {
 
 extension MovieActorsView {
   static var preview: some View {
-    let _ = prepareDependencies { // swiftlint:disable:this redundant_discardable_let
-      $0.defaultDatabase = try! DatabaseQueue.appDatabase(rowCount: 13) // swiftlint:disable:this force_try
+    let movies = prepareDependencies {
+      $0.defaultDatabase = try! appDatabase(rowCount: 13) // swiftlint:disable:this force_try
+      return try! $0.defaultDatabase.read { // swiftlint:disable:this force_try
+        try AllMoviesQuery().fetch($0)
+      }
     }
-    @Dependency(\.defaultDatabase) var queue
-    let movies = queue.movies()
     return NavigationView {
       MovieActorsView(store: Store(initialState: .init(movie: movies[0])) {
         MovieActorsFeature()

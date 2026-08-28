@@ -15,7 +15,7 @@ private final class Context {
 
   init() throws {
     store = withDependencies {
-      $0.defaultDatabase = try! DatabaseQueue.appDatabase(rowCount: 13) // swiftlint:disable:this force_try
+      $0.defaultDatabase = try! appDatabase(rowCount: 13) // swiftlint:disable:this force_try
       $0.continuousClock = ImmediateClock()
     } operation: {
       TestStore(initialState: RootFeature.State()) {
@@ -25,7 +25,7 @@ private final class Context {
   }
 }
 
-final class FromStateFeatureTests: XCTestCase {
+final class RootFeatureTests: XCTestCase {
   private var ctx: Context!
 
   override func setUp() async throws {
@@ -83,7 +83,7 @@ final class FromStateFeatureTests: XCTestCase {
   func testMonitorPathChange() async throws {
     let movie = ctx.store.state.movies[0]
     let database = ctx.store.dependencies.defaultDatabase
-    let actors = try await database.read { try movie.actors.order(SortOrder.forward.by(Actor.Columns.name)).fetchAll($0) }
+    let actors = try await database.read { try MovieActorsQuery(movie: movie, ordering: SortOrder.forward).fetch($0) }
     let actor = actors[0]
 
     await ctx.store.send(.movieButtonTapped(movie)) {
@@ -176,21 +176,21 @@ final class FromStateFeatureTests: XCTestCase {
       $0.titleSort = .reverse
     }
 
-    var movies = database.movies(ordering: .reverse)
+    var movies = try await database.read { try AllMoviesQuery(ordering: .reverse).fetch($0) }
     XCTAssertEqual(ctx.store.state.movies, movies)
 
     await ctx.store.send(.titleSortChanged(.none)) {
       $0.titleSort = .none
     }
 
-    movies = database.movies(ordering: nil)
+    movies = try await database.read { try AllMoviesQuery(ordering: nil).fetch($0) }
     XCTAssertEqual(ctx.store.state.movies, movies)
 
     await ctx.store.send(.titleSortChanged(.forward)) {
       $0.titleSort = .forward
     }
 
-    movies = database.movies(ordering: .forward)
+    movies = try await database.read { try AllMoviesQuery(ordering: .forward).fetch($0) }
     XCTAssertEqual(ctx.store.state.movies, movies)
   }
 

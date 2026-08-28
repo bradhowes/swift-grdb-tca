@@ -3,6 +3,7 @@ import ComposableArchitecture
 import Foundation
 import Models
 import Sharing
+import SQLiteData
 import SwiftUI
 
 @Reducer
@@ -17,7 +18,8 @@ struct RootFeature {
   @ObservableState
   struct State: Equatable {
     var path = StackState<Path.State>()
-    @SharedReader var movies: MovieCollection
+    @ObservationStateIgnored
+    @Fetch var movies: MovieCollection
     var isSearchFieldPresented = false
     var scrollTo: Movie?
     var highlight: Movie?
@@ -27,12 +29,7 @@ struct RootFeature {
     init() {
       let sort = Ordering.forward
       self.titleSort = sort
-      _movies = SharedReader(
-        .fetch(
-          AllMoviesQuery(ordering: sort.sortOrder),
-          animation: .smooth
-        )
-      )
+      self._movies = .init(wrappedValue: .init(), AllMoviesQuery(ordering: sort.sortOrder))
     }
   }
 
@@ -59,7 +56,7 @@ struct RootFeature {
 
       case .addButtonTapped:
         let next = Support.nextMockMovieEntry(state.movies)
-        guard let movie = try? database.write({ try Movie.make(in: $0, entry: next) }) else {
+        guard let movie = try? database.write({ try Movie.make(db: $0, entry: next) }) else {
           return .none
         }
         return .run { send in
@@ -73,7 +70,8 @@ struct RootFeature {
 
       case .deleteSwiped(let movie):
         _ = try? database.write { db in
-          try? movie.delete(db)
+          try? Movie.delete(movie)
+            .execute(db)
         }
         return .none
 
@@ -119,8 +117,8 @@ struct RootFeature {
         state.titleSort = newSort
         return updateQuery(state)
 
-      case .toggleFavoriteState(let movie):
-        return Utils.toggleFavoriteState(movie)
+      case .toggleFavoriteState(var movie):
+        return Utils.toggleFavoriteState(&movie)
       }
     }
     .forEach(\.path, action: \.path)
@@ -152,10 +150,8 @@ extension RootFeature {
     return .run { _ in
       do {
         try await movies.load(
-          .fetch(
-            AllMoviesQuery(ordering: titleSort.sortOrder, searchText: searchText),
-            animation: .smooth
-          )
+          AllMoviesQuery(ordering: titleSort.sortOrder, searchText: searchText),
+          animation: .smooth
         )
       } catch {
         reportIssue(error)

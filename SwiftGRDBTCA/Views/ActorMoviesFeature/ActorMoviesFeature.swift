@@ -3,6 +3,7 @@ import ComposableArchitecture
 import Foundation
 import Models
 import Sharing
+import SQLiteData
 import SwiftUI
 
 @Reducer
@@ -11,7 +12,8 @@ struct ActorMoviesFeature {
   @ObservableState
   struct State: Equatable {
     var actor: Actor
-    @SharedReader var movies: MovieCollection
+    @ObservationStateIgnored
+    @Fetch var movies: MovieCollection
     var isSearchFieldPresented = false
     var titleSort: Ordering
     var searchText: String = ""
@@ -19,12 +21,7 @@ struct ActorMoviesFeature {
     init(actor: Actor, titleSort: Ordering = .forward) {
       self.actor = actor
       self.titleSort = titleSort
-      _movies = SharedReader(
-        .fetch(
-          ActorMoviesQuery(actor: actor, ordering: titleSort.sortOrder),
-          animation: .smooth
-        )
-      )
+      self._movies = .init(wrappedValue: [], ActorMoviesQuery(actor: actor, ordering: titleSort.sortOrder))
     }
   }
 
@@ -70,8 +67,8 @@ struct ActorMoviesFeature {
 
       case .titleSortChanged(let newSort): return setTitleSort(newSort, state: &state)
 
-      case .toggleFavoriteState(let movie):
-        return Utils.toggleFavoriteState(movie)
+      case .toggleFavoriteState(var movie):
+        return Utils.toggleFavoriteState(&movie)
       }
     }
   }
@@ -81,7 +78,9 @@ extension ActorMoviesFeature {
 
   private func refresh(_ state: inout State) -> Effect<Action> {
     @Dependency(\.defaultDatabase) var database
-    if let actor = database.actor(id: state.actor.id) {
+    if let actor = (try? database.read { db in
+      try Actor.all.where { $0.id.eq(state.actor.id) }.fetchAll(db)[0]
+    }) {
       state.actor = actor
     }
     return .none
@@ -100,10 +99,8 @@ extension ActorMoviesFeature {
     return .run { _ in
       do {
         try await movies.load(
-          .fetch(
-            ActorMoviesQuery(actor: actor, ordering: titleSort.sortOrder, searchText: searchText),
-            animation: .smooth
-          )
+          ActorMoviesQuery(actor: actor, ordering: titleSort.sortOrder, searchText: searchText),
+          animation: .smooth
         )
       } catch {
         reportIssue(error)

@@ -1,8 +1,9 @@
 import Dependencies
 import Foundation
 import GRDB
-import IdentifiedCollections
-
+public import IdentifiedCollections
+import StructuredQueriesCore
+import Tagged
 
 public enum Support {
 
@@ -15,11 +16,10 @@ public enum Support {
    - returns: a sortable version of the input value
    */
   public static func sortableTitle(_ title: String) -> String {
-    let words = title.lowercased().components(separatedBy: " ")
-    if articles.contains(words[0]) {
-      return words.dropFirst().joined(separator: " ")
-    }
-    return title.lowercased()
+    title.lowercased().components(separatedBy: " ")
+      .compactMap { articles.contains($0) ? nil : $0 }
+      .joined(separator: " ")
+      .lowercased()
   }
 
   /// Obtain an entry from the collection of movie titles and cast members.
@@ -27,9 +27,8 @@ public enum Support {
     let titles = Set(movies.map { $0.sortableTitle })
     for index in 0..<mockData.count {
       let (title, cast) = mockData[index]
-      let stitle = sortableTitle(title)
+      let stitle = title.sortable
       if !titles.contains(stitle) {
-        print("next entry:", title, cast)
         return (title, cast)
       }
     }
@@ -38,7 +37,33 @@ public enum Support {
 
   public static func generateRows(db: Database, count: Int) throws {
     for index in 0..<count {
-      _ = try Movie.make(in: db, entry: mockData[index])
+      _ = try Movie.make(db: db, entry: mockData[index])
     }
   }
 }
+
+extension String {
+  public var sortable: String { Support.sortableTitle(self) }
+}
+
+extension ProcessInfo {
+  public var isOnGithub: Bool { !(environment["SNAPSHOT_ARTIFACTS"]?.isEmpty ?? true) }
+}
+
+extension Tagged: @retroactive QueryBindable where RawValue: QueryBindable {}
+
+extension Tagged: @retroactive QueryExpression where RawValue: QueryExpression {
+  public var queryFragment: QueryFragment { self.rawValue.queryFragment }
+}
+
+extension Tagged: @retroactive QueryRepresentable where RawValue: QueryRepresentable {
+  public typealias QueryOutput = Tagged<Tag, RawValue.QueryOutput>
+
+  public var queryOutput: QueryOutput { QueryOutput(rawValue: self.rawValue.queryOutput) }
+
+  public init(queryOutput: QueryOutput) { self.init(rawValue: RawValue(queryOutput: queryOutput.rawValue)) }
+}
+
+extension Tagged: @retroactive QueryDecodable where RawValue: QueryDecodable {}
+
+extension Tagged: @retroactive _OptionalPromotable where RawValue: _OptionalPromotable {}
