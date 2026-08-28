@@ -52,16 +52,16 @@ struct ActorMoviesView: View {
 #if os(iOS)
     .toolbar(.hidden, for: .tabBar)
 #endif
-//    .searchable(
-//      text: $store.searchText.sending(\.searchTextChanged),
-//      isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
-//      prompt: "Title"
-//    )
-//    .toolbar {
-//      ToolbarItemGroup(placement: .automatic) {
-//        Utils.pickerView(title: "movie ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
-//      }
-//    }
+    .searchable(
+      text: $store.searchText.sending(\.searchTextChanged),
+      isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
+      prompt: "Title"
+    )
+    .toolbar {
+      ToolbarItemGroup(placement: .automatic) {
+        Utils.pickerView(title: "movie ordering", binding: $store.titleSort.sending(\.titleSortChanged).animation())
+      }
+    }
     .labelsHidden()
     .onAppear {
       store.send(.refresh)

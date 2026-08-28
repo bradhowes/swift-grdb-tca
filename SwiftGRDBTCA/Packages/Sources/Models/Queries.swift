@@ -14,7 +14,7 @@ public struct AllMoviesQuery: FetchKeyRequest {
     let found: [Movie]
     if let searchText, !searchText.isEmpty {
       found = try MovieText.where {
-        $0.match(searchText)
+        $0.match(searchText + "*")
       }
       .join(Movie.all) { $0.rowid.eq($1.rowid) }
       .order {
@@ -74,7 +74,7 @@ public struct ActorMoviesQuery: FetchKeyRequest {
       guard !movieIds.isEmpty else { return [] }
 
       found = try MovieText.where {
-        $0.match(searchText)
+        $0.match(searchText + "*")
       }
       .join(Movie.all) { $0.movieId.eq($1.id) }
       .where { $1.id.in(movieIds) }
@@ -131,7 +131,7 @@ public struct MovieActorsQuery: FetchKeyRequest {
       guard !actorIds.isEmpty else { return [] }
 
       found = try ActorText.where {
-        $0.match(searchText)
+        $0.match(searchText + "*")
       }
       .join(Actor.all) { $0.actorId.eq($1.id) }
       .where { $1.id.in(actorIds) }

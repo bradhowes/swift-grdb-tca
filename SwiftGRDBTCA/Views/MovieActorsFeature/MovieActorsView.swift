@@ -28,7 +28,7 @@ struct MovieActorsView: View {
     .searchable(
       text: $store.searchText.sending(\.searchTextChanged),
       isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
-      prompt: "Title"
+      prompt: "Name"
     )
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {

@@ -11,7 +11,7 @@ nonisolated public struct MovieText {
 }
 
 extension MovieText: FTS5 {
-  static let tokenizer = "trigram"
+  static let tokenizer = "porter unicode61 remove_diacritics 1"
 
   static func registerMigration(_ migrator: inout DatabaseMigrator) {
     migrator.registerMigration(Self.tableName) { db in
