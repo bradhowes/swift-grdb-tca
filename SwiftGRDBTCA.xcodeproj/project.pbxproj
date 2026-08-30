@@ -27,7 +27,6 @@
 		BD8F4DB32C46C7E7004ACF0B /* ActorMoviesFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8F4DB22C46C7E7004ACF0B /* ActorMoviesFeature.swift */; };
 		BD8F4DB52C46C7F9004ACF0B /* ActorMoviesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8F4DB42C46C7F9004ACF0B /* ActorMoviesView.swift */; };
 		BD90438D2D4974B4000D66B0 /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = BD90438C2D4974B4000D66B0 /* Models */; };
-		BD92A3FA2D3FF83600649D33 /* Tagged in Frameworks */ = {isa = PBXBuildFile; productRef = BD92A3F92D3FF83600649D33 /* Tagged */; };
 		BDA1820C2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA1820B2C4D0878001ACC6F /* ActorMoviesFeatureTests.swift */; };
 		BDA1820E2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA1820D2C4D0FB4001ACC6F /* MovieActorsFeatureTests.swift */; };
 		BDBAC01C303DDB64007BDF4E /* TestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBAC01B303DDB5F007BDF4E /* TestSupport.swift */; };
@@ -35,7 +34,6 @@
 		BDD57C242C9D82BC0082178E /* FromStateUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C232C9D82BC0082178E /* FromStateUITests.swift */; };
 		BDD57C282C9D982E0082178E /* XCUIElement+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C272C9D981E0082178E /* XCUIElement+Extensions.swift */; };
 		BDD57C2C2C9DAB370082178E /* ViewLinkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C2B2C9DAB370082178E /* ViewLinkType.swift */; };
-		BDF59DD02CA1E18E00DC7D00 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,9 +98,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BD90438D2D4974B4000D66B0 /* Models in Frameworks */,
-				BD92A3FA2D3FF83600649D33 /* Tagged in Frameworks */,
 				23A64E9D2ACC5DFE005B6344 /* ComposableArchitecture in Frameworks */,
-				BDF59DD02CA1E18E00DC7D00 /* IdentifiedCollections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,8 +285,6 @@
 			name = SwiftGRDBTCA;
 			packageProductDependencies = (
 				23A64E9C2ACC5DFE005B6344 /* ComposableArchitecture */,
-				BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */,
-				BD92A3F92D3FF83600649D33 /* Tagged */,
 				BD90438C2D4974B4000D66B0 /* Models */,
 			);
 			productName = SwiftDataTCA;
@@ -372,8 +366,6 @@
 				23A64E9B2ACC5DFE005B6344 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				BD2182882C4D357700FCB16E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				BD1DE7C72C9635F100F3E85F /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
-				BDF59DCE2CA1E18E00DC7D00 /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
-				BD92A3F82D3FF83600649D33 /* XCRemoteSwiftPackageReference "swift-tagged" */,
 			);
 			productRefGroup = 23A64E872ACC5312005B6344 /* Products */;
 			projectDirPath = "";
@@ -802,7 +794,7 @@
 			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.26.1;
+				minimumVersion = 1.26.0;
 			};
 			traits = (
 			);
@@ -828,23 +820,7 @@
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.18.0;
-			};
-		};
-		BD92A3F82D3FF83600649D33 /* XCRemoteSwiftPackageReference "swift-tagged" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-tagged";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.10.0;
-			};
-		};
-		BDF59DCE2CA1E18E00DC7D00 /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-identified-collections";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.0;
+				minimumVersion = 1.19.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -868,16 +844,6 @@
 		BD90438C2D4974B4000D66B0 /* Models */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Models;
-		};
-		BD92A3F92D3FF83600649D33 /* Tagged */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BD92A3F82D3FF83600649D33 /* XCRemoteSwiftPackageReference "swift-tagged" */;
-			productName = Tagged;
-		};
-		BDF59DCF2CA1E18E00DC7D00 /* IdentifiedCollections */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BDF59DCE2CA1E18E00DC7D00 /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
-			productName = IdentifiedCollections;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
