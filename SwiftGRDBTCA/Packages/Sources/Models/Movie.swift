@@ -11,16 +11,8 @@ nonisolated public struct Movie: Hashable, Identifiable, Sendable {
   public let id: ID
   public let title: String
   public let sortableTitle: String
+  public let actorNames: String
   public var favorite: Bool
-
-  public var actorNames: String {
-    @Dependency(\.defaultDatabase) var database
-    return (try? database.read { db in
-      try MovieActorsQuery(movie: self).fetch(db)
-        .map { $0.name }
-        .joined(separator: ", ")
-    }) ?? ""
-  }
 }
 
 extension Updates<Movie> {
@@ -39,6 +31,7 @@ extension Movie {
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "title" TEXT NOT NULL,
         "sortableTitle" TEXT NOT NULL,
+        "actorNames" TEXT NOT NULL,
         "favorite" INTEGER NOT NULL
       ) STRICT
       """
@@ -47,20 +40,23 @@ extension Movie {
     }
   }
 
-  public static func make(db: Database, title: String) throws -> Movie {
+  public static func make(db: Database, title: String, actorNames: String) throws -> Movie {
     try Movie.insert {
-      Draft(title: title, sortableTitle: title.sortable, favorite: false)
+      Draft(title: title, sortableTitle: title.sortable, actorNames: actorNames, favorite: false)
     }
     .returning(\.self)
     .fetchAll(db)[0]
   }
 
   public static func make(db: Database, entry: (String, [String])) throws -> Movie {
-    let movie = try Movie.make(db: db, title: entry.0)
-    for name in entry.1 {
+    let actorNames = entry.1.sorted()
+    let movie = try Movie.make(db: db, title: entry.0, actorNames: actorNames.joined(separator: ", "))
+
+    for name in actorNames {
       let actor = try Actor.fetchOrCreate(db: db, name: name)
       try MovieActor.make(db: db, movieId: movie.id, actorId: actor.id)
     }
+
     return movie
   }
 }

@@ -8,6 +8,7 @@ import Tagged
 nonisolated public struct MovieText {
   public let movieId: Movie.ID
   public let title: String
+  public let actorNames: String
 }
 
 extension MovieText: FTS5 {
@@ -20,6 +21,7 @@ extension MovieText: FTS5 {
         CREATE VIRTUAL TABLE "\(raw: Self.tableName)" USING FTS5 (
           "movieId" UNINDEXED,
           "title",
+          "actorNames",
           tokenize = '\(raw: Self.tokenizer)'
         )
         """
@@ -41,7 +43,8 @@ extension MovieText {
         MovieText.insert {
           MovieText.Columns(
             movieId: new.id,
-            title: new.title
+            title: new.title,
+            actorNames: new.actorNames
           )
         }
       }
@@ -57,6 +60,7 @@ extension MovieText {
           .where { $0.movieId.eq(new.id) }
           .update {
             $0.title = new.title
+            $0.actorNames = new.actorNames
           }
       }
     ).execute(db)
