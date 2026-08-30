@@ -8,9 +8,17 @@ This is a simple app that uses SwiftUI for views, [The Composable Architecture v
 logic and state, and [GRDB][2] for backend storage. This was originally a branch of my [SwiftDataTCA][3] app that I used
 for experimenting with SwiftData, but switching the branches was a pain with Xcode, so a new repo it is.
 
+An early incarnation of the code worked directly with `GRDB` and with a custom `SharedReaderKey` modelled on code found in 
+Point•Free code and discussed in [Point•Free episodes about SQLite and GRDB][12]. Now, the schemas and queries use the 
+[swift-structured-queries][13] package. I am using this package in another project and I did not wish to keep using the GRDB Swift 
+bindings to achieve the same result.
+
+The app communicates to its GRDB database by means of a DatabaseQueue instance that is available via the
+`@Dependency(\.defaultDatabase)` attribute.
+
 ![Demo GIF][demo]
 
-The code here is using the `@SharedReader` feature described in [Point•Free episodes about SQLite and GRDB][12].
+The code here is using the `@SharedReader` feature described in .
 
 # Overview
 
@@ -25,7 +33,7 @@ From this view you can:
 * Swipe to mark as a favorite
 * Swipe to delete a movie
 * Select a movie to "drill-down" to a list of actors. This view too supports "drilling-down" to see the actor's movies.
-This can be done as much as you want, though unwinding gets to be a bit tiring.
+This can be done as much as you want, though unwinding via back arrow gets to be a bit tedious.
 
 Per TCA guidance, all UI activity lead to reducer actions that are performed in the feature's reducer logic, updating
 internal feature state when necessary to cause a UI update.
@@ -53,25 +61,19 @@ corresponding rows of actors and movies.
 
 The SwiftUI previews operate pretty much like in the simulator or on a physical device.
 
-## GRDB Use
+## SQL Queries
 
-All GRDB activity is driven by activity in the feature reducers. Each state uses a `@SharedReader` property wrapper for
-a container. This property is initialized with a GRDB query that will return a value for the container. When properties
-change that affect the query, state activity will invoke `updateQuery` to update the `@SharedReader` query. This in turn
-will cause the view to refresh when there are any updates.
-
-The app communicates to its GRDB database by means of a DatabaseQueue instance that is available via the
-`@Dependency(\.defaultDatabase)` attribute.
+All database activity is driven by activity in the feature reducers. Each state uses a `Fetch` property wrapper for
+a structured query that returns a collection of rows. This property is initialized with a query, but when properties
+change that affect the query, state activity will invoke `updateQuery` to update the `Fetch` query. This in turn
+will cause the view to refresh.
 
 ## Schemas
 
-Unlike the SwiftDataTCA app, there is currently just 1 schema defined in the `Models` package in the file
-[Schemav1.swift][11] file. The schema contains the GRDB Swift structs that map to SQL table definitions. Although this
-is not as concise as the case with SwiftData, it is also much less mysterious -- properties and relationships are
-spelled out in very readable form, and there is always the option to drop down into raw SQL if need be.
-
-As mentioned above, the `movies` and `actors` tables have a related full-text search table. The GRDB intergration
-creates the appropriate triggers to keep the full-text tables up-to-date when their source table changes.
+Unlike the SwiftDataTCA app, there is currently just 1 schema defined by the  varous "model" files in the `Models` package.
+The schema contains `@Table` definitions using the [swift-structured-queries][13] domain language. As mentioned above, the 
+`Movies` and `Actors` tables have a related full-text search table. The table definitions contain the necessary SQL code to create
+the appropriate triggers that keep the full-text tables up-to-date when their source table changes.
 
 ## Tests
 
@@ -89,7 +91,7 @@ There are some...
 [10]: https://swiftpackageindex.com/pointfreeco/swift-composable-architecture/main/documentation/composablearchitecture/stackbasednavigation#Pushing-features-onto-the-stack
 [11]: SwiftGRDBTCA/Packages/Sources/Models/SchemaV1.swift
 [12]: https://www.pointfree.co/collections/sqlite
-
+[13]: https://github.com/pointfreeco/swift-structured-queries
 [demo]: media/demo.gif
 
 [ci]: https://github.com/bradhowes/swift-grdb-tca/actions/workflows/CI.yml

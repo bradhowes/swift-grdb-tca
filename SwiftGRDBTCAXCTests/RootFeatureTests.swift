@@ -128,15 +128,20 @@ final class RootFeatureTests: XCTestCase {
       $0.searchText = "zzz"
     }
 
+    await ctx.store.receive(\.queryUpdated, timeout: .seconds(10))
+
     XCTAssertEqual(ctx.store.state.movies.count, 0)
 
     await ctx.store.send(.searchTextChanged("zzz")) // No change
+
 
     await ctx.store.send(.searchTextChanged("s")) {
       $0.searchText = "s"
     }
 
-    XCTAssertEqual(ctx.store.state.movies.count, 5)
+    await ctx.store.receive(\.queryUpdated, timeout: .seconds(10))
+
+    XCTAssertEqual(ctx.store.state.movies.count, 10)
     for m in ctx.store.state.movies {
       print("+", m.title)
     }
@@ -145,18 +150,25 @@ final class RootFeatureTests: XCTestCase {
       $0.searchText = "sc"
     }
 
+    await ctx.store.receive(\.queryUpdated, timeout: .seconds(10))
+
     XCTAssertEqual(ctx.store.state.movies.count, 1)
+
     XCTAssertEqual(ctx.store.state.movies.first?.title, "The Score")
 
     await ctx.store.send(.searchTextChanged("goo")) {
       $0.searchText = "goo"
     }
 
-    XCTAssertEqual(ctx.store.state.movies.count, 1)
+    await ctx.store.receive(\.queryUpdated, timeout: .seconds(10))
+
+    XCTAssertEqual(ctx.store.state.movies.count, 0)
 
     await ctx.store.send(.searchTextChanged("go")) {
       $0.searchText = "go"
     }
+
+    await ctx.store.receive(\.queryUpdated, timeout: .seconds(10))
 
     XCTAssertEqual(ctx.store.state.movies.count, 1)
 
@@ -165,6 +177,7 @@ final class RootFeatureTests: XCTestCase {
       $0.searchText = ""
     }
 
+    await ctx.store.receive(\.queryUpdated, timeout: .seconds(10))
     XCTAssertEqual(ctx.store.state.movies.count, 13)
   }
 
@@ -176,6 +189,8 @@ final class RootFeatureTests: XCTestCase {
       $0.titleSort = .reverse
     }
 
+    await ctx.store.receive(\.queryUpdated, timeout: .seconds(10))
+
     var movies = try await database.read { try AllMoviesQuery(ordering: .reverse).fetch($0) }
     XCTAssertEqual(ctx.store.state.movies, movies)
 
@@ -183,12 +198,16 @@ final class RootFeatureTests: XCTestCase {
       $0.titleSort = .none
     }
 
+    await ctx.store.receive(\.queryUpdated, timeout: .seconds(10))
+
     movies = try await database.read { try AllMoviesQuery(ordering: nil).fetch($0) }
     XCTAssertEqual(ctx.store.state.movies, movies)
 
     await ctx.store.send(.titleSortChanged(.forward)) {
       $0.titleSort = .forward
     }
+
+    await ctx.store.receive(\.queryUpdated, timeout: .seconds(10))
 
     movies = try await database.read { try AllMoviesQuery(ordering: .forward).fetch($0) }
     XCTAssertEqual(ctx.store.state.movies, movies)

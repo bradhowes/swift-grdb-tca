@@ -41,6 +41,7 @@ struct RootFeature {
     case highlight(Movie)
     case movieButtonTapped(Movie)
     case path(StackActionOf<Path>)
+    case queryUpdated
     case searchButtonTapped(Bool)
     case searchTextChanged(String)
     case scrollToMovie(Movie)
@@ -93,6 +94,9 @@ struct RootFeature {
 
       case .path(let pathAction):
         return monitorPathChange(pathAction, state: &state)
+
+      case .queryUpdated:
+        return .none
 
       case .searchButtonTapped(let enabled):
         state.isSearchFieldPresented = enabled
@@ -147,12 +151,13 @@ extension RootFeature {
     let searchText = state.searchText.isEmpty ? nil : state.searchText
     let titleSort = state.titleSort
     let movies = state.$movies
-    return .run { _ in
+    return .run { send in
       do {
         try await movies.load(
           AllMoviesQuery(ordering: titleSort.sortOrder, searchText: searchText),
           animation: .smooth
         )
+        await send(.queryUpdated)
       } catch {
         reportIssue(error)
       }
