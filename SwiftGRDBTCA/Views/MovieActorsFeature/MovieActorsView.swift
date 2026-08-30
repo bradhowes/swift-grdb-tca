@@ -30,6 +30,7 @@ struct MovieActorsView: View {
       isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
       prompt: "Name"
     )
+    .textInputAutocapitalization(.never)
     .toolbar {
       ToolbarItemGroup(placement: .automatic) {
         Utils.pickerView(title: "actor ordering", binding: $store.nameSort.sending(\.nameSortChanged).animation())

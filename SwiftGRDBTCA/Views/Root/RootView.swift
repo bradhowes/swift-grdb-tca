@@ -20,6 +20,7 @@ struct RootView: View {
           isPresented: $store.isSearchFieldPresented.sending(\.searchButtonTapped),
           prompt: "Title"
         )
+        .textInputAutocapitalization(.never)
         .toolbar {
           ToolbarItemGroup(placement: .automatic) {
             if !store.isSearchFieldPresented {

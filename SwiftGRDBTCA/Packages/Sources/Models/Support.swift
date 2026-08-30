@@ -43,9 +43,19 @@ public enum Support {
 }
 
 extension String {
-  public var sortable: String { Support.sortableTitle(self) }
-}
+  nonisolated public var sortable: String { Support.sortableTitle(self) }
 
+  nonisolated public var quoted: String {
+    // Split into words
+    split(separator: " ")
+    // Replace a single double-quote with two. Wrap the result in double-quotes, and add a '*' to enable
+    // prefix matching on words.
+      .map { #""\#($0.replacingOccurrences(of: #"""#, with: #""""#))"*"# }
+    // Build string from words
+      .joined(separator: " ")
+  }
+}
+                                                 
 extension ProcessInfo {
   public var isOnGithub: Bool { !(environment["SNAPSHOT_ARTIFACTS"]?.isEmpty ?? true) }
 }
