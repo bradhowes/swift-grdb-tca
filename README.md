@@ -52,11 +52,6 @@ Each of the drill-down views can also change the favorite state of a movie, eith
 `MovieActorsView` view, or by swiping in the `ActorMoviesView` view. When a parent view comes back into view, it should
 already show any changaes that were made in a child view.
 
-The `ActorMoviesView` supports searching of movie titles, and the `MovieActorsView` supports searching of actor names.
-Both of these (and the `RootView` as well) use the FTS5 SQLite plugin to perform full-text searching of content in the
-movies and actors tables. Typing into the search field regenerates the SQL query that the views use to populate their
-corresponding rows of actors and movies.
-
 ## Previews
 
 The SwiftUI previews operate pretty much like in the simulator or on a physical device.
@@ -68,10 +63,41 @@ a structured query that returns a collection of rows. This property is initializ
 change that affect the query, state activity will invoke `updateQuery` to update the `Fetch` query. This in turn
 will cause the view to refresh.
 
+## Searching
+
+The `ActorMoviesView` supports searching of movie titles, and the `MovieActorsView` supports searching of actor names.
+Both of these (and the `RootView` as well) use the [FTS5][fts5] SQLite plugin to perform full-text searching of content in the
+movies and actors tables. Typing into the search field regenerates the SQL query that the views use to populate their
+corresponding rows of actors and movies.
+
+Currently, searching relies on the FTS5 `porter` and `unicode61` tokenizers, with the `remove_diacritics` option enabled. See the
+[FTS5 documentation][fts5] for details.
+
+Text input in the search text field is split into tokens separated by one or more spaces. Each token acts as a prefix string: a 
+match exists if there is a word in the title/name that starts with the prefix. Multiple tokens require matching on all to show a
+movie or actor in the search output.
+
+For instance, entering "apo" in the default seeding of 100 movie titles results in a listing of two movies:
+
+- "Apocalypse Now"
+- "X-Men: Apocalypse"
+
+Searching for "apo x" just shows
+
+- "X-Men: Apocalypse"
+
+Note that the order of the tokens does not matter.
+
+Internally, the tokens are separated by spaces into individual runs of text, and these are then each surrounded in double-quotes 
+and appended with a "\*" character to convert the token into a prefix. No interrogation of the token text is done. This means that
+much of the FTS5 operators mentioned in the SQLite documention will not perform as described -- for instance, the token "near"
+will only work to match words that start with "near" and it will not be recognized as a _near function_. This is also true for the
+words "AND", "OR", and "NOT".
+
 ## Schemas
 
 Unlike the SwiftDataTCA app, there is currently just 1 schema defined by the  varous "model" files in the `Models` package.
-The schema contains `@Table` definitions using the [swift-structured-queries][13] domain language. As mentioned above, the 
+The schema contains `@Table` definitions using the [swift-structured-queries][14] domain language. As mentioned above, the 
 `Movies` and `Actors` tables have a related full-text search table. The table definitions contain the necessary SQL code to create
 the appropriate triggers that keep the full-text tables up-to-date when their source table changes.
 
@@ -92,6 +118,7 @@ There are some...
 [11]: SwiftGRDBTCA/Packages/Sources/Models/SchemaV1.swift
 [12]: https://www.pointfree.co/collections/sqlite
 [13]: https://github.com/pointfreeco/swift-structured-queries
+[fts5]: https://www.sqlite.org/fts5.html
 [demo]: media/demo.gif
 
 [ci]: https://github.com/bradhowes/swift-grdb-tca/actions/workflows/CI.yml

@@ -10,6 +10,9 @@ nonisolated public struct Actor: Hashable, Identifiable, Sendable {
 
   public let id: ID
   public let name: String
+}
+
+extension Actor {
 
   public var movieTitles: String {
     @Dependency(\.defaultDatabase) var database

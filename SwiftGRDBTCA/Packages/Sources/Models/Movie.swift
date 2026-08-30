@@ -16,6 +16,7 @@ nonisolated public struct Movie: Hashable, Identifiable, Sendable {
 }
 
 extension Updates<Movie> {
+
   mutating func toggleFavorite() {
     self.favorite.toggle()
   }
