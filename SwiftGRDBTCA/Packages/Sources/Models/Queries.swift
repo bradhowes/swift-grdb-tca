@@ -58,26 +58,21 @@ public struct ActorMoviesQuery: FetchKeyRequest {
   public func fetch(_ db: Database) throws -> MovieCollection {
     let found: [Movie]
     if let searchText, !searchText.isEmpty {
-      let movieIds = try MovieActor
-        .where { $0.actorId.eq(actor.id) }
-        .select(\.movieId)
-        .fetchAll(db)
-      guard !movieIds.isEmpty else { return [] }
-
       found = try MovieText.where {
         $0.match(searchText.quoted)
       }
-      .join(Movie.all) { $0.movieId.eq($1.id) }
-      .where { $1.id.in(movieIds) }
-      .order {
+      .join(Movie.all) { $0.rowid.eq($1.rowid) }
+      .join(MovieActor.all) { $2.actorId.eq(actor.id) }
+      .where { $1.id.eq($2.movieId) }
+      .order { movieText, movie, movieActor in
         if ordering == .forward {
-          $1.sortableTitle
+          movie.sortableTitle
         } else if ordering == .reverse {
-          $1.sortableTitle.desc()
+          movie.sortableTitle.desc()
         }
       }
-      .select {
-        $1
+      .select { movieText, movie, movieActor in
+        movie
       }
       .fetchAll(db)
     } else {
