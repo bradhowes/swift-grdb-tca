@@ -33,7 +33,6 @@
 		BDBAC01E303DE234007BDF4E /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBAC01D303DE231007BDF4E /* Logger.swift */; };
 		BDD57C242C9D82BC0082178E /* FromStateUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C232C9D82BC0082178E /* FromStateUITests.swift */; };
 		BDD57C282C9D982E0082178E /* XCUIElement+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C272C9D981E0082178E /* XCUIElement+Extensions.swift */; };
-		BDD57C2C2C9DAB370082178E /* ViewLinkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD57C2B2C9DAB370082178E /* ViewLinkType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,7 +86,6 @@
 		BDBAC01D303DE231007BDF4E /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		BDD57C232C9D82BC0082178E /* FromStateUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FromStateUITests.swift; sourceTree = "<group>"; };
 		BDD57C272C9D981E0082178E /* XCUIElement+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIElement+Extensions.swift"; sourceTree = "<group>"; };
-		BDD57C2B2C9DAB370082178E /* ViewLinkType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewLinkType.swift; sourceTree = "<group>"; };
 		BDF299C42C4A69AC00D7EB85 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		BDF299C82C4A6A2A00D7EB85 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -152,7 +150,6 @@
 			children = (
 				23A64E892ACC5312005B6344 /* SwiftGRDBTCAApp.swift */,
 				23A64EAA2AD0CCE4005B6344 /* Views */,
-				23A64EA52ACF5803005B6344 /* Services */,
 				23A64E8F2ACC5313005B6344 /* Assets.xcassets */,
 				23A64E912ACC5313005B6344 /* SwiftGRDBTCA.entitlements */,
 				23A64E952ACC5313005B6344 /* Info.plist */,
@@ -167,14 +164,6 @@
 				23A64E932ACC5313005B6344 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		23A64EA52ACF5803005B6344 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				BDD57C2B2C9DAB370082178E /* ViewLinkType.swift */,
-			);
-			path = Services;
 			sourceTree = "<group>";
 		};
 		23A64EAA2AD0CCE4005B6344 /* Views */ = {
@@ -418,7 +407,6 @@
 				BD7324F22C8799BE0026E1BE /* Utils.swift in Sources */,
 				BD8F4DB52C46C7F9004ACF0B /* ActorMoviesView.swift in Sources */,
 				BD2265192C3EBF6500A975E8 /* RootFeature.swift in Sources */,
-				BDD57C2C2C9DAB370082178E /* ViewLinkType.swift in Sources */,
 				BD8F4DB32C46C7E7004ACF0B /* ActorMoviesFeature.swift in Sources */,
 				BD8F4DB02C4689A4004ACF0B /* MovieActorsView.swift in Sources */,
 				BD1676AC2C98D006004AA2D2 /* Flash.swift in Sources */,

@@ -30,6 +30,7 @@ struct MovieActorsFeature {
     case detailButtonTapped(Actor)
     case favoriteTapped
     case nameSortChanged(Ordering)
+    case queryUpdated
     case refresh
     case searchButtonTapped(Bool)
     case searchTextChanged(String)
@@ -38,29 +39,13 @@ struct MovieActorsFeature {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .detailButtonTapped: return .none
-
-      case .favoriteTapped:
-        state.animateButton = !state.movie.favorite
-        return Utils.toggleFavoriteState(&state.movie)
-
-      case .nameSortChanged(let newSort): return setNameSort(newSort, state: &state)
-      case .refresh: return refresh(&state)
-
-      case .searchButtonTapped(let enabled):
-        state.isSearchFieldPresented = enabled
-        if !enabled {
-          state.searchText = ""
-          return updateQuery(state)
-        }
-        return .none
-
-      case .searchTextChanged(let query):
-        if query != state.searchText {
-          state.searchText = query
-          return updateQuery(state)
-        }
-        return .none
+      case .detailButtonTapped: .none
+      case .favoriteTapped: favoriteTapped(&state)
+      case .nameSortChanged(let newSort): setNameSort(newSort, state: &state)
+      case .queryUpdated: .none
+      case .refresh: refresh(&state)
+      case .searchButtonTapped(let enabled): searchButtonTapped(&state, enabled: enabled)
+      case .searchTextChanged(let query): searchTextChanged(&state, query: query)
       }
     }
   }
@@ -68,12 +53,34 @@ struct MovieActorsFeature {
 
 extension MovieActorsFeature {
 
+  private func favoriteTapped(_ state: inout State) -> Effect<Action> {
+    state.animateButton = !state.movie.favorite
+    return Utils.toggleFavoriteState(&state.movie)
+  }
+
   private func refresh(_ state: inout State) -> Effect<Action> {
     @Dependency(\.defaultDatabase) var database
     if let movie = (try? database.read { db in
       try Movie.all.where { $0.id.eq(state.movie.id) }.fetchAll(db)[0]
     }) {
       state.movie = movie
+    }
+    return .none
+  }
+
+  private func searchButtonTapped(_ state: inout State, enabled: Bool) -> Effect<Action> {
+    state.isSearchFieldPresented = enabled
+    if !enabled {
+      state.searchText = ""
+      return updateQuery(state)
+    }
+    return .none
+  }
+
+  private func searchTextChanged(_ state: inout State, query: String) -> Effect<Action> {
+    if query != state.searchText {
+      state.searchText = query
+      return updateQuery(state)
     }
     return .none
   }
@@ -88,12 +95,13 @@ extension MovieActorsFeature {
     let nameSort = state.nameSort
     let movie = state.movie
     let actors = state.$actors
-    return .run { _ in
+    return .run { send in
       do {
         try await actors.load(
           MovieActorsQuery(movie: movie, ordering: nameSort.sortOrder, searchText: searchText),
           animation: .smooth
         )
+        await send(.queryUpdated)
       } catch {
         reportIssue(error)
       }

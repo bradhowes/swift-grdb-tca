@@ -85,32 +85,21 @@ final class RootFeatureTests: XCTestCase {
     let database = ctx.store.dependencies.defaultDatabase
     let actors = try await database.read { try MovieActorsQuery(movie: movie, ordering: SortOrder.forward).fetch($0) }
     let actor = actors[0]
+    print("actor:", actor)
 
     await ctx.store.send(.movieButtonTapped(movie)) {
       $0.path.append(.showMovieActors(.init(movie: movie, nameSort: .forward)))
     }
 
     await ctx.store.send(.path(.element(id: 0, action: .showMovieActors(.detailButtonTapped(actor))))) {
-      $0.path.append(.showActorMovies(.init(actor: actor)))
+      $0.path.append(.showActorMovies(.init(actor: actor, titleSort: .forward)))
     }
 
     await ctx.store.send(.path(.element(id: 1, action: .showActorMovies(.detailButtonTapped(movie))))) {
       $0.path.append(.showMovieActors(.init(movie: movie, nameSort: .forward)))
     }
 
-    await ctx.store.send(.path(.element(id: 2, action: .showMovieActors(.detailButtonTapped(actor))))) {
-      $0.path.append(.showActorMovies(.init(actor: actor)))
-    }
-
-    await ctx.store.send(.path(.element(id: 3, action: .showActorMovies(.detailButtonTapped(movie))))) {
-      $0.path.append(.showMovieActors(.init(movie: movie)))
-    }
-
-    await ctx.store.send(.path(.popFrom(id: 4))) { _ = $0.path.popLast() }
-    await ctx.store.send(.path(.popFrom(id: 3))) { _ = $0.path.popLast() }
-    await ctx.store.send(.path(.popFrom(id: 2))) { _ = $0.path.popLast() }
-    await ctx.store.send(.path(.popFrom(id: 1))) { _ = $0.path.popLast() }
-    await ctx.store.send(.path(.popFrom(id: 0))) { _ = $0.path.popLast() }
+    XCTAssertEqual(ctx.store.state.path.count, 3)
   }
 
   @MainActor

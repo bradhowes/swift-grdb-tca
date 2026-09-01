@@ -54,6 +54,7 @@ analyzer_rules:
   - unused_import
 
 disabled_rules:
+  - nesting
   - todo
   - trailing_comma
   - vertical_whitespace_opening_braces

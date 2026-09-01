@@ -79,7 +79,7 @@ extension ActorMoviesView {
       }
     }
     return NavigationView {
-      ActorMoviesView(store: Store(initialState: .init(actor: actors[0])) {
+      ActorMoviesView(store: Store(initialState: .init(actor: actors[2])) {
         ActorMoviesFeature()
       })
     }

@@ -54,75 +54,19 @@ struct RootFeature {
   var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-
-      case .addButtonTapped:
-        let next = Support.nextMockMovieEntry(state.movies)
-        guard let movie = try? database.write({ try Movie.make(db: $0, entry: next) }) else {
-          return .none
-        }
-        return .run { send in
-          await send(.scrollToMovie(movie))
-          await send(.highlight(movie))
-        }
-
-      case .clearHighlight:
-        state.highlight = nil
-        return .none
-
-      case .deleteSwiped(let movie):
-        _ = try? database.write { db in
-          try? Movie.delete(movie)
-            .execute(db)
-        }
-        return .none
-
-      case .movieButtonTapped(let movie):
-        state.path.append(.showMovieActors(.init(movie: movie)))
-        return .none
-
-      case .favoriteSwiped(let movie):
-#if os(iOS)
-        return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
-#endif
-#if os(macOS)
-        return Utils.toggleFavoriteState(movie)
-#endif
-
-      case .highlight(let movie):
-        state.highlight = movie
-        return .none
-
-      case .path(let pathAction):
-        return monitorPathChange(pathAction, state: &state)
-
-      case .queryUpdated:
-        return .none
-
-      case .searchButtonTapped(let enabled):
-        state.isSearchFieldPresented = enabled
-        if !enabled {
-          state.searchText = ""
-          return updateQuery(state)
-        }
-        return .none
-
-      case .scrollToMovie(let movie):
-        state.scrollTo = movie
-        return .none
-
-      case .searchTextChanged(let query):
-        if query != state.searchText {
-          state.searchText = query
-          return updateQuery(state)
-        }
-        return .none
-
-      case .titleSortChanged(let newSort):
-        state.titleSort = newSort
-        return updateQuery(state)
-
-      case .toggleFavoriteState(var movie):
-        return Utils.toggleFavoriteState(&movie)
+      case .addButtonTapped: addButtonTapped(&state)
+      case .clearHighlight: clearHighlight(&state)
+      case .deleteSwiped(let movie): deleteSwipedMovie(&state, movie: movie)
+      case .movieButtonTapped(let movie): movieButtonTapped(&state, movie: movie)
+      case .favoriteSwiped(let movie): favoriteSwiped(&state, movie: movie)
+      case .highlight(let movie): highlightMovie(&state, movie: movie)
+      case .path(let pathAction): monitorPathChange(pathAction, state: &state)
+      case .queryUpdated: .none
+      case .scrollToMovie(let movie): scrollToMovie(&state, movie: movie)
+      case .searchButtonTapped(let enabled): searchButtonTapped(&state, enabled: enabled)
+      case .searchTextChanged(let query): searchTextChanged(&state, query: query)
+      case .titleSortChanged(let newSort): titleSortChanged(&state, newSort: newSort)
+      case .toggleFavoriteState(var movie): Utils.toggleFavoriteState(&movie)
       }
     }
     .forEach(\.path, action: \.path)
@@ -133,18 +77,88 @@ extension RootFeature.Path.State: Equatable {}
 
 extension RootFeature {
 
+  private func addButtonTapped(_ state: inout State) -> Effect<Action> {
+    let next = Support.nextMockMovieEntry(state.movies)
+    guard let movie = try? database.write({ try Movie.make(db: $0, entry: next) }) else {
+      return .none
+    }
+    return .run { send in
+      await send(.scrollToMovie(movie))
+      await send(.highlight(movie))
+    }
+  }
+
+  private func clearHighlight(_ state: inout State) -> Effect<Action> {
+    state.highlight = nil
+    return .none
+  }
+
+  private func deleteSwipedMovie(_ state: inout State, movie: Movie) -> Effect<Action> {
+    _ = try? database.write { db in
+      try? Movie.delete(movie)
+        .execute(db)
+    }
+    return .none
+  }
+
+  private func favoriteSwiped(_ state: inout State, movie: Movie) -> Effect<Action> {
+#if os(iOS)
+    return Utils.beginFavoriteChange(.toggleFavoriteState(movie))
+#endif
+#if os(macOS)
+    return Utils.toggleFavoriteState(movie)
+#endif
+  }
+
+  private func highlightMovie(_ state: inout State, movie: Movie) -> Effect<Action> {
+    state.highlight = movie
+    return .none
+  }
+
   private func monitorPathChange(_ pathAction: StackActionOf<Path>, state: inout State) -> Effect<Action> {
     print("pathAction:", pathAction)
     switch pathAction {
-    case .element(id: _, action: .showMovieActors(.detailButtonTapped(let actor))):
-      state.path.append(.showActorMovies(.init(actor: actor)))
-
     case .element(id: _, action: .showActorMovies(.detailButtonTapped(let movie))):
       state.path.append(.showMovieActors(.init(movie: movie)))
+
+    case .element(id: _, action: .showMovieActors(.detailButtonTapped(let actor))):
+      state.path.append(.showActorMovies(.init(actor: actor)))
 
     default: break
     }
     return .none
+  }
+
+  private func movieButtonTapped(_ state: inout State, movie: Movie) -> Effect<Action> {
+    state.path.append(.showMovieActors(.init(movie: movie)))
+    return .none
+  }
+
+  private func scrollToMovie(_ state: inout State, movie: Movie) -> Effect<Action> {
+    state.scrollTo = movie
+    return .none
+  }
+
+  private func searchButtonTapped(_ state: inout State, enabled: Bool) -> Effect<Action> {
+    state.isSearchFieldPresented = enabled
+    if !enabled {
+      state.searchText = ""
+      return updateQuery(state)
+    }
+    return .none
+  }
+
+  private func searchTextChanged(_ state: inout State, query: String) -> Effect<Action> {
+    if query != state.searchText {
+      state.searchText = query
+      return updateQuery(state)
+    }
+    return .none
+  }
+
+  private func titleSortChanged(_ state: inout State, newSort: Ordering) -> Effect<Action> {
+    state.titleSort = newSort
+    return updateQuery(state)
   }
 
   private func updateQuery(_ state: State) -> Effect<Action> {
