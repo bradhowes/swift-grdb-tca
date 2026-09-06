@@ -38,9 +38,9 @@
     },
     {
       "target" : {
-        "containerPath" : "container:SwiftGRDBTCA.xcodeproj",
-        "identifier" : "BD7338092C4118CA001D0E04",
-        "name" : "SwiftGRDBTCATests"
+        "containerPath" : "container:SwiftGRDBTCA\/Packages",
+        "identifier" : "ModelsTests",
+        "name" : "ModelsTests"
       }
     }
   ],

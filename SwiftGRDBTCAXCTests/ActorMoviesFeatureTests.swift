@@ -30,12 +30,6 @@ private final class Context {
   }
 }
 
-extension XCTestCase {
-  var isOnGithub: Bool {
-    ProcessInfo.processInfo.environment["CFFIXED_USER_HOME"]?.contains("/Users/runner/Library") ?? false
-  }
-}
-
 final class ActorMoviesFeatureTests: XCTestCase {
   private var ctx: Context!
 
